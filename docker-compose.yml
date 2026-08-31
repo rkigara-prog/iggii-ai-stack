@@ -1,0 +1,26 @@
+# iggii-ai-stack — LiteLLM routing proxy
+#
+# Deployed to the Unraid server alongside the existing n8n / OMC stack.
+# Secrets are read from an env file OUTSIDE this repo checkout so they
+# survive `git pull` / Actions checkouts (which wipe untracked files).
+# Create /mnt/user/appdata/iggii-ai-stack/secrets.env by hand from
+# .env.example before first `docker compose up`.
+
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-stable
+    container_name: iggii-litellm
+    restart: unless-stopped
+    env_file:
+      - /mnt/user/appdata/iggii-ai-stack/secrets.env
+    volumes:
+      - ./litellm/config.yaml:/app/config.yaml:ro
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    ports:
+      - "4000:4000"
+    networks:
+      - br0
+
+networks:
+  br0:
+    external: true

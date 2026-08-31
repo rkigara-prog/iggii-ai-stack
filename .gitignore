@@ -1,0 +1,5 @@
+# Real secrets never live in this repo. See .env.example.
+.env
+secrets.env
+*.env.local
+.DS_Store
