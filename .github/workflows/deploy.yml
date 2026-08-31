@@ -1,0 +1,21 @@
+name: Deploy iggii-ai-stack
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, unraid]
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Pull and (re)start stack
+        run: |
+          docker compose pull
+          docker compose up -d
