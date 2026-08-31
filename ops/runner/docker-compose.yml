@@ -39,7 +39,11 @@ services:
       LABELS: unraid
       RUNNER_WORKDIR: /mnt/user/appdata/github-runner/work
       DISABLE_AUTO_UPDATE: "true"
-      EPHEMERAL: "false"
+      # EPHEMERAL intentionally omitted: this image treats the mere PRESENCE
+      # of the var as truthy, regardless of value -- setting it to "false"
+      # still enables ephemeral mode (one job, then deregister+exit). Leaving
+      # it unset is what actually gives you a persistent, always-listening
+      # runner.
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /mnt/user/appdata/github-runner/work:/mnt/user/appdata/github-runner/work
