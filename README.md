@@ -26,9 +26,10 @@ doc for the full design and the confidentiality boundary rationale.
 
 1. Create `/mnt/user/appdata/iggii-ai-stack/secrets.env` from
    `.env.example`, filled in with real keys. Never commit this file.
-2. Register a self-hosted GitHub Actions runner on the Unraid server
-   (Settings → Actions → Runners → New self-hosted runner, on this
-   repo), labeled `unraid`.
+2. Set up the self-hosted runner — see `ops/runner/README.md`.
+   **Do not use GitHub's generic tarball instructions directly** — they
+   don't survive an Unraid reboot. This is a containerized,
+   appdata-convention setup instead.
 3. Push to `main` — the runner picks it up and brings the stack up.
 
 ## Status
