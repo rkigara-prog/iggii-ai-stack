@@ -1,0 +1,48 @@
+# GitHub Actions self-hosted runner, containerized to match the appdata
+# convention used by every other service on this Unraid box.
+#
+# THIS IS THE ONE PIECE THAT CANNOT DEPLOY ITSELF — it's what makes
+# git-push automation work in the first place, so it has to be stood up
+# by hand, once, directly on Unraid. It is not touched by
+# .github/workflows/deploy.yml.
+#
+# Setup:
+#   1. mkdir -p /mnt/user/appdata/github-runner/work
+#   2. Create /mnt/user/appdata/github-runner/.env (see runner.env.example
+#      in this folder) with a SEPARATE fine-grained PAT scoped ONLY to
+#      this repo, with Administration: read/write. This is intentionally
+#      a different token from the one used for git pushes — it never
+#      touches this git repo or gets sent anywhere.
+#   3. cd /mnt/user/appdata/github-runner && docker compose up -d
+#
+# Why RUNNER_WORKDIR is bind-mounted at the SAME absolute path inside and
+# outside the container: this runner talks to the HOST's Docker daemon
+# over the socket (docker-outside-of-docker), not its own nested Docker.
+# When a workflow step runs `docker compose up`, the *host* daemon
+# resolves any relative bind mounts (e.g. `./litellm/config.yaml`) against
+# the working directory string it's given — which only makes sense if
+# that path exists identically on the host. Mismatched paths here is the
+# single most common way this kind of setup silently breaks (the compose
+# file "up"s fine but bind-mounts point at nothing).
+services:
+  github-runner:
+    image: myoung34/github-runner:latest
+    container_name: iggii-github-runner
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      REPO_URL: https://github.com/rkigara-prog/iggii-ai-stack
+      RUNNER_SCOPE: repo
+      RUNNER_NAME: unraid-runner
+      RANDOM_RUNNER_SUFFIX: "false"
+      LABELS: unraid
+      RUNNER_WORKDIR: /mnt/user/appdata/github-runner/work
+      DISABLE_AUTO_UPDATE: "true"
+      EPHEMERAL: "false"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /mnt/user/appdata/github-runner/work:/mnt/user/appdata/github-runner/work
+    # Deliberately NOT on br0: this container only makes outbound calls to
+    # github.com, it never needs to be reachable on the LAN. Default bridge
+    # networking is less surface for the same job.
