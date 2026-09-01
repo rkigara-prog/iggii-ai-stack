@@ -5,6 +5,14 @@
 # survive `git pull` / Actions checkouts (which wipe untracked files).
 # Create /mnt/user/appdata/iggii-ai-stack/secrets.env by hand from
 # .env.example before first `docker compose up`.
+#
+# Plain bridge networking (no custom `networks:` block -> Compose makes
+# its own project-scoped bridge, "iggii-ai-stack_default"), matching how
+# every other service on this box actually runs. Earlier draft put this
+# on the `br0` macvlan network, which turned out to be the wrong call:
+# macvlan containers get their own LAN IP and the HOST itself can't
+# reach them via localhost -- a real Docker limitation, not a config
+# typo. Bridge + published port avoids that entirely.
 
 services:
   litellm:
@@ -18,9 +26,3 @@ services:
     command: ["--config", "/app/config.yaml", "--port", "4000"]
     ports:
       - "4000:4000"
-    networks:
-      - br0
-
-networks:
-  br0:
-    external: true
