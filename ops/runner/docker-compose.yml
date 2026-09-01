@@ -47,6 +47,13 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /mnt/user/appdata/github-runner/work:/mnt/user/appdata/github-runner/work
+      # env_file: entries (e.g. iggii-ai-stack's secrets.env) are read by the
+      # `docker compose` CLI itself, which runs INSIDE this container -- not
+      # by the host daemon. Unlike bind-mount sources (resolved host-side),
+      # this path has to actually exist in this container's own filesystem,
+      # so every appdata folder a deployed stack's env_file points at needs
+      # its own mount here, same path both sides.
+      - /mnt/user/appdata/iggii-ai-stack:/mnt/user/appdata/iggii-ai-stack
     # Deliberately NOT on br0: this container only makes outbound calls to
     # github.com, it never needs to be reachable on the LAN. Default bridge
     # networking is less surface for the same job.
