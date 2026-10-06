@@ -12,3 +12,6 @@ docker network connect localai-extraction localai-open-webui
 docker network inspect localai-paperless >/dev/null 2>&1 ||
   docker network create localai-paperless
 docker network connect localai-paperless localai-open-webui
+docker network inspect localai-audio >/dev/null 2>&1 ||
+  docker network create localai-audio
+docker network connect localai-audio localai-open-webui
