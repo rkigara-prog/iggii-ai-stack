@@ -1,0 +1,3 @@
+localai:
+  base_path: /models
+  checkpoints: checkpoints
