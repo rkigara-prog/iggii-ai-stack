@@ -1,0 +1,57 @@
+name: localai-inference
+
+services:
+  home-chat:
+    image: intel/llm-scaler-vllm@sha256:52218ad85513ab6686d4c090c83c2bd8c5b02423c63aa4dabd41837fe641fe3b
+    container_name: localai-home-chat
+    restart: unless-stopped
+    stop_grace_period: 60s
+    devices:
+      - /dev/dri:/dev/dri
+    shm_size: 8g
+    ports:
+      - "192.168.113.32:8000:8000"
+    volumes:
+      - /dev/dri/by-path:/dev/dri/by-path:ro
+      - /srv/localai/models:/models:ro
+    env_file:
+      - /srv/localai/secrets/home-chat.env
+    environment:
+      ZE_AFFINITY_MASK: "0"
+      HF_HUB_OFFLINE: "1"
+      VLLM_WORKER_MULTIPROC_METHOD: spawn
+      VLLM_QUANTIZE_Q40_LIB: /opt/venv/lib/python3.12/site-packages/vllm_int4_for_multi_arc.so
+    entrypoint: ["vllm"]
+    command:
+      - serve
+      - /models/Qwen3.5-35B-A3B/59d61f3ce65a6d9863b86d2e96597125219dc754
+      - --served-model-name
+      - home-chat
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --tensor-parallel-size
+      - "1"
+      - --quantization
+      - sym_int4
+      - --dtype
+      - float16
+      - --mamba-ssm-cache-dtype
+      - float16
+      - --max-model-len
+      - "32768"
+      - --max-num-batched-tokens
+      - "4096"
+      - --max-num-seqs
+      - "2"
+      - --gpu-memory-utilization
+      - "0.85"
+      - --block-size
+      - "64"
+      - --enforce-eager
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -6,6 +6,15 @@
 
 model_list:
   # --- OpenAI ---------------------------------------------------------
+  - model_name: home-chat
+    litellm_params:
+      model: hosted_vllm/home-chat
+      api_base: http://192.168.113.32:8000/v1
+      api_key: os.environ/HOME_CHAT_API_KEY
+      temperature: 0.7
+      extra_body:
+        chat_template_kwargs:
+          enable_thinking: false
   - model_name: gpt-5
     litellm_params:
       model: openai/gpt-5

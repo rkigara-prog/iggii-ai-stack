@@ -16,11 +16,12 @@
 
 services:
   litellm:
-    image: ghcr.io/berriai/litellm:main-stable
+    image: ghcr.io/berriai/litellm@sha256:bd089afdcd35b894b14a93f9743cdc8b591f82da1a38dd43a010a7b0c9de5fd7
     container_name: iggii-litellm
     restart: unless-stopped
     env_file:
       - /mnt/user/appdata/iggii-ai-stack/secrets.env
+      - /mnt/user/appdata/iggii-ai-stack/home-chat.env
     volumes:
       - ./litellm/config.yaml:/app/config.yaml:ro
     command: ["--config", "/app/config.yaml", "--port", "4000"]
