@@ -17,7 +17,7 @@ services:
     env_file:
       - /srv/localai/secrets/home-chat.env
     environment:
-      ZE_AFFINITY_MASK: "0"
+      ZE_AFFINITY_MASK: "0,1"
       HF_HUB_OFFLINE: "1"
       VLLM_WORKER_MULTIPROC_METHOD: spawn
       VLLM_QUANTIZE_Q40_LIB: /opt/venv/lib/python3.12/site-packages/vllm_int4_for_multi_arc.so
@@ -32,7 +32,7 @@ services:
       - --port
       - "8000"
       - --tensor-parallel-size
-      - "1"
+      - "2"
       - --quantization
       - sym_int4
       - --dtype
@@ -40,7 +40,7 @@ services:
       - --mamba-ssm-cache-dtype
       - float16
       - --max-model-len
-      - "32768"
+      - "131072"
       - --max-num-batched-tokens
       - "4096"
       - --max-num-seqs
