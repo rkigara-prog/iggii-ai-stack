@@ -50,6 +50,11 @@ services:
       - --block-size
       - "64"
       - --enforce-eager
+      - --default-chat-template-kwargs
+      - '{"enable_thinking":false}'
+      - --enable-auto-tool-choice
+      - --tool-call-parser
+      - qwen3_coder
     logging:
       driver: json-file
       options:
