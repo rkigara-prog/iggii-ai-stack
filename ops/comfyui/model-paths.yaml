@@ -1,3 +1,9 @@
 localai:
   base_path: /models
   checkpoints: checkpoints
+
+localai_klein:
+  base_path: /models
+  diffusion_models: diffusion_models
+  text_encoders: text_encoders
+  vae: vae
