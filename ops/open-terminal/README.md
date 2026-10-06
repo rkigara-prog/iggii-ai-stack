@@ -32,7 +32,7 @@ Access restrictions require verification before household rollout.
 - WebUI version API returned 0.11.4 after recreation.
 
 Pyodide Code Interpreter was tested separately.
-A full backup restore test remains pending.
+An isolated workspace restore test passed; see Recovery-Test.md.
 
 ## Operations
 

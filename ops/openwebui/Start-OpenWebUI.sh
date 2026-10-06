@@ -6,3 +6,6 @@ docker run -d --name localai-open-webui --label localai.managed=openwebui-v0.1.0
 docker network inspect localai-terminal >/dev/null 2>&1 ||
   docker network create localai-terminal
 docker network connect localai-terminal localai-open-webui
+docker network inspect localai-extraction >/dev/null 2>&1 ||
+  docker network create localai-extraction
+docker network connect localai-extraction localai-open-webui
