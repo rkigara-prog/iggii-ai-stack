@@ -61,3 +61,38 @@ checkpoint excludes chats and settings created after the backup.
 
 Review CORS_ALLOW_ORIGIN, which currently emits a wildcard warning.
 Keep any credentials, data, and backup archives outside Git.
+
+## Local access and search update, 2026-10-06
+
+Preferred URL is http://ai.iggii.com:3002.
+OPNsense internal DNS maps ai.iggii.com to 192.168.113.18.
+Local DNS resolution and browser access were confirmed.
+No public DNS record, inbound port forwarding, or public tunnel was
+added during this change. Public access is outside the intended scope.
+
+The external runtime.env contains these non-secret settings:
+
+    WEBUI_URL=http://ai.iggii.com:3002
+    CORS_ALLOW_ORIGIN=http://ai.iggii.com:3002;http://192.168.113.18:3002
+
+The container was recreated on the same pinned v0.11.4 image.
+Health, environment values, version API, and a browser chat response
+passed. The earlier wildcard CORS follow-up is resolved.
+
+Environment rollback copy remains on the host:
+runtime.env.bak-20261006-120708
+
+Web search uses DDGS with the Bing backend and three results.
+Web Search is enabled by default for home-chat. The user confirmed
+the default works. A live test completed search_web and fetch_url
+with a GitHub source attached.
+
+The user wants the broader model capabilities retained. Do not
+disable them solely to simplify the household configuration.
+A write_note call completed during a vocabulary exercise, showing
+that tool selection needs refinement. Availability does not establish
+that every backend is configured or validated.
+
+Next work is to inventory the remaining feature backends and validate
+them individually. Existing chat history and a full backup restore
+test remain unconfirmed. ASM governance and NetBox remain excluded.
