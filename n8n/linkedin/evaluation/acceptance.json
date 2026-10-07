@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-07",
+  "tests_passed": 5,
+  "compile_passed": true,
+  "shared_links_passed": true,
+  "authenticated_smb_read_checksum_passed": [
+    "leigh",
+    "rigarashi"
+  ],
+  "shared_files_checked": [
+    "README.html",
+    "Report.html",
+    "Blind-Review.html",
+    "Evidence.html",
+    "Answer-Key.html",
+    "Score-Sheet.csv"
+  ],
+  "published_workflows_match_pre_evaluation_export": true,
+  "production_models_replaced": false,
+  "pipeline_rerun": false,
+  "unrelated_tests_rerun": false,
+  "human_revision_minutes": "pending blind review",
+  "jev_calls": 0,
+  "posting_disabled_preserved": true,
+  "shared_directory": "\\\\Iggy-Nas\\Shared\\ContentPipeline\\output\\ias-linkedin\\Reviews\\Content-Quality-Evaluation-20261007"
+}

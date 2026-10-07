@@ -1,0 +1,31 @@
+{
+  "review_method": "Provisional analyst passage-based review; no model-as-judge API and no measured Robert/Leigh revision times",
+  "rubric": "Each ordinal score 0..5: 0 unusable, 1 major rewrite, 2 substantial edits, 3 usable with edits, 4 minor edits, 5 ready for human approval. Factuality assessed against frozen source text; usefulness/style are subjective.",
+  "human_revision_minutes": "pending blind review",
+  "arms": {
+    "baseline": {
+      "drafts": 4,
+      "exact_page_quotes": 7,
+      "listed_claim_quotes": 9,
+      "drafts_with_all_source_urls": 1,
+      "drafts_in_word_range": 3,
+      "minimum_edit_actions": 19,
+      "factuality_mean_0_to_5": 2.5,
+      "editorial_usefulness_mean_0_to_5": 2,
+      "style_mean_0_to_5": 1.25,
+      "median_latency_seconds": 4.2765
+    },
+    "grounded": {
+      "drafts": 4,
+      "exact_page_quotes": 8,
+      "listed_claim_quotes": 11,
+      "drafts_with_all_source_urls": 0,
+      "drafts_in_word_range": 3,
+      "minimum_edit_actions": 21,
+      "factuality_mean_0_to_5": 2.5,
+      "editorial_usefulness_mean_0_to_5": 2.5,
+      "style_mean_0_to_5": 1.75,
+      "median_latency_seconds": 4.316
+    }
+  }
+}
