@@ -2,7 +2,8 @@
 
 Robert and Leigh start at `\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin`.
 Open **START-HERE.md**, then **CURRENT.md** for the latest completed five-file set.
-The [short guide](../../n8n/linkedin/START-HERE.md) is deployed there. SMB can also use
+The [short guide](../../n8n/linkedin/START-HERE.md) and
+[folder architecture](../../n8n/linkedin/Content-Pipeline-Architecture.md) are deployed there, including HTML/PDF copies of the architecture guide. SMB can also use
 `192.168.113.18`; macOS uses `smb://192.168.113.18/Shared/ContentPipeline/output/ias-linkedin`.
 Existing SMB connections may need disconnect/reconnect to refresh group membership.
 
@@ -103,7 +104,7 @@ flat outputs remain untouched. Review notes are retained independently in Review
 The previously accepted October 6 filename set (completed October 7 UTC) was
 bootstrapped into a verified archive without re-running inference, privacy research
 or editorial generation. This archival bootstrap records lineage and bytes only;
-it does not renew the expired privacy approval or authorize downstream research.
+it does not renew the existing privacy approval or independently authorize downstream research. The live marker records approval at October 7, 01:49:45.270 UTC, with a 24-hour expiry at October 8, 01:49:45.270 UTC unless a new attempt invalidates it sooner.
 CURRENT.md identifies this last complete set until a later successful run replaces
 its index. The original five working outputs are byte-identical to their prior run.
 

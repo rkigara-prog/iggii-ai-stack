@@ -1,6 +1,9 @@
 # Local content pipeline — deployment and inactive templates
 
-For Robert and Leigh, start with [START-HERE.md](START-HERE.md). The deployed
+For Robert and Leigh, start with [START-HERE.md](START-HERE.md). The
+[folder architecture and operating guide](Content-Pipeline-Architecture.md) explains
+the deployed structure; [HTML](Content-Pipeline-Architecture.html) and
+[PDF](Content-Pipeline-Architecture.pdf) copies are also deployed alongside it. The deployed
 copy and `CURRENT.md` are in `\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin`.
 The current access/archive repair is recorded in
 [Content-Usability.md](../../ops/n8n/Content-Usability.md). Earlier inactive-state
