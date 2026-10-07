@@ -96,6 +96,7 @@ def main():
     gold = json.loads((root / 'gold.private.json').read_text())
     seal = json.loads((root / 'freeze.private.json').read_text())
     assert digest(packets) == seal['packet_sha256'] and digest(gold) == seal['gold_sha256']
+    canary_terms = json.loads((root / 'privacy-canaries.private.json').read_text())
     detailed = {}
     summary = {'freeze': seal, 'arms': {}}
     for arm in ['baseline', 'grounded', 'laya']:
@@ -103,7 +104,7 @@ def main():
         for packet in packets:
             record = json.loads((root / 'responses' / f'assessment-{arm}-{packet["id"]}.json').read_text())
             assert record['packet_sha256'] == digest(packet)
-            row = assess(packet, gold[packet['id']], record)
+            row = assess(packet, {**gold[packet['id']], 'private_canary_terms': canary_terms}, record)
             results.append(row)
             detailed[f'{arm}-{packet["id"]}'] = row
         summary['arms'][arm] = aggregate(results)

@@ -82,3 +82,5 @@ comparison used `laya==0.4.0`, `torch==2.14.1+cpu`, `transformers==5.19.0`,
 `jsonschema==4.26.0`. Exact checkpoint revision and weight hash are in model-preflight.
 Install a CPU-only Torch wheel before Laya; explicitly select CPU to avoid automatic
 XPU selection. Weights remain outside Git. No production Python environment changed.
+
+Privacy scoring reads `privacy-canaries.private.json` (a JSON string array) from the private evaluation root; canary values are never committed.
