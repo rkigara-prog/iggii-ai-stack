@@ -3,7 +3,7 @@
 **Access is repaired. The comparison is incomplete and has no model-selection recommendation yet.**
 All 43 baseline calls and the first Qwen call are preserved. The evaluator is stopped
 pending a resource-window decision; production services are running unchanged.
-Draft PR #20 preserves the quotation fix, protocol, manifests and checkpoint results.
+PR #20 records the completed quotation fix, protocol, manifests and checkpoint results; the full comparison remains unfinished.
 
 The selected alternatives are **Qwen3.8-27B Q4_K_M** and **Gemma 4 31B IT Q4_0**.
 The three-model shortlist, exact weight hashes, historical-tag uncertainty, licensing

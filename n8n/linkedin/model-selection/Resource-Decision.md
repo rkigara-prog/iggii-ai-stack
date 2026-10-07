@@ -75,9 +75,9 @@ The no-outage extension above is already prepared and avoids these additional ch
 
 ## Preservation
 
-The common protocol, candidate identities and quotation repair are in draft PR #20.
-The comparison has no deployment recommendation yet. The PR remains draft until the
-two alternatives, blind review and final report are complete, or an explicitly
-reported resource limitation ends a candidate. Home-chat is not declared the winner
+PR #20 records the completed quotation repair, candidate discovery, protocol and
+checkpoint tooling. The comparison has no deployment recommendation yet. Its two
+alternatives, blind review and final scored report require a subsequent completion
+change after the resource window is resolved. Home-chat is not declared the winner
 because it is already installed. All production models, services and schedules remain
 unchanged while this decision is pending; LinkedIn publishing remains disabled.

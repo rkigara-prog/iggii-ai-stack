@@ -5,7 +5,7 @@ and the comparison reports. **Evidence packets, private canaries, raw responses,
 source-page text and blind draft contents stay outside Git.** No production model
 replacement or automatic publishing is part of this milestone.
 
-- [Checkpoint report](Checkpoint-Report.md) and [resource decision](Resource-Decision.md): current coverage and the remaining access-window decision. No model recommendation yet.
+- [Checkpoint report](Checkpoint-Report.md) and [resource decision](Resource-Decision.md): current coverage and the remaining access-window decision. No model recommendation yet; PR #20 completes the repair/setup checkpoint, with comparison results to follow.
 - [Candidate selection](Candidate-Selection.md): exact artifacts, official references,
   historical tag uncertainty and resource tradeoffs.
 - [Frozen protocol](Protocol.md) and [review rubric](Review-Rubric.md): what was compared,
