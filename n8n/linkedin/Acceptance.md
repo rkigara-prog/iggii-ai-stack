@@ -1,5 +1,9 @@
 # Content-pipeline acceptance — 2026-10-07 UTC
 
+This records the initial migration version. The later source-aware privacy repair
+and mount-access validation are documented in [Readiness.md](Readiness.md); its
+focused recheck did not repeat external research or the full editorial pipeline.
+
 The three imported inactive IAS copies completed an end-to-end n8n CLI run
 against synthetic transcripts and live local inference/Brave research. The check
 ended at an editorial plan. No posts, images, messages or calendar writes were
@@ -80,11 +84,12 @@ meetings. Independent review still uses the same model in a separate stage.
 Representative real-input privacy evaluation, editorial quality review and any
 independent-model selection remain decisions before production activation.
 
-Normal n8n UI execution is blocked by the existing Unraid bind-mount group mismatch.
+At this initial acceptance, normal n8n UI execution was blocked by the Unraid
+bind-mount group mismatch; the separately approved fix has since been applied.
 The acceptance CLI used UID 1000 with GID 100; this did not change the running
 container, production permissions or schedules. The ineffective ACL experiment
-was removed. Repairing production mount access or changing the persistent container
-group requires a separate deployment decision. Keep all IAS copies inactive.
+was removed. The post-fix normal-user/task-runner probe passed; see [ops/n8n](../../ops/n8n/README.md).
+Keep all IAS copies inactive.
 
 OMC integration, additional-model evaluation, publishing, image generation, and
 unrelated infrastructure work were not part of this milestone.

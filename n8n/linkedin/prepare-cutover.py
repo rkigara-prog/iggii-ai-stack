@@ -17,8 +17,10 @@ for stage in ['sanitization', 'enrichment', 'editorial-planner']:
     workflow = json.loads(original.replace('/data/output/ias-linkedin-acceptance', root))
     workflow['active'] = False
     for node in workflow['nodes']:
-        if node['type'].endswith('executeCommand'):
+        if node['name'] == 'List Transcripts Modified in Last 10 Days':
             node['parameters']['command'] = 'IAS_TRANSCRIPTS_ROOT=/data/transcripts node ' + root + '/select-transcripts.cjs'
+        if node['type'].endswith('executeCommand') and 'privacy-artifact.cjs' in node['parameters']['command']:
+            node['parameters']['command'] = node['parameters']['command'].replace('node ' + root + '/privacy-artifact.cjs', 'IAS_PRIVACY_ROOT=' + root + ' node ' + root + '/privacy-artifact.cjs')
         if node['type'].endswith('scheduleTrigger'):
             assert node.get('disabled') is True
             assert node['name'] not in workflow['connections']

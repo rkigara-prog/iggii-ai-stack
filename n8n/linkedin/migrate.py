@@ -86,6 +86,9 @@ def main():
         workflow['name'] = NAMES[index]
         (output / (stage + '.json')).write_text(json.dumps(workflow, indent=2) + '\n')
 
+    import runpy
+    runpy.run_path(str(Path(__file__).with_name('harden-privacy.py')))['apply'](output)
+
 
 if __name__ == '__main__':
     main()

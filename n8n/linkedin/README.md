@@ -34,7 +34,7 @@ No cloud fallback is configured for this route. The copies call
 credential. The service keeps its existing 131072-token context and two-sequence
 capacity; no inference service settings were changed.
 
-Six separate model calls remain: per-transcript extraction, privacy adjudication,
+The six original model roles remain: per-transcript extraction, privacy adjudication,
 theme consolidation, initial evidence ranking, final evidence ranking, and
 editorial planning. Initially all use the same served model. This retains stage
 boundaries; it does not establish independent-model review or privacy equivalence.
@@ -42,8 +42,11 @@ boundaries; it does not establish independent-model review or privacy equivalenc
 Ollama's `model`, `think`, `format`, and `options` request fields are translated
 into the OpenAI-compatible model, temperature, and response-format fields.
 Object schemas become JSON schemas, and JSON-only requests use JSON-object mode.
-All response readers, including cross-node first-pass readers, use
-`choices[0].message.content`. Prompts and policy inputs are preserved verbatim.
+Enrichment additionally checks consolidated query privacy locally before web
+research. All response readers, including cross-node first-pass readers, use
+`choices[0].message.content`. Initial migration preserved prompts verbatim. The subsequent real-meeting privacy
+repair strengthens extraction and adds source context and strict decision/evidence
+validation to the separate privacy stage; see [Readiness.md](Readiness.md).
 Pretty-printed schemas are necessary for the installed n8n expression compiler;
 adjacent closing braces inside an expression were rejected as invalid syntax.
 Node names and legacy artifact basenames remain stable for cross-node references
@@ -99,28 +102,34 @@ python3 n8n/linkedin/bind.py /private/bound \
 in another instance. Bind credentials within the same owner/project as the copies.
 Copy the bound exports privately into the n8n container and use
 `n8n import:workflow --input=...`; the CLI defaults to inactive imports.
-Deploy `select-transcripts.cjs` into the isolated directory and keep input/output
-and log directories private. The root GitHub workflow deploys LiteLLM only; it does
+Deploy `select-transcripts.cjs`, `privacy-policy.cjs` and `privacy-artifact.cjs`
+into the isolated directory and keep input/output and log directories private.
+The artifact helper defaults to the acceptance directory; real-input profiles
+explicitly set `IAS_PRIVACY_ROOT` through `prepare-cutover.py`. The root GitHub workflow deploys LiteLLM only; it does
 not import these workflows or deploy the Ubuntu inference service.
 
-Run the copies sequentially, checking privacy before enabling any external search:
+Run the copies sequentially. Enrichment now enforces a fresh, matching privacy
+approval internally and cannot consume an unapproved or superseded theme file:
 
 ```bash
 # Run inside the authorized Unraid host; redirect each raw output to a private log.
-docker exec --user 1000:100 -e N8N_RUNNERS_BROKER_PORT=5699 n8n \
+docker exec -e N8N_RUNNERS_BROKER_PORT=5699 n8n \
   n8n execute --id=IASLinkedinSan01 --rawOutput > /private/sanitization-execution.log 2>&1
 # Copy the private log into /tmp/ias-linkedin/sanitization-execution.log.
 # audit-acceptance.cjs --privacy-only must pass before the next stage.
-docker exec --user 1000:100 -e N8N_RUNNERS_BROKER_PORT=5699 n8n \
+docker exec -e N8N_RUNNERS_BROKER_PORT=5699 n8n \
   n8n execute --id=IASLinkedinEnr01 --rawOutput > /private/enrichment-execution.log 2>&1
-docker exec --user 1000:100 -e N8N_RUNNERS_BROKER_PORT=5699 n8n \
+docker exec -e N8N_RUNNERS_BROKER_PORT=5699 n8n \
   n8n execute --id=IASLinkedinPlan1 --rawOutput > /private/editorial-planner-execution.log 2>&1
 ```
 
 The alternate broker port is scoped to each CLI process; production runner
 settings are untouched. Use restrictive log permissions (`umask 077`) and never
-print raw output in a shared terminal. The audit expects the three synthetic
-acceptance inputs described in the results. It is not a universal privacy detector.
+print raw output in a shared terminal. The historical acceptance audit expects its three synthetic inputs and is not a
+universal privacy detector. `check-privacy-gates.cjs` checks the repaired fail-closed
+validators without inference or search requests. `build-privacy-recheck.cjs` and
+`recheck-real-privacy.py` produce private source-grounded per-sample audits; never
+print or commit their packets, findings or model replies.
 
 `audit-acceptance.cjs` reads the private stage logs and isolated artifact directory
 and emits aggregate results. `check-evidence-gates.cjs` runs the actual migrated
@@ -138,14 +147,14 @@ records every original workflow name/ID/state at discovery.
 ## Activation readiness
 
 The four-real-meeting evaluation and proposed cutover are documented in
-[Readiness.md](Readiness.md). Activation readiness was not established. All copies
-remain inactive; no real themes were sent to web research. The same PR contains the
+[Readiness.md](Readiness.md). The focused repaired privacy check passed on the same four-meeting sample.
+Activation remains unapproved, and cutover/current-cycle validation is still pending.
+All copies remain inactive; no real themes were sent to web research. The same PR contains the
 applied mount-access fix and successful normal-user validation probe.
 
 ## Remaining decisions
 
-Private contextual privacy review/remediation,
-independent privacy assurance, current-cycle handoff, production activation and
+Broader privacy assurance, current-cycle handoff, production activation and
 editorial quality approval remain separate decisions. No post may be drafted until the
 required webinar review. OMC integration and additional-model evaluation remain
 outside this milestone.
