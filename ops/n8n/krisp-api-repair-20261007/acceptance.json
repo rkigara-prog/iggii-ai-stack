@@ -1,0 +1,43 @@
+{
+  "recordedAt": "2026-10-07T13:49:36.556643+00:00",
+  "collector": {
+    "status": "passed",
+    "authenticatedRecentApiRead": true,
+    "storedTranscriptMatchesApiSegments": true,
+    "rawMetadataPreserved": true,
+    "ledgerPairsVerified": 80,
+    "collectorHealthy": true,
+    "collectorVersion": "0.2.0",
+    "meetingsWrittenAtRestart": 0,
+    "meetingsWithoutSegmentsSkipped": 2
+  },
+  "n8nIntake": {
+    "status": "passed",
+    "recentApiTranscriptRead": true,
+    "metadataHeadersPreserved": true,
+    "selectedCount": 1,
+    "publishingNodesPresent": false
+  },
+  "n8nControls": {
+    "status": "passed",
+    "allProductionWorkflowDefinitionsUnchanged": true,
+    "productionWorkflowCount": 30,
+    "weeklyScheduleUnchanged": true,
+    "childSchedulesRemainDisabled": true,
+    "linkedInPostingUnchangedDisabled": true,
+    "privateProbeAndItsExecutionsDeleted": true,
+    "selector": {
+      "api_selected": 17,
+      "legacy_selected": 0,
+      "legacy_duplicates_excluded": 26,
+      "api_shadow_duplicates_excluded": 80,
+      "legacy_unknown_date": 136,
+      "api_outside_window": 63,
+      "api_date_basis": "started_at",
+      "legacy_date_basis": "meeting_date",
+      "selected_count": 17
+    }
+  },
+  "omcIdentitiesPreserved": 80,
+  "omcNoDuplicateProcessing": true
+}

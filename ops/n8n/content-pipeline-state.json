@@ -96,5 +96,16 @@
   "outputRoot": "/data/output/ias-linkedin",
   "rollbackPolicy": "Unpublish parent, let in-flight executions finish, then unpublish children; quarantine current markers/outputs. Restore original only with available legacy inference and authorization; otherwise fail-safe halt.",
   "nextScheduledStartLocal": "2026-10-12T07:00:00-04:00",
-  "nextScheduledStartUtc": "2026-10-12T11:00:00+00:00"
+  "nextScheduledStartUtc": "2026-10-12T11:00:00+00:00",
+  "transcriptIntakeRepair": {
+    "recordedAt": "2026-10-07T13:49:36.556643+00:00",
+    "status": "deployed-and-accepted",
+    "collectorCanonicalHostRoot": "/mnt/user/Shared/Transcripts/Krisp-API",
+    "legacyHostRoot": "/mnt/user/Shared/Transcripts/Krisp",
+    "selectorContainerPath": "/data/output/ias-linkedin/select-transcripts.cjs",
+    "dateBasis": "meeting-date",
+    "apiPreferred": true,
+    "workflowDefinitionsAndSchedulesUnchanged": true,
+    "acceptance": "krisp-api-repair-20261007/acceptance.json"
+  }
 }

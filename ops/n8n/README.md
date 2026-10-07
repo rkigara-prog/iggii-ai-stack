@@ -105,3 +105,9 @@ No container restart or mount/environment change was required.
 workflow/version state and verification counts. The complete rollback is in
 [Cutover.md](../../n8n/linkedin/Cutover.md). Historical inactive-state statements
 in the earlier mount-readiness record refer to that earlier maintenance step.
+
+Production Krisp API intake was repaired on 2026-10-07 without workflow/schedule
+changes. See [repair record](krisp-api-repair-20261007/README.md). The active helper
+is `/data/output/ias-linkedin/select-transcripts.cjs`; API and legacy selection use
+meeting dates. Full authenticated API/OMC/n8n input acceptance evidence is recorded
+without transcript content. LinkedIn posting remains disabled.

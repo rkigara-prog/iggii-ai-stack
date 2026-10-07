@@ -1,0 +1,10 @@
+{
+  "activeSelector": {
+    "component": "active-n8n-selector",
+    "sha256": "2d02c0e321c2a9401edc6182804b94f5f93a8f19c82d3cde6cb1e1d2cb2cca2f"
+  },
+  "historicalSelector": {
+    "component": "n8n-selector",
+    "sha256": "0697536f62b709a0f8e81c098b887b8d91e9442497ec3459fa2915f71c56247a"
+  }
+}
