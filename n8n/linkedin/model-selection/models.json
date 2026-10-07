@@ -1,5 +1,5 @@
 {
-  "status": "Both artifacts verified; Qwen native partial-offload load/inference confirmed; Gemma native load pending resource-window decision",
+  "status": "Both artifacts verified and native partial-offload load/inference confirmed; frozen comparison running",
   "shortlist": [
     {
       "id": "Qwen/Qwen3.8-27B",
@@ -70,7 +70,7 @@
     "commit": "b86d2f07542b29ab099aed34fd6b6d1b2fd4b81c",
     "oneApiVersion": "2025.3.2",
     "qwenUsableContextVerified": 16384,
-    "gemmaUsableContextVerified": null,
+    "gemmaUsableContextVerified": 16384,
     "bothGgufTemplatesExposeEnableThinking": true
   },
   "proposedEvaluationContext": 16384,
@@ -91,6 +91,6 @@
   "comparabilityLimits": [
     "different quantizers and runtimes are deployment bundles, not a pure architecture experiment",
     "partial offload latency does not predict full-GPU latency",
-    "Qwen partial offload measured; Gemma actual load/performance still unmeasured"
+    "Both candidates load and infer with partial offload; full-GPU deployment performance unmeasured"
   ]
 }

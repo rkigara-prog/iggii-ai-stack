@@ -22,7 +22,7 @@ def main():
    body+='<article><h2>Draft '+bid+'</h2>'+prose(x['draft'])+'</article>'
    sample_rows.append([id,bid,'','','','','','','','','','',''])
    judgment=judgments.get(arm+'/'+id,{})
-   claim_rows=''.join('<tr><td>'+H(c.get('text',''))+'</td><td>'+H(c.get('source_id','')+'/'+c.get('passage_id',''))+'</td><td>'+H(c.get('quote',''))+'</td></tr>' for c in x.get('claims',[]))
+   claim_rows=''.join('<tr><td>'+H(str(c.get('text','')))+'</td><td>'+H(str(c.get('source_id') or '(missing source)')+'/'+str(c.get('passage_id') or '(no passage ID)'))+'</td><td>'+H(str(c.get('quote','')))+'</td></tr>' for c in x.get('claims',[]))
    key.append('<section><h2>'+bid+': '+H(arm)+'</h2><p>Writer-listed claims (not independent verification):</p><table><tr><th>Claim</th><th>Evidence ID</th><th>Exact excerpt submitted</th></tr>'+claim_rows+'</table><h3>Complete-prose review</h3><pre>'+H(json.dumps(judgment,indent=2,ensure_ascii=False))+'</pre></section>')
   (out/(id+'.html')).write_text(page(b['topic'],body));links.append('<li><a href="'+id+'.html">'+id+': '+H(b['topic'])+'</a></li>')
   source=b['sources'][0]

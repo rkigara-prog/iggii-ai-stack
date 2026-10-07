@@ -1,0 +1,277 @@
+{
+  "rater": "Codex",
+  "independentHumanRatings": false,
+  "humanEditingMinutes": "unmeasured",
+  "estimatedCorrectionEffort": "not measured or inferred from sentence flags",
+  "scale": "0\u20135; see Review-Rubric.md",
+  "provenance": "Complete prose reviewed against frozen public source passages; semantic support and style scores are judgments, not deterministic proof",
+  "drafts": {
+    "gemma4-31b/W1": {
+      "scores": {
+        "factual_support": 3,
+        "attribution": 5,
+        "citation_accuracy": 3,
+        "useful_insight": 3,
+        "specificity": 3,
+        "readability": 4,
+        "low_generic_filler": 3
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 7,
+      "sentenceJudgmentCounts": {
+        "review_required": 2,
+        "supported": 3,
+        "interpretation": 1,
+        "advice": 1
+      },
+      "reviewStatus": "human_review_required"
+    },
+    "gemma4-31b/W2": {
+      "scores": {
+        "factual_support": 4,
+        "attribution": 4,
+        "citation_accuracy": 4,
+        "useful_insight": 3,
+        "specificity": 4,
+        "readability": 4,
+        "low_generic_filler": 3
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 8,
+      "sentenceJudgmentCounts": {
+        "advice": 3,
+        "supported": 1,
+        "review_required": 1,
+        "interpretation": 3
+      },
+      "reviewStatus": "human_review_required"
+    },
+    "gemma4-31b/W3": {
+      "scores": {
+        "factual_support": 3,
+        "attribution": 4,
+        "citation_accuracy": 3,
+        "useful_insight": 3,
+        "specificity": 3,
+        "readability": 4,
+        "low_generic_filler": 2
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 8,
+      "sentenceJudgmentCounts": {
+        "review_required": 1,
+        "interpretation": 4,
+        "supported": 2,
+        "advice": 1
+      },
+      "reviewStatus": "human_review_required"
+    },
+    "gemma4-31b/W4": {
+      "scores": {
+        "factual_support": 3,
+        "attribution": 4,
+        "citation_accuracy": 3,
+        "useful_insight": 3,
+        "specificity": 3,
+        "readability": 4,
+        "low_generic_filler": 3
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 8,
+      "sentenceJudgmentCounts": {
+        "interpretation": 3,
+        "supported": 2,
+        "review_required": 2,
+        "advice": 1
+      },
+      "reviewStatus": "human_review_required"
+    },
+    "home-chat/W1": {
+      "scores": {
+        "factual_support": 2,
+        "attribution": 4,
+        "citation_accuracy": 3,
+        "useful_insight": 3,
+        "specificity": 3,
+        "readability": 3,
+        "low_generic_filler": 2
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 8,
+      "sentenceJudgmentCounts": {
+        "review_required": 3,
+        "supported": 2,
+        "interpretation": 2,
+        "advice": 1
+      },
+      "reviewStatus": "human_review_required"
+    },
+    "home-chat/W2": {
+      "scores": {
+        "factual_support": 3,
+        "attribution": 4,
+        "citation_accuracy": 3,
+        "useful_insight": 2,
+        "specificity": 3,
+        "readability": 2,
+        "low_generic_filler": 2
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 9,
+      "sentenceJudgmentCounts": {
+        "interpretation": 2,
+        "supported": 2,
+        "advice": 3,
+        "review_required": 2
+      },
+      "reviewStatus": "human_review_required"
+    },
+    "home-chat/W3": {
+      "scores": {
+        "factual_support": 2,
+        "attribution": 3,
+        "citation_accuracy": 3,
+        "useful_insight": 2,
+        "specificity": 3,
+        "readability": 3,
+        "low_generic_filler": 2
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 7,
+      "sentenceJudgmentCounts": {
+        "interpretation": 1,
+        "review_required": 5,
+        "supported": 1
+      },
+      "reviewStatus": "human_review_required"
+    },
+    "home-chat/W4": {
+      "scores": {
+        "factual_support": 2,
+        "attribution": 2,
+        "citation_accuracy": 2,
+        "useful_insight": 2,
+        "specificity": 3,
+        "readability": 3,
+        "low_generic_filler": 2
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 8,
+      "sentenceJudgmentCounts": {
+        "review_required": 5,
+        "interpretation": 1,
+        "supported": 1,
+        "advice": 1
+      },
+      "reviewStatus": "human_review_required"
+    },
+    "qwen3.8-27b/W1": {
+      "scores": {
+        "factual_support": 2,
+        "attribution": 4,
+        "citation_accuracy": 3,
+        "useful_insight": 3,
+        "specificity": 3,
+        "readability": 2,
+        "low_generic_filler": 2
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 14,
+      "sentenceJudgmentCounts": {
+        "interpretation": 3,
+        "supported": 4,
+        "review_required": 2,
+        "advice": 5
+      },
+      "reviewStatus": "human_review_required"
+    },
+    "qwen3.8-27b/W2": {
+      "scores": {
+        "factual_support": 3,
+        "attribution": 5,
+        "citation_accuracy": 3,
+        "useful_insight": 2,
+        "specificity": 3,
+        "readability": 2,
+        "low_generic_filler": 2
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 19,
+      "sentenceJudgmentCounts": {
+        "interpretation": 5,
+        "supported": 8,
+        "advice": 5,
+        "review_required": 1
+      },
+      "reviewStatus": "human_review_required"
+    },
+    "qwen3.8-27b/W3": {
+      "scores": {
+        "factual_support": 2,
+        "attribution": 4,
+        "citation_accuracy": 3,
+        "useful_insight": 3,
+        "specificity": 3,
+        "readability": 3,
+        "low_generic_filler": 2
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 14,
+      "sentenceJudgmentCounts": {
+        "review_required": 3,
+        "interpretation": 6,
+        "supported": 3,
+        "advice": 2
+      },
+      "reviewStatus": "human_review_required"
+    },
+    "qwen3.8-27b/W4": {
+      "scores": {
+        "factual_support": 2,
+        "attribution": 2,
+        "citation_accuracy": 2,
+        "useful_insight": 3,
+        "specificity": 3,
+        "readability": 3,
+        "low_generic_filler": 2
+      },
+      "completeProseReviewed": true,
+      "sentenceCount": 11,
+      "sentenceJudgmentCounts": {
+        "interpretation": 1,
+        "review_required": 8,
+        "advice": 2
+      },
+      "reviewStatus": "human_review_required"
+    }
+  },
+  "armMeans": {
+    "home-chat": {
+      "factual_support": 2.25,
+      "attribution": 3.25,
+      "citation_accuracy": 2.75,
+      "useful_insight": 2.25,
+      "specificity": 3,
+      "readability": 2.75,
+      "low_generic_filler": 2
+    },
+    "qwen3.8-27b": {
+      "factual_support": 2.25,
+      "attribution": 3.75,
+      "citation_accuracy": 2.75,
+      "useful_insight": 2.75,
+      "specificity": 3,
+      "readability": 2.5,
+      "low_generic_filler": 2
+    },
+    "gemma4-31b": {
+      "factual_support": 3.25,
+      "attribution": 4.25,
+      "citation_accuracy": 3.25,
+      "useful_insight": 3,
+      "specificity": 3.25,
+      "readability": 4,
+      "low_generic_filler": 2.75
+    }
+  }
+}

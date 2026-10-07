@@ -33,6 +33,10 @@ non-JSON preambles as transport/schema nonconformance. Original replies and init
 parse errors remain unchanged; saved replies are reparsed without model calls. No
 factual content or malformed JSON is repaired. This transport correction is not
 prompt/scoring tuning and is applied identically to every arm.
+Gemma's first saved draft exposed a single whole-message JSON code fence. The common
+adapter also unwraps that exact presentation form without editing its contents;
+strict JSON compliance remains false and the original parse error/raw response stays
+preserved. This rescoring uses saved responses, with no replacement inference.
 No retry silently replaces a weak response. A transport/runtime failure stops the arm
 with its checkpoint intact. All model calls stay on fixed local endpoints.
 
@@ -86,3 +90,25 @@ Recommend roles only after comparing all completed arms. A candidate must show u
 writing or reasoning gains without hiding unsafe acceptance or missing coverage. Report
 incomplete/blocked arms rather than defaulting to retaining home-chat. Any recommendation
 is provisional until blind human review; no production replacement occurs here.
+
+## Resume record
+
+After the 24-hour access extension, collect pending writing phases before the long
+remaining reasoning queue to permit prose review during inference and establish
+Gemma runtime feasibility early. Calls remain serial and each receives its own
+independent frozen packet. Phase order and model reloads affect cache/latency, not
+the evidence or output budgets. Existing responses are never overwritten or retried.
+Runtime logs are archived before every load. Scoring now tolerates malformed model
+field types as schema failures instead of crashing and records native timing fields;
+these do not change gold, semantic ratings or prompts.
+
+Final scoring supplements the preserved checkpoint metrics with semantic-label
+agreement on complete returned judgments even when a nonsemantic schema field is
+invalid. Whole-response schema compliance stays separate. Supported-claim agreement
+uses 16 gold-supported claims; eligible-opportunity recall uses ten gold-accepted
+candidates. Six supported-claim cases are still ineligible/deferred under the gold.
+Unsafe acceptance is split into unsupported-claim and evidence-eligibility failures.
+These are deterministic comparisons against existing Codex gold judgments, not new
+independent proof. The original checkpoint scores and all raw responses are retained.
+Publication metadata without a passage ID is reported separately in prose review;
+it is not automatically labeled a fabricated date or repaired into a new excerpt.

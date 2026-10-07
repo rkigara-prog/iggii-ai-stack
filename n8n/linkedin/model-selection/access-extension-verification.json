@@ -1,0 +1,14 @@
+{
+  "verifiedAt": "2026-10-07T20:55:08.947967+00:00",
+  "leaseStartedAt": "2026-10-07T20:51:03.634187+00:00",
+  "leaseHours": 24,
+  "expiryUtc": "2026-10-08T20:51:03.634187+00:00",
+  "newTimerActive": true,
+  "oldTimerInactive": true,
+  "automaticRollbackService": "/usr/bin/python3 /var/lib/linkedin-model-eval-access/20261007T205103Z/restore.py",
+  "newPermissions": false,
+  "evaluatorStopMarginSeconds": 60,
+  "baselineSavedCallsReused": 43,
+  "qwenSavedCallsReused": 1,
+  "productionMaintenance": false
+}

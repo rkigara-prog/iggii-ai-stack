@@ -16,7 +16,7 @@ def binding(ref,sources):
  s=next((s for s in sources if s['id']==ref.get('source_id')),None)
  p=next((p for p in (s or {}).get('passages',[]) if p['id']==ref.get('passage_id')),None)
  return bool(p and len(normalized(ref.get('quote','')))>=12 and normalized(ref['quote']) in normalized(p['text']))
-def schema(x,phase,packet):
+def schema_fields(x,phase,packet):
  if not isinstance(x,dict):return False
  if phase=='assessment':
   if set(x)!=set(['decision','claims','source_judgments','reason','editorial_score','argument']):return False
@@ -40,6 +40,13 @@ def schema(x,phase,packet):
  if phase=='writing':return set(x)=={'draft','claims','recommendations'} and isinstance(x['draft'],str) and isinstance(x['claims'],list) and isinstance(x['recommendations'],list) and all(isinstance(v,str) for v in x['recommendations']) and all(isinstance(c,dict) and set(c)=={'text','source_id','passage_id','quote'} and all(isinstance(v,str) for v in c.values()) for c in x['claims'])
  return False
 
+def schema(x,phase,packet):
+ try:return schema_fields(x,phase,packet)
+ except (KeyError,TypeError,ValueError):return False
+
+def expected_claim(expected,claim):
+ return expected['claims'].get(claim.get('id'),{}) if isinstance(claim.get('id'),str) else {}
+
 def stats(values):
  values=sorted(v for v in values if v is not None)
  return {'median':round(statistics.median(values),3),'p95':round(values[min(len(values)-1,int(.95*len(values)))],3),'min':round(min(values),3),'max':round(max(values),3)} if values else None
@@ -55,12 +62,20 @@ def main():
   for file in sorted(arm_dir.glob('*.json')):
    r=json.loads(file.read_text());e=extract(r.get('reply',{}));x=e['parsed'] if isinstance(e['parsed'],dict) else {};phase=r['phase'];id=r['id'];packet=packets[id] if phase=='assessment' else briefs[id] if phase=='writing' else rankings[int(id.split('-')[1])-1]['candidates']
    input_text=json.dumps(packet,ensure_ascii=False,separators=(',',':'));assert hashlib.sha256(input_text.encode()).hexdigest()==r['inputSha256']
-   valid=e['finish_reason']=='stop' and schema(x,phase,packet);base={'id':id,'complete':valid,'finish':e['finish_reason'],'strictJson':e['strict_json'],'adapter':e['transport_adapter'],'latency':r['latencySeconds'],'usage':r.get('reply',{}).get('usage',{}),'reasoningPresent':e['reasoning_present'],'publicAnswerCanaryEcho':any(t in e['final_text'] for t in canaries),'anyResponseCanaryEcho':any(t in json.dumps(r.get('reply',{}),ensure_ascii=False) for t in canaries)}
+   valid=e['finish_reason']=='stop' and schema(x,phase,packet);base={'id':id,'complete':valid,'finish':e['finish_reason'],'strictJson':e['strict_json'],'adapter':e['transport_adapter'],'latency':r['latencySeconds'],'usage':r.get('reply',{}).get('usage',{}),'nativeTimings':r.get('reply',{}).get('timings'),'reasoningPresent':e['reasoning_present'],'publicAnswerCanaryEcho':any(t in e['final_text'] for t in canaries),'anyResponseCanaryEcho':any(t in json.dumps(r.get('reply',{}),ensure_ascii=False) for t in canaries)}
    resources.extend(r.get('resourceSamples',[]))
    if phase=='assessment':
     expected=gold[id];decision=(x or {}).get('decision');claims=(x or {}).get('claims',[]) if isinstance(x,dict) else [];claims=[c for c in claims if isinstance(c,dict)] if isinstance(claims,list) else []
     refs=[ref for c in claims for ref in (c.get('citations') if isinstance(c.get('citations'),list) else []) if isinstance(ref,dict)]
-    base.update(expected=expected['decision'],decision=decision,category=expected['category'],correct=valid and decision==expected['decision'],unsafeAccept=decision=='accept' and expected['decision']!='accept',harmlessRejectDefer=valid and decision!=expected['decision'] and decision in ['reject','defer'] and expected['decision'] in ['reject','defer'],missedOpportunity=valid and decision!='accept' and expected['decision']=='accept',claimCorrect=sum(type(c.get('supported')) is bool and c['supported']==expected['claims'].get(c.get('id'),{}).get('supported') for c in claims) if valid else 0,claimCount=len(expected['claims']),citations=len(refs),exactPassageCitations=sum(binding(ref,packet['sources']) for ref in refs),unsupportedSourceReferences=sum(ref.get('source_id') not in expected['claims'].get(c.get('id'),{}).get('allowed_sources',[]) for c in claims if c.get('supported') for ref in (c.get('citations') if isinstance(c.get('citations'),list) else []) if isinstance(ref,dict)),bindingGatePass=valid and all(c.get('supported') and c.get('citations') and all(binding(ref,packet['sources']) for ref in c['citations']) for c in claims) and not base['publicAnswerCanaryEcho'])
+    base.update(expected=expected['decision'],decision=decision,category=expected['category'],correct=valid and decision==expected['decision'],unsafeAccept=decision=='accept' and expected['decision']!='accept',harmlessRejectDefer=valid and decision!=expected['decision'] and decision in ['reject','defer'] and expected['decision'] in ['reject','defer'],missedOpportunity=valid and decision!='accept' and expected['decision']=='accept',claimCorrect=sum(type(c.get('supported')) is bool and c['supported']==expected_claim(expected,c).get('supported') for c in claims) if valid else 0,claimCount=len(expected['claims']),citations=len(refs),exactPassageCitations=sum(binding(ref,packet['sources']) for ref in refs),unsupportedSourceReferences=sum(ref.get('source_id') not in expected_claim(expected,c).get('allowed_sources',[]) for c in claims if c.get('supported') for ref in (c.get('citations') if isinstance(c.get('citations'),list) else []) if isinstance(ref,dict)),bindingGatePass=valid and all(c.get('supported') and c.get('citations') and all(binding(ref,packet['sources']) for ref in c['citations']) for c in claims) and not base['publicAnswerCanaryEcho'])
+    # Semantic-label agreement is distinct from whole-response schema compliance.
+    observed={}
+    if e['finish_reason']=='stop':
+     for c in claims:
+      if isinstance(c.get('id'),str) and c['id'] in expected['claims'] and type(c.get('supported')) is bool:observed.setdefault(c['id'],[]).append(c['supported'])
+    unique={cid:values[0] for cid,values in observed.items() if len(values)==1}
+    decision_available=e['finish_reason']=='stop' and decision in ['accept','reject','defer']
+    base.update(decisionAvailable=decision_available,decisionGoldAgreement=decision_available and decision==expected['decision'],claimLabelsAvailable=len(unique),claimLabelsGoldAgreement=sum(value==expected['claims'][cid]['supported'] for cid,value in unique.items()),supportedClaimLabelsCorrect=sum(value is True and expected['claims'][cid]['supported'] is True for cid,value in unique.items()),unsupportedClaimLabelsCorrect=sum(value is False and expected['claims'][cid]['supported'] is False for cid,value in unique.items()),acceptedEligibleOpportunities=decision_available and decision=='accept' and expected['decision']=='accept',unsafeUnsupportedClaimAccept=base['unsafeAccept'] and any(not c['supported'] for c in expected['claims'].values()),unsafeEligibilityAccept=base['unsafeAccept'] and all(c['supported'] for c in expected['claims'].values()))
     assess.append(base)
    elif phase=='ranking':
     ordered=(x or {}).get('ranked_ids',[]) if isinstance(x,dict) else []
@@ -68,7 +83,7 @@ def main():
     ideal=sorted((p['id'] for p in packet),key=lambda i:gold[i]['priority'],reverse=True)
     base.update(ndcg5=dcg(ordered)/dcg(ideal) if valid else None,rankedIds=ordered if valid else []);ranks.append(base)
    else:
-    draft=(x or {}).get('draft','') if isinstance(x,dict) else '';refs=(x or {}).get('claims',[]) if isinstance(x,dict) else [];refs=refs if isinstance(refs,list) else []
+    draft=x.get('draft','') if isinstance(x.get('draft',''),str) else '';refs=(x or {}).get('claims',[]) if isinstance(x,dict) else [];refs=refs if isinstance(refs,list) else []
     urls=re.findall(r'https?://[^\s<>\])]+',draft);supplied={s['url'] for s in packet['sources']};prose=re.sub(r'https?://\S+','',draft);words=len(re.findall(r"\b[\w’'-]+\b",prose))
     base.update(wordCount=words,withinWordRange=150<=words<=220,citationCount=len(refs),exactPassageCitations=sum(binding(ref,packet['sources']) for ref in refs if isinstance(ref,dict)),allSuppliedUrlsPresent=supplied.issubset(set(u.rstrip('.,;') for u in urls)),inventedUrls=[u for u in urls if u.rstrip('.,;') not in supplied],firstPersonFlag=bool(re.search(r'\b(our|we|my)\b',prose,re.I)))
     # Complete prose is retained for external Codex/human review. No lexical overlap is called verified.
@@ -76,16 +91,16 @@ def main():
     base['unboundNumericTokens']=sorted(set(re.findall(r'\b\d+(?:[.,]\d+)*\b',prose))-source_digits)
     base['fullProseReviewRequired']=True;drafts.append(base)
    details[arm+'/'+phase+'/'+id]=base
-  keys=['complete','strictJson','correct','unsafeAccept','harmlessRejectDefer','missedOpportunity','claimCorrect','claimCount','citations','exactPassageCitations','unsupportedSourceReferences','bindingGatePass','publicAnswerCanaryEcho','anyResponseCanaryEcho']
+  keys=['complete','strictJson','correct','unsafeAccept','harmlessRejectDefer','missedOpportunity','claimCorrect','claimCount','citations','exactPassageCitations','unsupportedSourceReferences','bindingGatePass','publicAnswerCanaryEcho','anyResponseCanaryEcho','decisionAvailable','decisionGoldAgreement','claimLabelsAvailable','claimLabelsGoldAgreement','supportedClaimLabelsCorrect','unsupportedClaimLabelsCorrect','acceptedEligibleOpportunities','unsafeUnsupportedClaimAccept','unsafeEligibilityAccept']
   aggregation={k:sum(bool(r[k]) if isinstance(r[k],bool) else r[k] for r in assess) for k in keys}
-  aggregation.update(cases=len(assess),expectedCases=len(packets),decisionAccuracyPercent=round(100*aggregation['correct']/len(packets),2),latencySeconds=stats([r['latency'] for r in assess]),budgetTruncated=sum(r['finish']=='length' for r in assess),unsafeAcceptsPassingExcerptMechanics=sum(r['unsafeAccept'] and r['bindingGatePass'] for r in assess))
+  aggregation.update(expectedSupportedClaims=sum(c['supported'] for g in gold.values() for c in g['claims'].values()),expectedUnsupportedClaims=sum(not c['supported'] for g in gold.values() for c in g['claims'].values()),expectedEligibleOpportunities=sum(g['decision']=='accept' for g in gold.values()),cases=len(assess),expectedCases=len(packets),decisionAccuracyPercent=round(100*aggregation['correct']/len(packets),2),latencySeconds=stats([r['latency'] for r in assess]),budgetTruncated=sum(r['finish']=='length' for r in assess),unsafeAcceptsPassingExcerptMechanics=sum(r['unsafeAccept'] and r['bindingGatePass'] for r in assess))
   overlaps=[len(set(a['rankedIds'][:5])&set(b['rankedIds'][:5]))/5 for a,b in itertools.combinations(ranks,2) if a['complete'] and b['complete']]
   sampled={}
   for i in [0,1]:
    rows=[v for s in resources for v in s.get('gpu',[]) if v['device']==i]
    sampled['gpu'+str(i)]={name:stats([v.get(name) for v in rows]) for name in ['XPUM_STATS_MEMORY_USED','XPUM_STATS_GPU_UTILIZATION','XPUM_STATS_POWER']}
   sampled['processRssKiB']=stats([s.get('rssKiB') for s in resources])
-  summary['arms'][arm]={'coverageComplete':len(assess)==len(packets) and len(ranks)==3 and len(drafts)==4,'assessment':aggregation,'ranking':{'orders':len(ranks),'complete':sum(r['complete'] for r in ranks),'ndcg5':stats([r['ndcg5'] for r in ranks]),'meanTopFiveOverlap':statistics.mean(overlaps) if overlaps else None},'writing':{'drafts':len(drafts),'complete':sum(r['complete'] for r in drafts),'withinWordRange':sum(r['withinWordRange'] for r in drafts),'exactPassageCitations':sum(r['exactPassageCitations'] for r in drafts),'listedCitations':sum(r['citationCount'] for r in drafts),'allSuppliedUrlsPresent':sum(r['allSuppliedUrlsPresent'] for r in drafts),'firstPersonFlags':sum(r['firstPersonFlag'] for r in drafts),'latencySeconds':stats([r['latency'] for r in drafts])},'sampledResources':sampled}
+  summary['arms'][arm]={'coverageComplete':len(assess)==len(packets) and len(ranks)==3 and len(drafts)==4,'assessment':aggregation,'ranking':{'orders':len(ranks),'complete':sum(r['complete'] for r in ranks),'ndcg5':stats([r['ndcg5'] for r in ranks]),'meanTopFiveOverlap':statistics.mean(overlaps) if overlaps else None},'writing':{'drafts':len(drafts),'complete':sum(r['complete'] for r in drafts),'withinWordRange':sum(r['withinWordRange'] for r in drafts),'exactPassageCitations':sum(r['exactPassageCitations'] for r in drafts),'listedCitations':sum(r['citationCount'] for r in drafts),'allSuppliedUrlsPresent':sum(r['allSuppliedUrlsPresent'] for r in drafts),'firstPersonFlags':sum(r['firstPersonFlag'] for r in drafts),'latencySeconds':stats([r['latency'] for r in drafts])},'sampledResources':sampled,'nativeDecodeTokensPerSecond':stats([r['nativeTimings'].get('predicted_per_second') for r in assess+ranks+drafts if r['nativeTimings']]),'nativePromptTokensPerSecond':stats([r['nativeTimings'].get('prompt_per_second') for r in assess+ranks+drafts if r['nativeTimings']]),'totalCallSeconds':round(sum(r['latency'] for r in assess+ranks+drafts),3)}
  (root/'deterministic-details.json').write_text(json.dumps(details,indent=2)+'\n');(root/'deterministic-details.json').chmod(0o600)
  a.output.write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps({arm:{'cases':v['assessment']['cases'],'complete':v['assessment']['complete'],'unsafe':v['assessment']['unsafeAccept'],'drafts':v['writing']['drafts']} for arm,v in summary['arms'].items()}))
 if __name__=='__main__':main()

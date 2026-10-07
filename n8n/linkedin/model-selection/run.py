@@ -48,11 +48,20 @@ def extract(reply):
  try:parsed=json.loads(content.strip());error=None;strict=True;adapter='json_or_explicit_reasoning_channel'
  except Exception as e:
   parsed=None;error=type(e).__name__;strict=False;adapter=None
+  # Accept a single whole-message JSON fence as presentation only. Keep the raw
+  # reply and strict_json=False; never repair malformed JSON or task content.
+  fence=re.fullmatch(r'\s*```(?:json)?\s*\n(.*?)\n```\s*',content,re.S)
+  if fence:
+   try:
+    value=json.loads(fence[1])
+    if isinstance(value,dict) and set(value)&{'decision','ranked_ids','draft'}:
+     parsed=value;content=fence[1];error=None;adapter='single_json_code_fence'
+   except (ValueError,TypeError):pass
   # Some serving stacks emit reasoning as untagged content. Extract only one
   # complete terminal task object. Preserve/report the non-JSON preamble; no
   # malformed JSON, evidence or judgment is rewritten and no call is repeated.
   terminals=[]
-  for index,char in enumerate(content):
+  for index,char in enumerate(content if parsed is None else ''):
    if char!='{':continue
    try:
     value,end=json.JSONDecoder().raw_decode(content[index:])
