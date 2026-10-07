@@ -1,7 +1,7 @@
 # Final PR #12 cutover proposal
 
 Status: merge and gated cutover approved; PR #12 merged. **Activation blocked
-by the new production-profile privacy gate.** All migration/evaluation copies remain inactive. This proposal uses the completed
+pending a fresh production-profile cycle after the targeted privacy repair.** All migration/evaluation copies remain inactive. This proposal uses the completed
 acceptance evidence; no passed tests were repeated for its preparation.
 
 ## Workflow identities and proposed activation states
@@ -259,3 +259,45 @@ read/update/activate/deactivate access was requested via a mode-0600 host file
 `/mnt/app_pool/appdata/n8n/data/ias-cutover-api-key`, never chat. It was absent
 at the final check. This access alone does not clear the privacy gate. No native
 activation operation or direct database flag edit was attempted.
+
+## Targeted privacy repair — 2026-10-07
+
+The user authorized resolving the privacy gate while leaving schedules unchanged.
+The private native API key is now installed with mode 0600 and authenticated
+workflow reads succeeded. Its value was neither displayed nor added to Git.
+
+Inspection of all cached reviews located the three inconsistent decisions in
+**one** five-candidate batch. All three marked `educational=false` but every
+risk flag false. The review instructions did not explicitly connect absent
+educational support to `unsupported_topic`; the correction makes that mapping
+and the existing nonempty rejection-reason requirement explicit. The same rule
+is documented in query review. No validator or acceptance criterion changed.
+Separate extraction, source-aware privacy review and external-research guards remain.
+
+An attempted conditional generation schema produced an invalid response shape
+and was blocked. It was removed, retaining the established schema. With the
+corrected prompt, the one affected batch passed the unchanged validator: one
+retained, four rejected. The actual embedded final-list builder was replayed
+using that response and the ten previously passing cached responses: 61 decisions,
+49 rejected, 12 final themes. This is focused cached-input validation, **not**
+a newly completed production workflow execution or permission to approve its marker.
+
+A separate local audit of the affected batch's one retained theme found it clear,
+useful and grounded, with zero disclosure, ambiguity or missed safe educational
+opportunity. Both reviews use the same served model; the audit does not establish
+independent assurance for all twelve final themes. Earlier passed sample/model
+checks were not repeated. Private source material, responses, exact output and
+audit findings remain outside Git.
+
+The corrected review prompts are installed only in `IASLinkedinSan01` and
+`IASLinkedinEnr01`, both inactive and unscheduled. Native API update installed the
+sanitization change. The enrichment copy was already archived; its native API
+update was refused, so CLI import installed the prompt while preserving that
+archive state. No archive/activation state or production schedule was changed.
+
+**Remaining activation gate:** the production marker remains pending. A fresh
+controlled production-profile sanitization execution, review of its private
+evidence, then provenance-checked enrichment and planning are still required
+before the exact previously approved sanitization schedule switch. The cached
+repair must not be promoted into production approval. No research or downstream
+execution was performed during this repair.

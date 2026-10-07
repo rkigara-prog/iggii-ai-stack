@@ -200,3 +200,24 @@ state and leaves all IAS copies inactive. Original files/definitions are retaine
 outputs are separate. No full-post drafting or publishing is introduced. Webinar
 review remains mandatory, and `automaticPublishingAllowed` remains false. OMC,
 additional-model deployment, image generation and calendar work remain outside scope.
+
+## Targeted production-input privacy repair — 2026-10-07
+
+The production-profile attempt found three non-educational rejections with no
+policy flag, all in one five-candidate review batch. Review prompts now explicitly
+require `unsupported_topic` when educational support is absent and prohibit
+reasonless rejection. The response schema and fail-closed validators remain unchanged.
+
+Only the affected batch was rechecked. It passed with one retained/four rejected.
+`replay-privacy-final.cjs` exercised the actual final-list node against that response
+and ten cached passing responses, producing 12 themes from 61 decisions with 49
+rejections. A separate source-aware local audit of the affected retained theme
+found one clear/useful theme, zero disclosure/ambiguity/missed opportunity.
+The discarded conditional-schema attempt was blocked as invalid; it is not part
+of the deployed correction. No earlier passed model test was repeated.
+
+Native API read access is verified, and the inactive sanitization/enrichment
+prompts are updated. All production workflows/schedules remain unchanged.
+The production marker remains pending: this cached check does not complete
+a fresh production execution or the enrichment/planner cutover gates. See
+[Cutover.md](Cutover.md) for the remaining controlled-cycle requirements.
