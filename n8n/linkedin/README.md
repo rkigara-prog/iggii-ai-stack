@@ -75,12 +75,12 @@ without transcript contents.
 Ubuntu/Unraid mounts are current. `/volume1` is not used. The n8n output bind mount
 is `/mnt/user/Shared/ContentPipeline/output` on Unraid. Its parent is owned by
 UID 99/GID 100 with mode 2770, whereas the container defaults to UID/GID 1000.
-The normal n8n user cannot traverse the production output or transcript mounts.
-Acceptance used `docker exec --user 1000:100`; production configuration is unchanged.
-The current stored Portainer manifest already declares group 100 but the running
-container lacks it. A reviewed recreation proposal preserves the current image and
-mounts; see [ops/n8n](../../ops/n8n/README.md). It has not been applied and requires
-explicit approval. Do not activate a copy as a workaround.
+The approved recreation added supplementary group 100 to the normal n8n user.
+The default UID/GID 1000 file-access and JavaScript task-runner probe passed;
+all existing mounts, running image, environment and production workflow states
+were preserved. See [ops/n8n](../../ops/n8n/README.md) for the applied change and
+validation. The original acceptance used `docker exec --user 1000:100`; the
+post-recreation probe required no user override. All migration copies remain inactive.
 
 The installed copies use a new IAS LiteLLM credential and a separately named
 clone of the existing Brave credential's encrypted record. No decrypted n8n
@@ -140,11 +140,11 @@ records every original workflow name/ID/state at discovery.
 The four-real-meeting evaluation and proposed cutover are documented in
 [Readiness.md](Readiness.md). Activation readiness was not established. All copies
 remain inactive; no real themes were sent to web research. The same PR contains the
-exact pending mount-access fix and validation probe.
+applied mount-access fix and successful normal-user validation probe.
 
 ## Remaining decisions
 
-The approved mount recreation, private contextual privacy review/remediation,
+Private contextual privacy review/remediation,
 independent privacy assurance, current-cycle handoff, production activation and
 editorial quality approval remain separate decisions. No post may be drafted until the
 required webinar review. OMC integration and additional-model evaluation remain

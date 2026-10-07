@@ -1,26 +1,27 @@
 # Activation readiness — 2026-10-07 UTC
 
-Activation is **not approved and not ready**. The mount fix is prepared and needs
-an approved n8n recreation. The real-meeting evaluation demonstrated theme
-survival, but did not establish a reliable privacy/usefulness pass. No real-meeting
-theme was submitted to Brave. The three migration workflows and the separate
-real-meeting evaluation workflow remain inactive.
+Activation is **not approved and not ready**. The user-approved mount recreation
+is complete and normal-user file/task-runner access passed. The real-meeting
+evaluation demonstrated theme survival, but did not establish a reliable
+privacy/usefulness pass. No real-meeting theme was submitted to Brave. All migration,
+real-meeting evaluation and mount-probe workflows remain inactive.
 
 ## Normal UI access
 
-[The exact mount-access proposal](../../ops/n8n/README.md) preserves the running
-image, all three mounts and their read-only flags, environment, network, port,
-and restart policy. The running container lacks supplementary GID 100 even though
-the stored Portainer manifest declares it. Applying the group requires recreating
-n8n, briefly interrupting it; no recreation or manifest replacement has occurred.
-The stored image pin is stale, so the proposal also pins the currently running
-image to avoid an unintended upgrade/downgrade during recreation.
+[The applied mount-access fix](../../ops/n8n/README.md) added supplementary GID 100
+while preserving UID/GID 1000, the exact running image ID, all three mounts and
+read-only flags, environment values, capability sets, network, port and restart
+policy. The stored manifest now pins the current image digest. No other service
+was restarted.
 
-The proposed full manifest passed Compose validation and is stored privately on
-Unraid. The secret-free effective settings, normal-user probe workflow and probe
-script are in `ops/n8n`. After approval, wait for current executions to finish,
-apply only the reviewed manifest, and verify default-user/task-runner access and
-original workflow fingerprints. No activation is part of that approval.
+The normal default-user workflow probe opened/closed all 17 eligible transcript
+files without reading their contents, wrote a benign marker in the isolated
+acceptance directory, read it with the file node, validated it through the
+JavaScript task runner and removed it. The probe ran via CLI with a separate
+broker port; an authenticated browser click was not performed. HTTP health returned
+200. All 29 pre-existing workflows' nodes, connections, settings and activation
+states matched the pre-recreation snapshot. The only added workflow is the inactive
+mount probe. This maintenance approval did not authorize workflow activation.
 
 ## Real-meeting sample
 
@@ -104,8 +105,8 @@ The newly imported evaluation copy is inactive with its schedule disconnected.
 
 ## Proposed cutover, after the gates pass
 
-1. Approve and apply the mount-access recreation separately; verify the normal
-   user and task runner without activating any migration workflow.
+1. Mount-access prerequisite completed: approved recreation and normal-user/task-
+   runner validation passed; all migration workflows remain inactive.
 2. Review the private quote-grounded finding and resolve the disputed audit
    findings. Establish a defensible disclosure/utility rubric and address any
    confirmed privacy-stage defect. Re-evaluate only the affected cases plus a

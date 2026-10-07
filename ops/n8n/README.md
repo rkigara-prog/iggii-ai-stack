@@ -5,16 +5,15 @@ bind mounts are owned by UID 99/GID 100, with mode 2770. The persistent n8n data
 mount is owned appropriately for UID 1000. Changing n8n's primary user or taking
 ownership of the shared mounts would be unnecessary and broader than this fix.
 
-## Exact pending change
+## Applied change — 2026-10-07 UTC
 
-Add supplementary GID 100 to n8n, retaining UID/GID 1000. The stored Portainer
+The approved recreation added supplementary GID 100 to n8n, retaining UID/GID 1000. The stored Portainer
 stack 12 manifest already has `group_add: ["100"]`, but the running container's
-`HostConfig.GroupAdd` is empty. A container recreation is required to apply this;
+`HostConfig.GroupAdd` was empty. A container recreation is required to apply this;
 restarting the same container is insufficient.
 
-The stored manifest also references an image different from the running one.
-The prepared manifest replaces only that image reference with the currently
-running image's immutable repository digest:
+The stored manifest referenced a different image. The applied manifest pins the
+existing image's immutable repository digest:
 
 ```yaml
 services:
@@ -27,24 +26,25 @@ services:
 [mount-access.override.yaml](mount-access.override.yaml) is a secret-free review
 artifact for these effective settings. Do not use it alone to create a container.
 The full original/proposed manifests contain existing environment secrets and are
-stored privately outside Git. Every other parsed field is unchanged, including
+stored privately outside Git. The applied manifest also explicitly preserves the former runtime environment and
+capabilities. Effective configuration is preserved, including
 all three mounts, read-only transcript access, port 5678, environment values,
-restart policy and `n8n_default` network. No image upgrade/downgrade is proposed.
+restart policy and `n8n_default` network. No image upgrade/downgrade occurred.
 
 Stored manifest path on Unraid:
 `/mnt/app_pool/appdata/portainer/compose/12/docker-compose.yml`.
-Proposed manifest: `/tmp/ias-readiness/n8n-compose-proposed.yaml`.
+Applied private manifest: `/tmp/ias-readiness/n8n-compose-applied.yaml`.
 
 | Manifest | SHA-256 |
 | --- | --- |
 | Original | `8c1128d3cab297c606c34df168d81ecae6b5fb3a5576e842707a49da8cf8b1f0` |
-| Proposed | `89ba7f5a33da6761c3fe2c33a618ebedfd629e8ffcbdd477675526ed3a71e55d` |
+| Initially proposed | `89ba7f5a33da6761c3fe2c33a618ebedfd629e8ffcbdd477675526ed3a71e55d` |
 
-The proposed manifest passed `docker compose config --quiet`. A transient
+The initially proposed manifest passed `docker compose config --quiet`. A transient
 `docker exec --user 1000:100` process verified read/traverse access to both shared
-mounts. These checks do not yet prove UI task-runner access after recreation.
+mounts. Those preliminary checks were followed by the completed normal-user probe below.
 
-## Apply only after explicit approval
+## Approved application
 
 1. Recheck current manifest/image/group/mount/env fingerprints and active executions.
    If any have changed, regenerate and review the proposal instead of overwriting.
@@ -61,18 +61,32 @@ docker compose --project-name n8n \
   up --detach --no-deps --pull never --force-recreate n8n
 ```
 
-This briefly interrupts n8n. No command above has been applied. The proposal
-requires approval for that production recreation.
+The user explicitly approved the production recreation. The command was applied
+after confirming no new/running executions and no configuration drift. Verification
+found that Compose inherited a different `NODE_VERSION` environment value from the
+image and omitted explicit capability settings. A second recreation within the
+approved maintenance preserved the original environment value and capability sets.
+The final private manifest passed Compose validation; its SHA-256 is
+`7f15d97d1469057553ff484a183cff53230a6c1c34abbe93067e7deddacf312b`.
+No other service was restarted. Docker reports equivalent bind modes, null/empty
+optional settings and `CAP_` capability names differently after Compose recreation;
+verification compared their effective meanings.
 
-## Validate and roll back
+## Validation results and rollback
 
-After approval/recreation, verify: the running image ID matches the pre-change ID;
+The completed verification confirmed: the running image ID matches the pre-change ID;
 `GroupAdd` contains `100`; all original bind mounts, read-only flags and ports
 match; the regular container process can read the selector/transcript roots and
-write/remove a probe only inside its isolated acceptance directory; the UI and
-JavaScript task runner complete an inactive manual file-access probe; all original
+write/remove a probe only inside its isolated acceptance directory; the normal workflow engine and
+JavaScript task runner completed the inactive manual file-access probe; all original
 workflow definitions and activation states match their pre-change fingerprints.
-Do not activate a migration workflow during validation.
+All 29 pre-existing definitions, connections, settings and activation states matched.
+The only added workflow is the inactive mount probe. Default UID/GID 1000 with
+supplementary group 100 opened/closed 17 eligible transcript files without reading
+their contents. The file node read a benign isolated JSON marker, the JavaScript
+runner validated it, and the final node removed it. HTTP `/healthz` returned 200.
+The probe ran via CLI with a separate task-runner broker port; an authenticated
+browser click was not performed. All IAS workflows remain inactive.
 
 If validation fails, restore the pre-change running configuration from the private
 Docker inspection snapshot (the prior stored manifest alone has a stale image pin
