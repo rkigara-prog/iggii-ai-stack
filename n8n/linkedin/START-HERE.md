@@ -3,6 +3,8 @@
 Open **\\\\Iggy-Nas\\Shared\\ContentPipeline\\output\\ias-linkedin** in File Explorer.
 If the name does not resolve, use **\\\\192.168.113.18\\Shared\\ContentPipeline\\output\\ias-linkedin**.
 On a Mac: **smb://192.168.113.18/Shared/ContentPipeline/output/ias-linkedin**.
+Read the [folder architecture and operating guide](Content-Pipeline-Architecture.html) for the folder design, file lifecycle and archive rules. A [PDF copy](Content-Pipeline-Architecture.pdf) and [canonical Markdown copy](Content-Pipeline-Architecture.md) are available here.
+
 Sign in with your existing Shared account: Robert uses `rigarashi`; Leigh uses `leigh`. If a window that was already open still reports access denied, disconnect and reconnect the Shared share to refresh its group membership.
 
 1. Open **CURRENT.md**. It identifies the latest completed cycle and links to its preserved files. A completed cycle may be old if a newer run has failed; check its timestamp.

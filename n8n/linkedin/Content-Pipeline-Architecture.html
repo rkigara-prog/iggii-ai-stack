@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Content pipeline folder architecture and operating guide</title><style>
+:root {color-scheme:light} body {margin:0;background:#f3f5f7;color:#182635;font:16px/1.6 system-ui,Segoe UI,sans-serif}
+main {max-width:1500px;margin:auto;padding:42px 38px 72px;background:white}
+h1 {font-size:34px;line-height:1.2;max-width:900px} h2 {margin-top:42px;border-top:2px solid #dae4e9;padding-top:20px;color:#16445a}
+p,li {max-width:1050px} a {color:#075ba1} code {font:0.87em Consolas,monospace;overflow-wrap:anywhere;background:#edf2f5;border-radius:3px;padding:1px 3px}
+pre {background:#142936;color:#f4f9fd;padding:22px;overflow:auto;border-radius:6px;line-height:1.45}
+pre code {background:transparent;color:inherit;padding:0;white-space:pre;font-size:13px;overflow-wrap:normal}
+table {border-collapse:collapse;width:100%;table-layout:fixed;font-size:13px;line-height:1.45;margin:22px 0;overflow-wrap:anywhere}
+th,td {padding:10px 9px;vertical-align:top;border:1px solid #cbd9e2} th {background:#16445a;color:white;text-align:left}
+tbody tr:nth-child(even) {background:#f0f5f7} table th:first-child,table td:first-child {width:30%}
+nav {padding:14px 18px;background:#e8f1f6;border-left:4px solid #16445a} footer {border-top:1px solid #cbd9e2;margin-top:40px;padding-top:18px;font-size:12px;overflow-wrap:anywhere}
+@media(max-width:800px) {main{padding:20px 16px}table{font-size:11px}th,td{padding:7px 4px}h1{font-size:27px}}
+@media print {body{background:white}main{padding:0}pre{color:black;background:#eee}h2{break-after:avoid}tr{break-inside:avoid}}
+</style></head>
+<body><main><nav><a href="Content-Pipeline-Architecture.pdf">Printable PDF</a> · <a href="Content-Pipeline-Architecture.md">Canonical Markdown copy</a> · <a href="#leighs-practical-walkthrough">Leigh's walkthrough</a></nav>
+<h1 id="content-pipeline-folder-architecture-and-operating-guide">Content pipeline folder architecture and operating guide</h1>
+<p>Robert and Leigh should work from <code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin</code>. Open <strong>CURRENT.md</strong> for the latest completed set, read the plan and research brief, and save decisions in <strong>Reviews</strong>. The surrounding folders separate original private meeting material, generated content evidence, human decisions, preserved completed cycles and evaluation work.</p>
+<p>This guide describes the deployed system on <strong>October 7, 2026</strong>. It does not propose a folder migration. The browser copy is <strong>Content-Pipeline-Architecture.html</strong> and the printable copy is <strong>Content-Pipeline-Architecture.pdf</strong>, in the same starting folder. The canonical editable source is <code>n8n/linkedin/Content-Pipeline-Architecture.md</code> in <code>rkigara-prog/iggii-ai-stack</code>; shared HTML/PDF copies are generated from that source.</p>
+<h2 id="folder-design-at-a-glance">Folder design at a glance</h2>
+<pre><code class="language-text">\\Iggy-Nas\Shared
+├── Transcripts                         ORIGINAL PRIVATE INPUTS
+│   ├── Krisp-API                       Canonical API TXT + JSON pairs
+│   ├── Krisp                           Legacy TXT + retained API shadows
+│   └── older meeting-named folders     Retained; outside the active selector
+└── ContentPipeline
+    └── output                          Historical shared output namespace
+        ├── ias-linkedin                CURRENT PRODUCTION WORKING AREA
+        │   ├── START-HERE.md            Short starting instructions
+        │   ├── Content-Pipeline-Architecture.md / .html / .pdf
+        │   ├── CURRENT.md              Links to last complete archived set
+        │   ├── current-status.json      Completion index and file hashes
+        │   ├── theme-list-*.txt         Sanitized intermediate theme artifact
+        │   ├── content-brief-*.md       Research intermediate and reading copy
+        │   ├── content-candidates-*.json  Evidence-bound planner input
+        │   ├── linkedin-editorial-plan-*.md / .json  Final cycle outputs
+        │   ├── privacy-status.json       Present privacy handoff
+        │   ├── candidate-status.json     Expected automated handoff; currently absent
+        │   ├── *.cjs                   Service helpers, not editorial documents
+        │   └── Reviews                 HUMAN EDITS AND APPROVAL RECORDS
+        ├── Archive
+        │   ├── ias-linkedin
+        │   │   ├── UTC-date-content-hash/  Five copied outputs + manifest.json
+        │   │   └── .pending-UUID/         Only if a copy failed; not a final archive
+        │   └── older flat files           Retained historical archives
+        ├── older flat outputs / traces   LEGACY AND EVALUATION MATERIAL
+        ├── omc-krisp                     Compatibility selector for old workflow
+        ├── ias-linkedin-acceptance       SYNTHETIC ACCEPTANCE AREA
+        │   ├── transcripts/Krisp-API and transcripts/Krisp
+        │   └── archive-check*            Synthetic output and archive fixtures
+        ├── ias-linkedin-real-privacy     PRIVATE REAL-MEETING EVALUATION AREA
+        │   └── transcripts/Krisp-API and transcripts/Krisp
+        └── ias-orchestration             SYNTHETIC HANDOFF CHECKS
+            └── fixtures
+</code></pre>
+<p>The wildcard names in this tree identify file families, not extra folders. Production has <strong>no separate intermediate-processing directory</strong>: sanitized themes, researched candidates and completed plans share <code>ias-linkedin</code>, with distinct filenames and machine proofs establishing their stage. Most extracted themes, privacy decisions, search replies and ranking work exist inside an n8n execution rather than as durable folders. Do not use an evaluation folder to find production drafts.</p>
+<h2 id="exact-host-and-container-mappings">Exact host and container mappings</h2>
+<p>The Windows name <code>Iggy-Nas</code> resolves to Unraid at <code>192.168.113.18</code>. If name resolution fails, replace <code>Iggy-Nas</code> with <code>192.168.113.18</code> in any Windows path below. The SMB share is <strong>Shared</strong>; these are private LAN paths.</p>
+<table>
+<thead>
+<tr>
+<th>Windows share path</th>
+<th>Unraid host path</th>
+<th>n8n container path and access</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts</code></td>
+<td><code>/mnt/user/Shared/Transcripts</code></td>
+<td><code>/data/transcripts</code>, read-only mount</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts\Krisp-API</code></td>
+<td><code>/mnt/user/Shared/Transcripts/Krisp-API</code></td>
+<td><code>/data/transcripts/Krisp-API</code>, read-only</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts\Krisp</code></td>
+<td><code>/mnt/user/Shared/Transcripts/Krisp</code></td>
+<td><code>/data/transcripts/Krisp</code>, read-only</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output</code></td>
+<td><code>/mnt/user/Shared/ContentPipeline/output</code></td>
+<td><code>/data/output</code>, read/write mount</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin</code></td>
+<td><code>/mnt/user/Shared/ContentPipeline/output/ias-linkedin</code></td>
+<td><code>/data/output/ias-linkedin</code></td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\Archive\ias-linkedin</code></td>
+<td><code>/mnt/user/Shared/ContentPipeline/output/Archive/ias-linkedin</code></td>
+<td><code>/data/output/Archive/ias-linkedin</code></td>
+</tr>
+<tr>
+<td>No path in Shared; service persistence</td>
+<td><code>/mnt/app_pool/appdata/n8n/data</code></td>
+<td><code>/home/node/.n8n</code>; execution infrastructure and private operator records</td>
+</tr>
+</tbody>
+</table>
+<p>The collector writes directly to the canonical host <code>Krisp-API</code> path through its own read/write bind mount. Its private service state is under <code>/mnt/app_pool/appdata/omc-krisp-transcript-ingest</code>, outside Shared/Transcripts. Neither credentials nor collector state belong in editorial folders. Old <code>/volume1</code> paths refer to the retired Synology arrangement, not a current mount. There is no deployed <code>Krisp-ai</code> folder in this pipeline.</p>
+<h2 id="folder-responsibilities">Folder responsibilities</h2>
+<p>In this table, <strong>San</strong> means the published sanitizer <code>IASLinkedinSan01</code>, <strong>Enr</strong> means <code>IASLinkedinEnr01</code>, and <strong>Plan</strong> means <code>IASLinkedinPlan1</code>. “None active” means the current content chain does not read the folder; it does not declare the folder safe to delete. Robert and Leigh should follow the editing policy even where their accounts technically have write access.</p>
+<table>
+<thead>
+<tr>
+<th>Exact Windows share path</th>
+<th>Purpose</th>
+<th>Why it is separate</th>
+<th>File creator</th>
+<th>Consumer</th>
+<th>Robert or Leigh editing policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\\Iggy-Nas\Shared</code></td>
+<td>Private SMB share entry</td>
+<td>Existing share authorization precedes folder permissions</td>
+<td>Unraid share configuration/operators</td>
+<td>Samba serves authorized accounts</td>
+<td>Use the named child locations; do not change share settings</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts</code></td>
+<td>Private source namespace</td>
+<td>Keeps original meetings outside generated content</td>
+<td>Intake services and historical imports</td>
+<td>San scans only the two named source roots below; OMC has separate intake</td>
+<td>Do not edit, rename or move source material</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts\Krisp-API</code></td>
+<td>Authoritative API TXT/JSON pairs</td>
+<td>Preserves API identity, metadata and collector ownership of intake</td>
+<td><code>omc-krisp-collector</code>; repairs restored canonical copies</td>
+<td>San selector; separately, OMC transcript intake</td>
+<td>Neither reviewer should edit; a JSON sidecar is not a draft</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts\Krisp</code></td>
+<td>Legacy transcripts and retained API shadows</td>
+<td>Supports legacy intake while canonical API copies take priority</td>
+<td>Google Drive Transcript Pull/rclone and historical imports/moves</td>
+<td>San fallback and duplicate checks; separate OMC legacy intake</td>
+<td>Do not edit; unknown dates and duplicates are retained</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline</code></td>
+<td>Container for content assets</td>
+<td>Existing content namespace outside raw inputs</td>
+<td>Historical setup/operators</td>
+<td>Through its output child</td>
+<td>No routine edits at this level</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output</code></td>
+<td>Mounted output parent; older flat files</td>
+<td>Existing deployment mount and pre-cutover namespace</td>
+<td>Original workflows, evaluation runs and historical operators</td>
+<td>Current stages use only explicit child paths</td>
+<td>Browse for history; do not move or overwrite ambiguous flat files</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin</code></td>
+<td>Current production artifacts, proofs and guides</td>
+<td>Isolates the active chain from legacy wildcard outputs and test data</td>
+<td>San, Enr, Plan and approved documentation deployment</td>
+<td>Enr reads approved themes; Plan reads proven candidates; archive helper reads all five</td>
+<td>Read generated artifacts; edit canonical guides through Git, not live helpers</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin\Reviews</code></td>
+<td>Human requested edits and approval records</td>
+<td>Prevents editorial changes from invalidating generated evidence hashes</td>
+<td>Robert and Leigh</td>
+<td>No active workflow; people read these records</td>
+<td>Both may create/edit documents here</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\Archive</code></td>
+<td>Historical archive parent</td>
+<td>Existing archive location retained during repair</td>
+<td>Original archival process, whose trigger is unrecovered</td>
+<td>No active workflow reads the older flat archives</td>
+<td>Treat old files as history; no cleanup without classification</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\Archive\ias-linkedin</code></td>
+<td>Verified copies of completed production sets</td>
+<td>Gives review a stable copy while working files can change</td>
+<td>Plan completion helper; initial controlled bootstrap</td>
+<td>CURRENT.md links and human review; helper checks repeat copies</td>
+<td>Read only for editorial work; Robert administers recovery</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\omc-krisp</code></td>
+<td>Versioned compatibility selector</td>
+<td>Keeps the older inactive workflow's helper reference intact</td>
+<td>Earlier migration/intake repair</td>
+<td>Original inactive sanitizer <code>Yjc03gS873IHEJPI</code>; not active San</td>
+<td>Do not edit; active selector is inside ias-linkedin</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance</code></td>
+<td>Synthetic migration/acceptance outputs</td>
+<td>Keeps invented test material out of production selectors</td>
+<td>Inactive/manual acceptance tools and operators</td>
+<td>Test workflows/checks only</td>
+<td>Operator-managed; Leigh has no access; not editorial content</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\transcripts</code></td>
+<td>Synthetic source staging</td>
+<td>Allows the selector to be checked without real input</td>
+<td>Acceptance fixtures</td>
+<td>Acceptance selector</td>
+<td>Neither reviewer should use it as a source</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\transcripts\Krisp-API</code></td>
+<td>Synthetic API-shaped pairs</td>
+<td>Exercises API handling</td>
+<td>Acceptance fixture preparation</td>
+<td>Acceptance selector</td>
+<td>Operator only</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\transcripts\Krisp</code></td>
+<td>Synthetic legacy-shaped TXT</td>
+<td>Exercises fallback and duplicate rules</td>
+<td>Acceptance fixture preparation</td>
+<td>Acceptance selector</td>
+<td>Operator only</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check</code></td>
+<td>Initial synthetic writer/archive check</td>
+<td>Retains check evidence without adding it to production</td>
+<td>Archive acceptance tools</td>
+<td>Temporary test workflow, now removed; helper checks</td>
+<td>Operator only</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check-final</code></td>
+<td>Later synthetic archival check</td>
+<td>Historical validation iteration; no permanent distinct role documented</td>
+<td>Archive acceptance tools</td>
+<td>Checks only</td>
+<td>Operator only; do not mistake it for a final production cycle</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check-release</code></td>
+<td>Final synthetic helper validation</td>
+<td>Historical validation iteration</td>
+<td>Archive acceptance tools</td>
+<td>Checks only</td>
+<td>Operator only</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-real-privacy</code></td>
+<td>Real-meeting privacy evaluation results</td>
+<td>Separates sensitive evaluation packets from production/research</td>
+<td>Inactive <code>IASPrivacyReal01</code> and private evaluation tools</td>
+<td>Manual privacy evaluation, not active chain</td>
+<td>Operator only; Leigh has no access</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-real-privacy\transcripts</code></td>
+<td>Private evaluation source staging</td>
+<td>Source context stays within its evaluation profile</td>
+<td>Approved evaluation preparation</td>
+<td>Evaluation selector</td>
+<td>Neither reviewer should treat it as canonical intake</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-real-privacy\transcripts\Krisp-API</code></td>
+<td>Staged API-shaped evaluation input</td>
+<td>Mirrors API input structure</td>
+<td>Approved evaluation preparation</td>
+<td>Evaluation selector</td>
+<td>Operator only</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-real-privacy\transcripts\Krisp</code></td>
+<td>Staged legacy evaluation input</td>
+<td>Mirrors legacy input structure</td>
+<td>Approved evaluation preparation</td>
+<td>Evaluation selector</td>
+<td>Operator only</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-orchestration</code></td>
+<td>Synthetic subworkflow handoff evidence</td>
+<td>Tests waiting calls/failures without inference or production output</td>
+<td>Orchestration fixture tools</td>
+<td>Manual orchestration checks</td>
+<td>Operator only; Leigh has no access</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-orchestration\fixtures</code></td>
+<td>Synthetic themes/candidates/plans</td>
+<td>Keeps fixture artifacts beneath their test profile</td>
+<td>Fixture scripts/test workflows</td>
+<td>Fixture stages only</td>
+<td>Operator only</td>
+</tr>
+</tbody>
+</table>
+<p>There are also seven retained meeting-named folders immediately under Transcripts. The active selector does not scan these; their earlier processing role is not documented sufficiently to justify consolidation. Their exact locations are:</p>
+<table>
+<thead>
+<tr>
+<th>Exact Windows share path</th>
+<th>Purpose and separation</th>
+<th>Creator</th>
+<th>Active consumer</th>
+<th>Editing policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts\chrome meeting - July 24, 2026 2-00-51 PM</code></td>
+<td>Historical meeting import; original layout retained</td>
+<td>Earlier import; exact writer unrecovered</td>
+<td>None active</td>
+<td>Do not edit/move</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts\chrome meeting - July 24, 2026 9-30-03 AM</code></td>
+<td>Historical meeting import; original layout retained</td>
+<td>Earlier import; exact writer unrecovered</td>
+<td>None active</td>
+<td>Do not edit/move</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts\ms-teams meeting - July 24, 2026 3-10-38 PM</code></td>
+<td>Historical meeting import; original layout retained</td>
+<td>Earlier import; exact writer unrecovered</td>
+<td>None active</td>
+<td>Do not edit/move</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts\ms-teams meeting - July 24, 2026 11-01-51 AM</code></td>
+<td>Historical meeting import; original layout retained</td>
+<td>Earlier import; exact writer unrecovered</td>
+<td>None active</td>
+<td>Do not edit/move</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts\ms-teams meeting - July 24, 2026 1-28-51 PM</code></td>
+<td>Historical meeting import; original layout retained</td>
+<td>Earlier import; exact writer unrecovered</td>
+<td>None active</td>
+<td>Do not edit/move</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts\ms-teams meeting - July 24, 2026 9-03-08 AM</code></td>
+<td>Historical meeting import; original layout retained</td>
+<td>Earlier import; exact writer unrecovered</td>
+<td>None active</td>
+<td>Do not edit/move</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\Transcripts\Zoom meeting - July 24, 2026 9-59-57 AM</code></td>
+<td>Historical meeting import; original layout retained</td>
+<td>Earlier import; exact writer unrecovered</td>
+<td>None active</td>
+<td>Do not edit/move</td>
+</tr>
+</tbody>
+</table>
+<p>The fixture subfolders below are internal test counterparts, not another production architecture. Older flat synthetic copies also remain inside the initial archive-check/Archive. Every per-cycle hash directory inside these folders inherits the enclosing fixture's purpose and policy.</p>
+<table>
+<thead>
+<tr>
+<th>Exact Windows share path</th>
+<th>Purpose</th>
+<th>Why separate</th>
+<th>File creator</th>
+<th>Consumer</th>
+<th>Editing policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check\output</code></td>
+<td>Synthetic working files</td>
+<td>Mirrors the tested helper profile; private fixture evidence</td>
+<td>Archive acceptance tools</td>
+<td>Fixture/check tools only</td>
+<td>Operator only; neither reviewer uses it for content</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check\Archive</code></td>
+<td>Synthetic archive parent</td>
+<td>Mirrors the tested helper profile; private fixture evidence</td>
+<td>Archive acceptance tools</td>
+<td>Fixture/check tools only</td>
+<td>Operator only; neither reviewer uses it for content</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check\Archive\output</code></td>
+<td>Corrected synthetic archive namespace</td>
+<td>Mirrors the tested helper profile; private fixture evidence</td>
+<td>Archive acceptance tools</td>
+<td>Fixture/check tools only</td>
+<td>Operator only; neither reviewer uses it for content</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check-final\output</code></td>
+<td>Synthetic working files</td>
+<td>Mirrors the tested helper profile; private fixture evidence</td>
+<td>Archive acceptance tools</td>
+<td>Fixture/check tools only</td>
+<td>Operator only; neither reviewer uses it for content</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check-final\Archive</code></td>
+<td>Synthetic archive parent</td>
+<td>Mirrors the tested helper profile; private fixture evidence</td>
+<td>Archive acceptance tools</td>
+<td>Fixture/check tools only</td>
+<td>Operator only; neither reviewer uses it for content</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check-final\Archive\output</code></td>
+<td>Corrected synthetic archive namespace</td>
+<td>Mirrors the tested helper profile; private fixture evidence</td>
+<td>Archive acceptance tools</td>
+<td>Fixture/check tools only</td>
+<td>Operator only; neither reviewer uses it for content</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check-release\output</code></td>
+<td>Synthetic working files</td>
+<td>Mirrors the tested helper profile; private fixture evidence</td>
+<td>Archive acceptance tools</td>
+<td>Fixture/check tools only</td>
+<td>Operator only; neither reviewer uses it for content</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check-release\Archive</code></td>
+<td>Synthetic archive parent</td>
+<td>Mirrors the tested helper profile; private fixture evidence</td>
+<td>Archive acceptance tools</td>
+<td>Fixture/check tools only</td>
+<td>Operator only; neither reviewer uses it for content</td>
+</tr>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin-acceptance\archive-check-release\Archive\output</code></td>
+<td>Corrected synthetic archive namespace</td>
+<td>Mirrors the tested helper profile; private fixture evidence</td>
+<td>Archive acceptance tools</td>
+<td>Fixture/check tools only</td>
+<td>Operator only; neither reviewer uses it for content</td>
+</tr>
+</tbody>
+</table>
+<p>For production cycle directories, the exact current Windows path is listed under Archiving and recovery. Each such child holds one content set, exists to preserve a distinct completed result, is created by Plan's completion helper, is read through CURRENT.md/human review, and should not be edited by either reviewer. A <code>.pending-UUID</code> child has the same creator and restricted access but is incomplete recovery material; no pending production directory was observed.</p>
+<p>Service-only folders have no mapping within the Shared share:</p>
+<table>
+<thead>
+<tr>
+<th>Host folder</th>
+<th>Purpose and separation</th>
+<th>Creator</th>
+<th>Consumer</th>
+<th>Editing policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/mnt/app_pool/appdata/n8n/data</code></td>
+<td>n8n persistence/private operation records; separate from editorial data</td>
+<td>n8n and authorized operator tools</td>
+<td>n8n runtime and operator recovery</td>
+<td>Neither reviewer edits it for content work</td>
+</tr>
+<tr>
+<td><code>/mnt/app_pool/appdata/omc-krisp-transcript-ingest</code></td>
+<td>Collector configuration/state/checkpoints; independent of original TXT/JSON source pairs</td>
+<td>Collector and authorized operators</td>
+<td>API intake service</td>
+<td>Neither reviewer edits it for content work</td>
+</tr>
+</tbody>
+</table>
+<h2 id="data-flow-and-file-authority">Data flow and file authority</h2>
+<pre><code class="language-text">PRIVATE SOURCES                         LOCAL n8n PROCESSING
+Krisp-API TXT + JSON ─┐
+                     ├─► API-first/date selector ─► extraction + privacy gate
+Krisp legacy TXT ────┘                                    │
+                                                         ▼
+                                               approved theme TXT
+                                                         │
+                                        consolidation + generic Brave queries
+                                                         │
+                                         public sources + evidence/ranking checks
+                                                         ▼
+                                               brief MD + candidates JSON
+                                                         │
+                                                   editorial planner
+                                                         ▼
+                                                 plan MD + plan JSON
+                                                         │
+                                  verified five-file COPY ─► Archive/ias-linkedin
+                                                         │
+                                          CURRENT.md ─────┘
+                                                │
+                                  Robert/Leigh read and decide
+                                                ▼
+                                 Reviews records     NO automation consumer
+</code></pre>
+<ol>
+<li><strong>Intake preserves originals.</strong> The API collector creates a TXT transcript with its corresponding JSON metadata. The canonical pair is authoritative for API identity and <code>started_at</code>. Legacy TXT remains authoritative for meetings without an API pair. Restored API shadows in Krisp are retained copies, not an alternative canonical home. OMC's intake uses its own state/references; content processing does not rename meetings or change OMC identities.</li>
+<li><strong>Selection establishes the input set.</strong> San's <code>select-transcripts.cjs</code> scans Krisp-API first and Krisp second, recursively within those roots. It uses a rolling ten-day meeting-date window, not file modification time. API metadata must match the filename identity and contain a timezone-qualified date. Identical API shadows and matching legacy IDs are suppressed; conflicting API copies block selection. Undated legacy files stay on disk but are not selected. Copying a transcript to make it appear recent is not an intake method.</li>
+<li><strong>Sanitization establishes research permission.</strong> San extracts themes locally and runs a separate privacy review, then writes up to twenty anonymous theme bullets. <code>privacy-status.json</code> changes from pending to approved and binds the TXT's filename/hash to a run. Approval must still match the file and be no more than 24 hours old when downstream processing checks it. An old theme file alone is not authority to research; a new attempt invalidates the previous approval.</li>
+<li><strong>Research creates generated evidence.</strong> Enr reads the exact approved theme, consolidates topics, and issues generic queries through four Brave branches: theme-matched news, emerging/discovery news, recovery/industry news, and authoritative foundations. Raw transcripts are not web-search input. Source-family, evidence-fragment, scoring, corroboration and unsupported-claim rules separate qualified opportunities from the watchlist. The brief is the reading copy; the candidates JSON is the machine handoff. <code>candidate-status.json</code> binds candidate/brief hashes to the privacy proof.</li>
+<li><strong>Planning creates an editorial proposal.</strong> Plan verifies that handoff, selects from qualified candidates, preserves exact verified source URLs and writes both plan formats. Watchlist entries become research gaps, not approved post briefs. Webinar overlap still requires human review. A completed plan may have <code>partial</code> or <code>insufficient_verified_topics</code> status; technical completion does not certify editorial quality.</li>
+<li><strong>Archiving establishes a completed record.</strong> After both plan writes, the helper verifies the five-file set and publishes preserved copies plus a manifest. Only then does it replace <code>current-status.json</code> and CURRENT.md. These identify the latest successfully indexed set, not the newest file modification time. A failed cycle can leave newer partial working files while CURRENT.md correctly stays on the previous complete set.</li>
+<li><strong>Review records human decisions.</strong> Robert and Leigh create their own review documents. No active workflow reads Reviews or interprets “approved” as a trigger. There is no automated drafting, image generation or LinkedIn publishing action in this chain; <code>automaticPublishingAllowed</code> remains false.</li>
+</ol>
+<p>Original inputs are authoritative for meeting evidence. JSON handoff proofs are authoritative for whether the next automated stage may consume generated files. The current bootstrapped set has privacy-status.json but no candidate-status.json: it is a preserved accepted set, not a currently resumable candidate handoff. Do not create that marker manually; Enr records a fresh proof during a successful automated cycle.</p>
+<p>The candidates/plan JSON files are authoritative machine records for their stages; their Markdown partners are readable renderings. CURRENT.md and the archive manifest are authoritative for locating and verifying the completed set. Review records are authoritative only for the reviewers' stated decisions. None of these generated or historical copies replaces an original transcript.</p>
+<h2 id="the-five-output-files">The five output files</h2>
+<p>The current completed set has <strong>October 6, 2026 filenames</strong>. Its plan finished at <strong>2026-10-07 01:53:26.887 UTC</strong>, which was October 6 in New York. Filename dates are generated in America/New_York; archive directory dates use the plan's UTC <code>generatedAt</code>. Future cycles keep these basename patterns with their own dates.</p>
+<table>
+<thead>
+<tr>
+<th>Actual current filename</th>
+<th>Contents</th>
+<th>Intended use and automation role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>theme-list-model-eval-qwen35-2026-10-06.txt</code></td>
+<td>Up to twenty anonymous public-topic bullets derived from the privacy gate</td>
+<td>San's generated intermediate; Enr reads it only with its matching privacy proof. Read for context; never restore private names or details</td>
+</tr>
+<tr>
+<td><code>content-brief-model-eval-2026-10-06.md</code></td>
+<td>Research opportunities, supporting sources/evidence, scoring context and watchlist items needing verification</td>
+<td>Human research reading copy; archived and hash-bound alongside candidates. Read before approving an angle</td>
+</tr>
+<tr>
+<td><code>content-candidates-model-eval-2026-10-06.json</code></td>
+<td>Structured qualified theme-aligned/emerging opportunities, source/evidence records, diagnostics and watchlist</td>
+<td>Enr's machine output and Plan's exact input. Do not hand-edit to promote a watchlist item or change evidence</td>
+</tr>
+<tr>
+<td><code>linkedin-editorial-plan-model-eval-2026-10-06.md</code></td>
+<td>Selected topic briefs, editorial angles, takeaways, verified URLs, webinar review and research priorities</td>
+<td>Primary document for Leigh and Robert to read and discuss; save changes separately in Reviews</td>
+</tr>
+<tr>
+<td><code>linkedin-editorial-plan-model-eval-2026-10-06.json</code></td>
+<td>Structured planner decisions, selected/deferred topics, policy summary and validation warnings</td>
+<td>Machine companion and archival lineage record; not a publishing queue or an approval form</td>
+</tr>
+</tbody>
+</table>
+<p>The words <code>model-eval</code>, <code>qwen35</code>, and <code>gpt-oss</code> in inherited basenames/node labels do not make this current set a test run or establish the served model. The live stages use the migrated local <code>home-chat</code> route. Membership in <code>ias-linkedin</code>, published workflow bindings and matching completion proofs identify production. There are five content outputs; CURRENT.md, guides, handoff markers and the archive manifest are additional metadata, not extra content outputs.</p>
+<h2 id="permissions-and-privacy-boundaries">Permissions and privacy boundaries</h2>
+<table>
+<thead>
+<tr>
+<th>Identity</th>
+<th>Production working area and archive</th>
+<th>Reviews</th>
+<th>Original transcripts and tests</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Robert, SMB account <code>rigarashi</code>, UID 1000</td>
+<td>Owner access; may administer files, but should not edit generated evidence during editorial review</td>
+<td>Create/edit/read</td>
+<td>Original source tree is accessible; current private test roots are owner-accessible</td>
+</tr>
+<tr>
+<td>Leigh, SMB account <code>leigh</code>, UID 1001</td>
+<td>Read/traverse; generated files and helpers are not writable</td>
+<td>Create/edit/read</td>
+<td>Source roots use the existing users group and are accessible; current test roots are mode 0700 and not accessible</td>
+</tr>
+<tr>
+<td>n8n, UID/GID 1000, supplementary groups 100 and 1800</td>
+<td>Creates/updates generated files, proofs, index and archives</td>
+<td>Technically accessible, but no workflow consumes it</td>
+<td>Read-only transcript mount; permitted private test access</td>
+</tr>
+<tr>
+<td>API collector</td>
+<td>Writes canonical API input through its specific bind mount</td>
+<td>No content-review role</td>
+<td>Docker has no configured non-root User override; input files are normalized to nobody:users. Private collector state stays outside the content output mount</td>
+</tr>
+<tr>
+<td>OMC worker, UID 1002, users group 100</td>
+<td>Excluded from the private production/archive child roots</td>
+<td>Excluded</td>
+<td>Existing source access supports separate OMC intake; identities and references remain unchanged</td>
+</tr>
+<tr>
+<td>Guest/unauthorized share account</td>
+<td>Shared SMB authorization denies access</td>
+<td>Denied</td>
+<td>No public access is configured</td>
+</tr>
+</tbody>
+</table>
+<p>The private <code>contentpipeline</code> group, GID 1800, contains exactly Robert and Leigh. n8n has that supplementary GID separately. Production/archive directories are normally 2750 and generated files 0640; Reviews is 2770. Helpers explicitly assign GID 1800 because Unraid shfs did not reliably honor named ACLs or directory group inheritance. The group is restored by the boot hook; the Portainer n8n manifest persists its supplementary groups.</p>
+<p><strong>Folder separation is not a claim that raw transcripts are hidden from Leigh.</strong> Both reviewers currently have access to the private transcript source roots through Shared/users permissions. The important processing boundary is that San alone reads raw meetings and Enr's web queries use approved anonymous themes. Content artifacts are intended to support eventual public content, but they remain private working material, not automatically publishable data. The real-privacy evaluation area may itself contain sensitive staging/results and stays closed to Leigh. Existing same-model privacy-assurance limitations remain; a folder name or successful gate is not independent-model assurance.</p>
+<h2 id="archiving-and-recovery">Archiving and recovery</h2>
+<p><strong>Confirmed current behavior:</strong> the active Plan completion node runs once after its two file writes, before returning success to Enr and San. It copies all five content outputs, verifies hashes and source lineage, then publishes a manifest and completion index. Archiving does <strong>not</strong> wait for human approval, move working outputs, archive review notes, remove transcripts, or expire old copies.</p>
+<p>A finalized directory is named <code>YYYY-MM-DD-&lt;64-character SHA-256 content hash&gt;</code>. The date is the UTC plan completion date; the hash covers the ordered filenames, sizes and file hashes of the five-file set. The current exact directory is:</p>
+<pre><code class="language-text">\\Iggy-Nas\Shared\ContentPipeline\output\Archive\ias-linkedin\2026-10-07-b8ec0ec5b54bb6bdf1f910c2c85f08afc7a23e54c289a1b7c3fef65dbd37b0a9
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Exact Windows cycle folder</th>
+<th>Purpose</th>
+<th>Why separate</th>
+<th>File creator</th>
+<th>Consumer</th>
+<th>Editing policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\\Iggy-Nas\Shared\ContentPipeline\output\Archive\ias-linkedin\2026-10-07-b8ec0ec5b54bb6bdf1f910c2c85f08afc7a23e54c289a1b7c3fef65dbd37b0a9</code></td>
+<td>Current preserved five-file set and checksum manifest</td>
+<td>Keeps this distinct completed result stable across reruns</td>
+<td>Controlled bootstrap of the already-accepted set; future directories are written by Plan's helper</td>
+<td>CURRENT.md and human review</td>
+<td>Neither reviewer edits the generated copy; Robert handles verified recovery</td>
+</tr>
+</tbody>
+</table>
+<p>It contains the five files named above and <code>manifest.json</code>. Its manifest records <code>bootstrap: true</code>: the already-accepted set was copied during the repair, rather than by a new model run. That does not renew its privacy approval. The stored approval was made at 2026-10-07 01:49:45.270 UTC and expires at 2026-10-08 01:49:45.270 UTC if not invalidated sooner. The normal completion path still requires fresh, matching privacy/candidate proofs.</p>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Current behavior and safe response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Another successful cycle on a different day</td>
+<td>Creates another dated/hash directory and updates CURRENT.md</td>
+</tr>
+<tr>
+<td>Changed output set on the same day</td>
+<td>Creates a different hash directory; working basenames may be overwritten but prior finalized copies remain</td>
+</tr>
+<tr>
+<td>Exact same five-file set archived again</td>
+<td>Verifies the existing copy/manifest and reuses it; does not duplicate the set</td>
+</tr>
+<tr>
+<td>Source changes, incomplete set, invalid path, or mismatching existing archive</td>
+<td>Fails closed; does not silently overwrite the conflicting archive or delete sources</td>
+</tr>
+<tr>
+<td>Interrupted copy</td>
+<td>May leave <code>.pending-UUID</code>; it is not a completed cycle. Robert should inspect it with the private operation record and preserve it until its status is resolved</td>
+</tr>
+<tr>
+<td>Archive/index failure after planning</td>
+<td>Working files may exist, but parent success is blocked. Use the last valid CURRENT.md set; do not assume newer files form a completed cycle</td>
+</tr>
+<tr>
+<td>Index repair</td>
+<td>Robert/operator verifies finalized manifest hashes and lineage before restoring links. A controlled snapshot of an already-accepted set may rebuild an index; it is not permission to rerun research with an expired approval</td>
+</tr>
+<tr>
+<td>Legacy flat Archive files</td>
+<td>Remain historical. They are not automatically imported into the new manifest/index system</td>
+</tr>
+</tbody>
+</table>
+<p>Copies are retained <strong>indefinitely</strong>, with no expiry or deletion job. The previous legacy archive trigger/age rule was not recoverable from deployed workflows, cron/User Scripts or retained migration records. The repair adopted completion-based copying and non-destructive retention; this should not be described as restoration of a proven old age threshold. Future expiry, storage limits, review-note retention and any automatic approval consumer remain unresolved design decisions requiring separate work. Completed archive directories are immutable by operating policy and read-only for Leigh, not a filesystem write-once guarantee against Robert or the service.</p>
+<p>The authenticated SMB/copy-preservation gate and inactive synthetic n8n archive handoff passed in the earlier repair. The first Monday production run with the hook and a host reboot have not yet occurred. This guide's checks read paths, definitions and links only; they do not repeat pipeline execution or archive operations.</p>
+<h2 id="leighs-practical-walkthrough">Leigh's practical walkthrough</h2>
+<ol>
+<li>Open <code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin</code>. Sign in as <code>leigh</code>. If an old window still reports access denied, disconnect and reconnect Shared to refresh the repaired group membership. Use the IP-based path if the hostname does not resolve.</li>
+<li>Open <strong>Content-Pipeline-Architecture.html</strong> in a browser, or its PDF for printing. START-HERE.md links to both. For work on a cycle, open <strong>CURRENT.md</strong> and check its completion time. This points to preserved copies, so the next scheduled run cannot replace the files you are reviewing.</li>
+<li>Open the linked <strong>linkedin-editorial-plan-model-eval-DATE.md</strong> first, then <strong>content-brief-model-eval-DATE.md</strong> to inspect the evidence and cited sources. Markdown is plain text; a Markdown viewer improves formatting but is not required. JSON files are for detailed structured evidence, not documents to rewrite. Read the theme TXT only for topic context.</li>
+<li>Create a file under <code>\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin\Reviews</code>, for example <code>2026-10-07-review.md</code> or a Word document. Record the cycle directory/hash, exact source filenames, topic, requested wording changes, source-check result, webinar-overlap decision, reviewer/date and approval or rejection. A review-file date alone is not enough to distinguish same-day reruns.</li>
+<li>Save proposed text and approvals in that review file. Do not replace the generated plan/JSON or copy private transcript details into a content draft. An “approved” note is a human record only: <strong>automation does not consume review files</strong>, start drafting, or post to LinkedIn.</li>
+<li>For an older cycle, open <code>\\Iggy-Nas\Shared\ContentPipeline\output\Archive\ias-linkedin</code>. Choose a finalized date/hash directory, check its manifest/completion time and open its plan and brief. Ignore <code>.pending-*</code>. If several sets share a date, use their different hashes and your review's recorded cycle reference. Very old flat archives are one level higher at Archive and may not have manifests.</li>
+<li>If CURRENT.md is older than expected, report the timestamp to Robert. Do not promote a file from a test folder or trigger an ad hoc rerun to make it look current. Robert can inspect the failed stage while review continues on the last complete set.</li>
+</ol>
+<h2 id="design-assessment">Design assessment</h2>
+<table>
+<thead>
+<tr>
+<th>Separation or leftover</th>
+<th>Assessment</th>
+<th>Future consolidation consideration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Original Transcripts versus ContentPipeline</td>
+<td>Justified: sources retain identities/metadata and are mounted read-only into n8n; downstream web research consumes anonymized derivatives</td>
+<td>Keep the source/content boundary</td>
+</tr>
+<tr>
+<td>Krisp-API versus Krisp</td>
+<td>Justified while API intake and legacy fallback coexist</td>
+<td>Retained shadows may eventually be deduplicated only after collector/OMC references, hashes and retention are resolved; no manual moving</td>
+</tr>
+<tr>
+<td>One current ias-linkedin namespace</td>
+<td>Justified: isolates explicit production paths from old flat wildcard/evaluation files</td>
+<td>A separate folder per processing stage is not currently required; filenames/proofs express stage boundaries</td>
+</tr>
+<tr>
+<td>Working outputs versus completed archive copies</td>
+<td>Justified: permits reruns without replacing reviewed evidence</td>
+<td>Keep copy/index distinction; choose expiry/storage policy separately</td>
+</tr>
+<tr>
+<td>Reviews versus generated files</td>
+<td>Justified: protects hashes and keeps human decisions distinct from automated proof</td>
+<td>A future approval consumer would need its own schema and explicit trigger; none exists now</td>
+</tr>
+<tr>
+<td>Synthetic acceptance versus real-privacy evaluation</td>
+<td>Justified: synthetic checks and sensitive real-source evaluation have different privacy needs</td>
+<td>Preserve isolation even if operator tooling is unified</td>
+</tr>
+<tr>
+<td>Separate orchestration fixtures</td>
+<td>Its isolation is justified; the standalone top-level name reflects the historical test implementation</td>
+<td>Could join a managed test namespace after references/evidence are inventoried</td>
+</tr>
+<tr>
+<td>archive-check, archive-check-final, archive-check-release</td>
+<td>Historical iterations, not three documented enduring design roles</td>
+<td>Candidates for a documented validation-evidence retention scheme; not cleanup targets today</td>
+</tr>
+<tr>
+<td>Old flat outputs, Qwen quality variants and model traces</td>
+<td>Historical leftovers from previous/evaluation workflows, not current handoffs</td>
+<td>Classify provenance, sensitivity and consumers before any relocation; traces are not automatically public-safe</td>
+</tr>
+<tr>
+<td>omc-krisp compatibility helper</td>
+<td>Existing inactive-workflow reference explains its retention</td>
+<td>Could be retired with a deliberate legacy rollback-policy change; it is not the active selector</td>
+</tr>
+<tr>
+<td>Old meeting-named source folders</td>
+<td>Retained imports outside current selector; exact original writer/rationale is unrecovered</td>
+<td>No invented processing role or implied deletion permission</td>
+</tr>
+<tr>
+<td>Helper code mixed with current documents</td>
+<td>Functional existing deployment choice: commands resolve helper paths under the mounted output area</td>
+<td>A service-only code mount may be cleaner later, but would require deployment/path changes; none made here</td>
+</tr>
+<tr>
+<td>model-eval filenames and inactive workflow display names</td>
+<td>Compatibility/history, not accurate user-facing state labels</td>
+<td>Renaming could improve clarity, but requires updating regexes, handoffs and rollback references together</td>
+</tr>
+</tbody>
+</table>
+<p>No folder was created, moved, merged or removed for this documentation task. Only guide files and documentation links are deployed into the existing starting location.</p>
+<h2 id="live-state-and-reconciled-records">Live state and reconciled records</h2>
+<p>The live instance has three published stages despite “inactive” in their display names. San is the sole enabled content clock: <strong>Monday 07:00 America/New_York</strong>, cron <code>0 7 * * 1</code>. Enr's stored Monday 09:00 and Plan's Monday 10:00 schedules are disabled/disconnected; waiting parent calls invoke them. The next scheduled start is October 12, 2026 at 11:00 UTC. LinkedIn posting remains disabled.</p>
+<table>
+<thead>
+<tr>
+<th>Workflow ID</th>
+<th>Published version observed October 7</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IASLinkedinSan01</code></td>
+<td><code>0f5efe7d-b8ff-4547-8910-35ab7ecc1049</code></td>
+<td>Selector, extraction/privacy approval and waiting enrichment call</td>
+</tr>
+<tr>
+<td><code>IASLinkedinEnr01</code></td>
+<td><code>70e431c0-d9b7-4a0d-a3b6-576b4d0ec7ac</code></td>
+<td>Approved themes, Brave research, candidates and waiting planner call</td>
+</tr>
+<tr>
+<td><code>IASLinkedinPlan1</code></td>
+<td><code>acfd5d24-452d-42aa-af06-96cabe56b6b3</code></td>
+<td>Editorial plan and verified archive/index completion</td>
+</tr>
+</tbody>
+</table>
+<p>Earlier repository statements that all IAS copies are inactive describe migration preparation, not this deployed state. Git JSON templates still intentionally have inactive/disconnected clocks; they are not runtime-state exports. The original OMC-krisp selector reference belongs to the preserved inactive sanitizer, while live San uses <code>/data/output/ias-linkedin/select-transcripts.cjs</code>. The top-level activation snapshot in content-pipeline-state.json records the original planner publication; its later contentUsabilityRepair section records the current version above. The output date and UTC archive date are both correct. The earlier repair prose described the approval as already expired; its live timestamp instead sets the expiry to October 8 at 01:49:45.270 UTC. Its stored state can remain “approved” after that time while the helper rejects it as stale.</p>
+<p>Repository references below support the current trace and distinguish historical records. Live mounts, workflow exports, helper behavior, current index/manifest, directory permissions and Samba share configuration take precedence when older prose conflicts.</p>
+<ul>
+<li><a href="https://github.com/rkigara-prog/iggii-ai-stack/blob/main/ops/n8n/Content-Usability.md">Applied content access and archive record</a></li>
+<li><a href="https://github.com/rkigara-prog/iggii-ai-stack/blob/main/ops/n8n/content-usability-20261007/acceptance.json">Sanitized focused acceptance</a></li>
+<li><a href="https://github.com/rkigara-prog/iggii-ai-stack/blob/main/ops/n8n/content-pipeline-state.json">Current state and subsequent repair metadata</a></li>
+<li><a href="https://github.com/rkigara-prog/iggii-ai-stack/blob/main/ops/n8n/krisp-api-repair-20261007/README.md">Transcript intake and identity repair</a></li>
+<li><a href="https://github.com/rkigara-prog/iggii-ai-stack/blob/main/n8n/linkedin/Cutover.md">Cutover history and applied publication</a></li>
+<li><a href="https://github.com/rkigara-prog/iggii-ai-stack/blob/main/n8n/linkedin/archive-artifact.cjs">Archive implementation</a></li>
+</ul>
+<footer>Generated from Content-Pipeline-Architecture.md. Source SHA-256: 0d3b806a270e00d4416ea1a789f7e6acaec1d29f7228b8d927443de38f498afa. Shared copies are reference documents; edit the canonical source through Git.</footer>
+</main></body></html>
