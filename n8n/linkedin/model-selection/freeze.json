@@ -1,0 +1,19 @@
+{
+  "frozenAt": "2026-10-07T19:56:43.655122+00:00",
+  "sha256": {
+    "assessment-packets.json": "07af80ffb331ac83246c8382f4ae2913a406e1102e91cd22ef1e712a4113020e",
+    "gold.json": "9da6185203e5eccc24215bbd70ef9e044892e1bdc35a4c94988200f77ab0c753",
+    "privacy-canaries.json": "a940aed8905ff8dd2c49c7c15e2c46b0af299f4b7fbcb7bd9846d3f20b41e360",
+    "ranking-packets.json": "a257f1ecd789d93b4b4077060fa107821d966c6acbd2e3b70d09bde298b3daac",
+    "writing-packets.json": "7d40f50af5d315eb5ffcd81357f17ca14551e3707a1dfb166362bc4c7722210e",
+    "writing-full-sources.json": "b1c4c6fd74c2e89a01cf8bf6713c7ae82d927b871d2c0a345e1c74952668084a"
+  },
+  "promptSha256": "b710919bf8d340043c9f0ab28a98813e6a9252ab1a881699343bf875f281789a",
+  "originalPacketsSha256": "43a42c16b8b746b5ecbfd67f287317f4ad2e07735e096340a2844de5ea32c4ca",
+  "correctedGoldSha256": "a09197f77fba4154ed608b828f895fb42c4ec4cd1374b9fed3149a3c248c3d39",
+  "assessmentCount": 36,
+  "writingCount": 4,
+  "rankingOrders": 3,
+  "assessmentStatus": "36 reused regression cases; not held-out",
+  "writingStatus": "new fixed public-evidence comparison briefs; no tuning after freeze; authored by Codex, not independent human gold"
+}

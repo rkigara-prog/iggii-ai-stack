@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "modelCalls": 0,
+  "sourceRetrievalCalls": 0,
+  "judgments": "Codex focused review, not independent human measurement",
+  "cases": [
+    {"id":"t3","supportedDeclaredParaphraseAccepted":true,"unchangedExactExcerpts":true,"undeclaredParaphraseDeferred":true,"unsafeVariantsBlocked":6},
+    {"id":"t4","supportedDeclaredParaphraseAccepted":true,"unchangedExactExcerpts":true,"undeclaredParaphraseDeferred":true,"unsafeVariantsBlocked":6}
+  ],
+  "deployedWorkflowVersions": {
+    "enrichment":"8e468789-ef08-47a6-9d7f-e2da6d12abab",
+    "planner":"34bcf7a8-c326-46d5-ae4f-19ae29f4d34c",
+    "sanitizerUnchanged":"0f5efe7d-b8ff-4547-8910-35ab7ecc1049"
+  }
+}

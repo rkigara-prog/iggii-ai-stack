@@ -35,9 +35,12 @@ or independent verification. Human editorial review remains required.
    cannot qualify. A model can still misinterpret a passage: the original source
    judgments are preserved for human review.
 6. **Narrow single-source exception:** an exact attributed statement from a
-   registered official government, research-laboratory or vendor document, or the vendor's own release status. Claims render as `Publisher states: EXACT PASSAGE QUOTE`. An exact unprefixed quote
-   explicitly requesting the exception gains the publisher attribution; paraphrases
-   do not. The approved registry also includes the Canadian Cyber Centre, the National
+   registered official government, research-laboratory or vendor document, or the vendor's own release status. Exact quotations render as `Publisher states: EXACT PASSAGE QUOTE`. Explicit
+   `form=paraphrase` claims retain their own text and render as `Publisher states
+   (paraphrased): ...`; they must name the matching publisher/source in `attribution`.
+   Citation excerpts remain exact in both forms. Every semantic support/dimension
+   judgment, numeric/scope guard and source-eligibility check still applies. A
+   paraphrase is never presented as a quotation or deterministic entailment proof. The approved registry also includes the Canadian Cyber Centre, the National
    Laboratory of the Rockies and Southern Company for its own notice statements; source must pass the documented official
    host and content-path restriction, be primary, and have a valid origin basis. Only
    `document_statement` and `release_status` qualify. Efficacy, guaranteed outcomes,

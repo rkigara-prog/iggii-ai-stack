@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "Packet-dependent coverage and exact passage checks are enforced in score.py. Semantic support is a separate judgment. These schemas are checked after generation, not sent as provider grammars.",
+  "$defs": {
+    "assessment": {
+      "type": "object",
+      "properties": {
+        "decision": {
+          "enum": [
+            "accept",
+            "reject",
+            "defer"
+          ]
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "supported": {
+                "type": "boolean"
+              },
+              "form": {
+                "enum": [
+                  "exact_quote",
+                  "paraphrase"
+                ]
+              },
+              "attribution": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "citations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "source_id": {
+                      "type": "string"
+                    },
+                    "passage_id": {
+                      "type": "string"
+                    },
+                    "quote": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "source_id",
+                    "passage_id",
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "scope_notes": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "supported",
+              "form",
+              "attribution",
+              "citations",
+              "scope_notes"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "source_judgments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source_id": {
+                "type": "string"
+              },
+              "role": {
+                "enum": [
+                  "primary",
+                  "independent_reporting",
+                  "promotion",
+                  "unknown"
+                ]
+              },
+              "origin_group": {
+                "type": "string"
+              },
+              "independence": {
+                "enum": [
+                  "known_independent",
+                  "dependent",
+                  "unresolved"
+                ]
+              }
+            },
+            "required": [
+              "source_id",
+              "role",
+              "origin_group",
+              "independence"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "reason": {
+          "type": "string"
+        },
+        "editorial_score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "argument": {
+          "type": "object",
+          "properties": {
+            "audience_problem": {
+              "type": "string"
+            },
+            "thesis": {
+              "type": "string"
+            },
+            "useful_insight": {
+              "type": "string"
+            },
+            "limitations": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "audience_problem",
+            "thesis",
+            "useful_insight",
+            "limitations"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "decision",
+        "claims",
+        "source_judgments",
+        "reason",
+        "editorial_score",
+        "argument"
+      ],
+      "additionalProperties": false
+    },
+    "ranking": {
+      "type": "object",
+      "properties": {
+        "ranked_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "rationale": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "ranked_ids",
+        "rationale"
+      ],
+      "additionalProperties": false
+    },
+    "writing": {
+      "type": "object",
+      "properties": {
+        "draft": {
+          "type": "string"
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "source_id": {
+                "type": "string"
+              },
+              "passage_id": {
+                "type": "string"
+              },
+              "quote": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text",
+              "source_id",
+              "passage_id",
+              "quote"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "recommendations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "draft",
+        "claims",
+        "recommendations"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
