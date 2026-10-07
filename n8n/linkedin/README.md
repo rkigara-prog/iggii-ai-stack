@@ -161,3 +161,19 @@ Broader privacy assurance, current-cycle handoff, production activation and
 editorial quality approval remain separate decisions. No post may be drafted until the
 required webinar review. OMC integration and additional-model evaluation remain
 outside this milestone.
+
+## Current production-cycle verification
+
+After an authorized manual execution, use `verify-production-cycle.cjs` with the
+production output root, private CLI-log directory and stage (`sanitization`,
+`enrichment`, `editorial-planner`). It verifies newly produced file bytes and binds
+the downstream artifacts to the same approved privacy run/hash. The initial output
+metadata snapshot must be saved privately as `output-before.private.json`. Logs
+are named `<stage>-execution.log`; the helper imports the existing log reader and
+privacy validators. Stop on any failed gate before starting the next stage.
+
+After planning, `verify-source-links.py OUTPUT_ROOT PRIVATE_LOG_DIR` checks the
+current candidate/plan hashes, exact selected-source links and public link
+reachability. Detailed URLs/results stay private; console output contains counts.
+These tools do not activate workflows or publish content. The completed controlled
+cycle is recorded in [Cutover.md](Cutover.md).

@@ -221,3 +221,27 @@ prompts are updated. All production workflows/schedules remain unchanged.
 The production marker remains pending: this cached check does not complete
 a fresh production execution or the enrichment/planner cutover gates. See
 [Cutover.md](Cutover.md) for the remaining controlled-cycle requirements.
+
+## Completed production-profile cycle — 2026-10-07 UTC
+
+The newly authorized manual cycle passed through sanitization, privacy review,
+Brave research and editorial planning, with migration schedules disabled.
+Privacy passed first: 17 meetings, 62 decisions, 57 rejected, 5 final themes.
+Research produced 15 qualified bundles from 63 queries, one verified candidate
+and five watchlist items. Planning selected the verified candidate only, retained
+exact source links, required manual webinar review and prohibited automatic publishing.
+Its one-topic portfolio has `partial` status; the end-to-end acceptance requirement
+of at least one verified selection passed.
+
+`verify-production-cycle.cjs` verified actual file bytes/hashes, source pairing,
+current approval provenance, query guards, exact source evidence, scoring and
+planner handoff. `verify-source-links.py` checked all ten unique output source links:
+all successful/nonempty, including the two selected-topic links. Full page factual
+review is separate from reachability/excerpt validation. All five output files are
+private, mode 0600.
+
+Snapshots of all 30 workflows showed unchanged definitions/settings/active/archive
+states. Current approval remained the same throughout. No production schedule,
+service, calendar, messaging or publishing action changed. Earlier passed checks
+were reused, not rerun. See [Cutover.md](Cutover.md) for exact paths, filenames,
+workflow IDs and the ready schedule-switch proposal.

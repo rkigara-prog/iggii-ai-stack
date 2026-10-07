@@ -1,8 +1,9 @@
 # Final PR #12 cutover proposal
 
-Status: merge and gated cutover approved; PR #12 merged. **Activation blocked
-pending a fresh production-profile cycle after the targeted privacy repair.** All migration/evaluation copies remain inactive. This proposal uses the completed
-acceptance evidence; no passed tests were repeated for its preparation.
+Status: **the controlled production-profile cycle passed; ready for the exact
+sanitization schedule cutover after PR #13 review/merge.** No schedule switch
+was performed. All migration/evaluation copies remain inactive. Historical
+proposal and attempt records below retain their original evidence and scope.
 
 ## Workflow identities and proposed activation states
 
@@ -301,3 +302,62 @@ evidence, then provenance-checked enrichment and planning are still required
 before the exact previously approved sanitization schedule switch. The cached
 repair must not be promoted into production approval. No research or downstream
 execution was performed during this repair.
+
+## Completed controlled cycle — 2026-10-07 UTC
+
+The user authorized one manual end-to-end production-profile cycle and requested
+readiness reporting, with schedules disabled throughout. No earlier passed
+synthetic, fixed-sample or targeted model checks were repeated.
+
+| Gate | Fresh execution result |
+| --- | --- |
+| Sanitization and separate source-aware privacy review | 17 meetings; 62 candidate decisions; 57 rejected; 5 final public-safe themes; new approved marker |
+| Web research and evidence ranking | 63 Brave queries; 15 qualified bundles; 1 verified candidate; 5 watchlist candidates |
+| Editorial planning | 1 selected verified topic; `partial` portfolio status; watchlist excluded; manual webinar review required; automatic publishing prohibited |
+| Source-link checks | 10 unique links across verified/watchlist content; all returned successful nonempty responses; both selected-topic links preserved exactly |
+
+The privacy gate and local source/response validation passed **before** enrichment
+was initiated. Every Brave branch's approval guard used the same current privacy
+run/hash. File-byte hashes matched the successful executions' binary output.
+The planner consumed the exact new candidates and preserved their exact source
+URLs. Evidence excerpts matched supplied source records; independent-source-family
+requirements and deterministic scoring passed. Link reachability does not itself
+establish factual accuracy; manual source/webinar review before drafting remains.
+
+All five newly written files are mode 0600 under `/data/output/ias-linkedin`
+(backing root `/mnt/user/Shared/ContentPipeline/output/ias-linkedin`):
+
+- `theme-list-model-eval-qwen35-2026-10-06.txt`
+- `content-brief-model-eval-2026-10-06.md`
+- `content-candidates-model-eval-2026-10-06.json`
+- `linkedin-editorial-plan-model-eval-2026-10-06.md`
+- `linkedin-editorial-plan-model-eval-2026-10-06.json`
+
+The filenames reflect the preserved `America/New_York` date (October 6 during
+this October 7 UTC execution). Exact outputs, workflow snapshots, CLI logs,
+source-link details and current-cycle hashes remain private in
+`/home/node/.n8n/ias-cycle-20261007` and `/tmp/ias-cycle-20261007` on Unraid.
+The output directory stays mode 0700. No content payload was committed.
+
+Before/after snapshots of all 30 workflows confirm unchanged nodes, connections,
+settings, active states and archive states. All three migration schedules remain
+disabled/disconnected. Enrichment and planner migration copies were already
+archived; their manual CLI execution path was exercised successfully and their
+archive states were preserved. Normal UI access to those archived copies would
+require unarchiving them while inactive; that change was not made in this cycle.
+
+No cycle blocker remains. The earlier pending-marker gate is superseded by this
+new approved execution, not by replayed/cached evidence. Native API access works.
+The recorded same-model assurance limits, manual webinar review, single-topic
+partial portfolio and unavailable legacy-inference fallback remain disclosed.
+PR #13 contains the prompt fix and validation tooling and still requires review/
+merge; merge it with `[skip ci]` to avoid unrelated service reconciliation.
+
+The next schedule change remains exactly: unpublish `Yjc03gS873IHEJPI`, then
+publish `IASLinkedinSan01` with `Weekly Schedule (Mon 7am)` enabled, cron
+`0 7 * * 1`, `America/New_York`, connected to **`Begin Privacy Attempt`**.
+Confirm exactly one active sanitization workflow. Keep `7dhbdbE5Uk0jMbk2` and
+`IASLinkedinEnr01` inactive (their stored Monday 09:00 `0 9 * * 1` schedule
+remains disabled in the migration); keep `on2tXEPsd4eeK6X4` and `IASLinkedinPlan1`
+inactive (stored Monday 10:00 `0 10 * * 1`, disabled in the migration).
+No activation endpoint was called. No LinkedIn post was drafted or published.
