@@ -32,9 +32,11 @@ doc for the full design and the confidentiality boundary rationale.
    appdata-convention setup instead.
 3. Push to `main` — the runner picks it up and brings the stack up.
 
-## Status
+## Content pipeline
 
-Early scaffold — LiteLLM proxy only so far. n8n routing workflows,
-Azure OpenAI / AWS Bedrock as additional providers, and the OMC-visibility
-decision (whether OMC's Ollama calls can safely go through this proxy)
-are still open, tracked in the setup checklist.
+Robert and Leigh start at `\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin`
+and open **START-HERE.md**, then **CURRENT.md**. Read/edit/approval instructions
+are in the [short guide](n8n/linkedin/START-HERE.md). The active Monday 07:00
+New York pipeline ends with an editorial plan and verified archive; LinkedIn
+posting remains disabled. Deployment and acceptance are recorded in
+[n8n operations](ops/n8n/Content-Usability.md).

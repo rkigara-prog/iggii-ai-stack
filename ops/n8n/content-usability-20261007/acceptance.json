@@ -1,0 +1,63 @@
+{
+  "gate": "content-pipeline-usability",
+  "passed": true,
+  "leighAuthenticatedSmbReadWrite": true,
+  "robertAuthenticatedSmbReadWrite": true,
+  "currentIndexDiscoverable": true,
+  "archiveFilesVerified": 5,
+  "workingOutputBytesPreserved": true,
+  "transcriptBytesPreserved": true,
+  "legacyOutputBytesPreserved": true,
+  "legacyArchiveBytesPreserved": true,
+  "omcWorkerExcluded": true,
+  "guestExcluded": true,
+  "generatedFilesProtected": true,
+  "recordedAt": "2026-10-07T14:36:20.650601+00:00",
+  "syntheticChecks": {
+    "syntheticArchive": true,
+    "bytePreservation": true,
+    "idempotency": true,
+    "collisionBlocked": true,
+    "incompleteBlocked": true,
+    "pathTraversalBlocked": true,
+    "changedProofBlocked": true
+  },
+  "nativeN8nWriterArchivePathPassed": true,
+  "workflowVerification": {
+    "workflowCount": 30,
+    "unrelatedWorkflowsUnchanged": 27,
+    "sanitizerAndEnrichmentUnchanged": true,
+    "onlyPlannerCompletionHookChanged": true,
+    "clockAndActiveArchiveStatesPreserved": true,
+    "temporaryFixtureRemoved": true,
+    "plannerPublishedVersionId": "acfd5d24-452d-42aa-af06-96cabe56b6b3"
+  },
+  "runtimeVerification": {
+    "imagePreserved": true,
+    "effectiveConfigPreserved": true,
+    "mountsPreserved": true,
+    "hostSettingsPreserved": true,
+    "supplementaryGroups": [
+      "100",
+      "1800"
+    ],
+    "networkPreserved": true
+  },
+  "linkedInPostingEnabled": false,
+  "contentClock": "0 7 * * 1",
+  "timezone": "America/New_York",
+  "modelResearchCalendarTestsReused": true,
+  "lastCompletedWorkingFileDate": "2026-10-06",
+  "archiveDirectory": "2026-10-07-b8ec0ec5b54bb6bdf1f910c2c85f08afc7a23e54c289a1b7c3fef65dbd37b0a9",
+  "retention": "indefinite; no deletions",
+  "productionHostRoot": "/mnt/user/Shared/ContentPipeline/output/ias-linkedin",
+  "archiveHostRoot": "/mnt/user/Shared/ContentPipeline/output/Archive/ias-linkedin",
+  "composeSha256": "221cd3ec3a1b4e56e1288b172b2ef7e53b4cf37146379ce9b6fc696be8718a1c",
+  "helpers": {
+    "content-access.cjs": "9a95e43b40e25999fb39a01b326d110bd6e7882717258ea2685b940cacca5621",
+    "archive-artifact.cjs": "5271e2dff0075be3a247781564f74ee11e787b935ea16a7567a1df60e4b729a8",
+    "privacy-artifact.cjs": "db14cb415fe34b06367fd378fa6cfcd9efb37f42667449d4976b666ed79b78d4",
+    "pipeline-artifact.cjs": "0c539321141165cafc3c0520718c3d9ca953860e5c38dc59a74fa1e646071c87",
+    "START-HERE.md": "edeccc8d619af619c2e0c66c487129b800225ff8e579d17118f013b3e8ed7efa"
+  }
+}

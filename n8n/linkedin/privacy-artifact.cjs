@@ -1,11 +1,13 @@
 // Trusted local handoff marker. No transcript or theme text is printed.
 const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const {policyVersion, surfaceSafe} = require('./privacy-policy.cjs');
+const {readable}=require('./content-access.cjs');
 const root = process.env.IAS_PRIVACY_ROOT || '/data/output/ias-linkedin-acceptance';
 const statusFile = path.join(root, 'privacy-status.json');
 const write = value => {
   const tmp = statusFile + '.' + crypto.randomUUID();
-  fs.writeFileSync(tmp, JSON.stringify(value), {mode: 0o600, flag: 'wx'});
+  fs.writeFileSync(tmp, JSON.stringify(value), {mode: 0o640, flag: 'wx'});
+  readable(tmp);
   fs.renameSync(tmp, statusFile);
 };
 const digest = buffer => crypto.createHash('sha256').update(buffer).digest('hex');
@@ -36,6 +38,7 @@ function main() {
     const bytes = fs.readFileSync(artifactPath);
     const themes = bytes.toString('utf8').trim().split('\n');
     if (!themes.length || themes.length > 20 || themes.some(line => !line.startsWith('- ') || !surfaceSafe(line.slice(2)))) throw Error('Privacy output invalid');
+    readable(artifactPath);
     write({...status, state: 'approved', fileName, themeCount: themes.length, sha256: digest(bytes), approvedAt: new Date().toISOString()});
     console.log(JSON.stringify(validate(runId)));
   } else if (action === 'verify') console.log(JSON.stringify(validate(runId)));

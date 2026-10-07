@@ -111,3 +111,14 @@ changes. See [repair record](krisp-api-repair-20261007/README.md). The active he
 is `/data/output/ias-linkedin/select-transcripts.cjs`; API and legacy selection use
 meeting dates. Full authenticated API/OMC/n8n input acceptance evidence is recorded
 without transcript content. LinkedIn posting remains disabled.
+
+## Current content-file access and archives — 2026-10-07 UTC
+
+[Content-Usability.md](Content-Usability.md) records the applied SMB access and
+completed-cycle archival repair. The current supplementary groups are **100 and
+1800**; the image, effective environment and mounts remain unchanged. GID 1800 is
+private to Robert/Leigh; helpers explicitly assign it to production outputs.
+The unified authenticated SMB/current-index/archive gate passed. Use
+`Shared/ContentPipeline/output/ias-linkedin/START-HERE.md` and `CURRENT.md`.
+Existing connections may need reconnection. Original transcripts and archives
+were preserved; no expiry/deletion or LinkedIn posting is enabled.

@@ -1,5 +1,11 @@
 # Local content pipeline — deployment and inactive templates
 
+For Robert and Leigh, start with [START-HERE.md](START-HERE.md). The deployed
+copy and `CURRENT.md` are in `\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin`.
+The current access/archive repair is recorded in
+[Content-Usability.md](../../ops/n8n/Content-Usability.md). Earlier inactive-state
+statements below describe migration preparation; see the applied cutover record.
+
 The Git definitions are inactive preparation templates for the deployed meeting-to-content stages.
 They stop at an editorial plan. They contain no image-generation, post-drafting,
 message-sending, calendar-writing, or LinkedIn publishing actions.
@@ -102,8 +108,9 @@ python3 n8n/linkedin/bind.py /private/bound \
 in another instance. Bind credentials within the same owner/project as the copies.
 Copy the bound exports privately into the n8n container and use
 `n8n import:workflow --input=...`; the CLI defaults to inactive imports.
-Deploy `select-transcripts.cjs`, `privacy-policy.cjs` and `privacy-artifact.cjs`
-into the isolated directory and keep input/output and log directories private.
+Deploy `select-transcripts.cjs`, `privacy-policy.cjs`, `privacy-artifact.cjs`,
+`pipeline-artifact.cjs`, `content-access.cjs` and `archive-artifact.cjs`
+into the isolated directory; precreate its matching private archive root and keep input/output and log directories private.
 The artifact helper defaults to the acceptance directory; real-input profiles
 explicitly set `IAS_PRIVACY_ROOT` through `prepare-cutover.py`. The root GitHub workflow deploys LiteLLM only; it does
 not import these workflows or deploy the Ubuntu inference service.
@@ -188,7 +195,7 @@ published on this n8n version, while their own schedules remain disabled.
 it prints metadata only and stores its marker privately.
 
 When regenerating privacy definitions, run `harden-privacy.py` followed by
-`connect-pipeline.py` before `prepare-cutover.py` / private credential binding.
+`connect-pipeline.py` and `connect-archive.py editorial-planner.json editorial-planner.json` before `prepare-cutover.py` / private credential binding.
 `connect-pipeline.py` is idempotent. `build-orchestration-check.py PRIVATE_DIR`
 builds synthetic-only fixtures; `orchestration-fixture.cjs` and
 `check-orchestration-result.cjs` are test tooling, never production helpers.
@@ -209,3 +216,14 @@ See [final deployment state](../../ops/n8n/content-pipeline-state.json) and
 These committed templates remain inactive and credential-free; importing them
 over live IDs is an explicit maintenance action and can unpublish the live chain.
 Use the deployment record to distinguish templates from runtime state.
+
+## Completed-cycle archival
+
+Deploy `content-access.cjs` and `archive-artifact.cjs` alongside the existing
+privacy/pipeline helpers. The completion hook runs once after both plan files
+are written; it validates the current candidate proof and five-file lineage,
+copies a checksummed set under the existing `Archive/ias-linkedin`, and updates
+`CURRENT.md` only after verification. Keep archive roots precreated with private
+permissions. No age-based deletion or source-transcript archiving is configured.
+The production service requires supplementary GID 1800 as well as GID 100.
+Only the production profile explicitly assigns GID 1800; test outputs stay isolated.

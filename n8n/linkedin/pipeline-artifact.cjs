@@ -1,5 +1,6 @@
 // Success-only orchestration metadata. No source/content text is returned.
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
+const {readable}=require('./content-access.cjs');
 const {validate}=require('./privacy-artifact.cjs');
 const root=process.env.IAS_PRIVACY_ROOT||'/data/output/ias-linkedin-acceptance';
 const marker=path.join(root,'candidate-status.json');
@@ -35,8 +36,8 @@ function main(){
   const privacy=samePrivacy(input.privacy);
   const c=file(input.candidateFile,/^content-candidates-model-eval-\d{4}-\d{2}-\d{2}\.json$/),b=file(input.briefFile,/^content-brief-model-eval-\d{4}-\d{2}-\d{2}\.md$/);
   const proof=candidate({privacy,candidate:{fileName:input.candidateFile,sha256:hash(c.bytes)},brief:{fileName:input.briefFile,sha256:hash(b.bytes)}});
-  fs.chmodSync(c.p,0o600);fs.chmodSync(b.p,0o600);
-  const tmp=marker+'.'+crypto.randomUUID();fs.writeFileSync(tmp,JSON.stringify(proof),{mode:0o600,flag:'wx'});fs.renameSync(tmp,marker);
+  readable(c.p);readable(b.p);
+  const tmp=marker+'.'+crypto.randomUUID();fs.writeFileSync(tmp,JSON.stringify(proof),{mode:0o640,flag:'wx'});readable(tmp);fs.renameSync(tmp,marker);
   console.log(JSON.stringify(proof));
  }else if(action==='verify-candidate'){
   const proof=candidate(JSON.parse(fs.readFileSync(marker)));
@@ -45,3 +46,5 @@ function main(){
  }else throw Error('Pipeline handoff blocked');
 }
 if(require.main===module){try{main();}catch{console.error('Pipeline handoff blocked');process.exitCode=1;}}
+
+module.exports={candidate};

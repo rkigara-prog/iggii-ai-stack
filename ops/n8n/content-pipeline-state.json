@@ -107,5 +107,22 @@
     "apiPreferred": true,
     "workflowDefinitionsAndSchedulesUnchanged": true,
     "acceptance": "krisp-api-repair-20261007/acceptance.json"
+  },
+  "contentUsabilityRepair": {
+    "recordedAt": "2026-10-07T14:36:20.650601+00:00",
+    "status": "deployed-and-accepted",
+    "latestPlannerPublishedVersionId": "acfd5d24-452d-42aa-af06-96cabe56b6b3",
+    "acceptance": "content-usability-20261007/acceptance.json",
+    "startingLocation": "\\\\Iggy-Nas\\Shared\\ContentPipeline\\output\\ias-linkedin",
+    "guide": "/data/output/ias-linkedin/START-HERE.md",
+    "latestCompleteIndex": "/data/output/ias-linkedin/CURRENT.md",
+    "archiveRoot": "/data/output/Archive/ias-linkedin",
+    "retention": "indefinite; no deletions",
+    "privateAccessGid": 1800,
+    "n8nSupplementaryGroups": [
+      100,
+      1800
+    ],
+    "mondayClockAndPostingStatePreserved": true
   }
 }
