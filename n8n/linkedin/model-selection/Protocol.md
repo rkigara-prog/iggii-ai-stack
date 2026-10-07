@@ -44,7 +44,7 @@ context is distinct from the usable context established in the local runtime.
 ## Scoring
 
 Deterministic checks: schema validity/completeness, expected IDs and rank coverage,
-exact source URLs, passage IDs and contiguous quotations, word counts, canary echoes,
+exact source URLs, passage IDs and contiguous quotations, word counts, canary echoes (final answer and any returned reasoning separately),
 input-hash equality, finish status, tokens, latency and sampled memory/power/utilization.
 An exact quotation does not prove claim support. Missing unsupported assertions from
 a model's claim list must not escape full-prose review.

@@ -55,7 +55,7 @@ def main():
   for file in sorted(arm_dir.glob('*.json')):
    r=json.loads(file.read_text());e=extract(r.get('reply',{}));x=e['parsed'] if isinstance(e['parsed'],dict) else {};phase=r['phase'];id=r['id'];packet=packets[id] if phase=='assessment' else briefs[id] if phase=='writing' else rankings[int(id.split('-')[1])-1]['candidates']
    input_text=json.dumps(packet,ensure_ascii=False,separators=(',',':'));assert hashlib.sha256(input_text.encode()).hexdigest()==r['inputSha256']
-   valid=e['finish_reason']=='stop' and schema(x,phase,packet);base={'id':id,'complete':valid,'finish':e['finish_reason'],'strictJson':e['strict_json'],'adapter':e['transport_adapter'],'latency':r['latencySeconds'],'usage':r.get('reply',{}).get('usage',{}),'reasoningPresent':e['reasoning_present'],'publicAnswerCanaryEcho':any(t in e['final_text'] for t in canaries)}
+   valid=e['finish_reason']=='stop' and schema(x,phase,packet);base={'id':id,'complete':valid,'finish':e['finish_reason'],'strictJson':e['strict_json'],'adapter':e['transport_adapter'],'latency':r['latencySeconds'],'usage':r.get('reply',{}).get('usage',{}),'reasoningPresent':e['reasoning_present'],'publicAnswerCanaryEcho':any(t in e['final_text'] for t in canaries),'anyResponseCanaryEcho':any(t in json.dumps(r.get('reply',{}),ensure_ascii=False) for t in canaries)}
    resources.extend(r.get('resourceSamples',[]))
    if phase=='assessment':
     expected=gold[id];decision=(x or {}).get('decision');claims=(x or {}).get('claims',[]) if isinstance(x,dict) else [];claims=[c for c in claims if isinstance(c,dict)] if isinstance(claims,list) else []
@@ -76,7 +76,7 @@ def main():
     base['unboundNumericTokens']=sorted(set(re.findall(r'\b\d+(?:[.,]\d+)*\b',prose))-source_digits)
     base['fullProseReviewRequired']=True;drafts.append(base)
    details[arm+'/'+phase+'/'+id]=base
-  keys=['complete','strictJson','correct','unsafeAccept','harmlessRejectDefer','missedOpportunity','claimCorrect','claimCount','citations','exactPassageCitations','unsupportedSourceReferences','bindingGatePass','publicAnswerCanaryEcho']
+  keys=['complete','strictJson','correct','unsafeAccept','harmlessRejectDefer','missedOpportunity','claimCorrect','claimCount','citations','exactPassageCitations','unsupportedSourceReferences','bindingGatePass','publicAnswerCanaryEcho','anyResponseCanaryEcho']
   aggregation={k:sum(bool(r[k]) if isinstance(r[k],bool) else r[k] for r in assess) for k in keys}
   aggregation.update(cases=len(assess),expectedCases=len(packets),decisionAccuracyPercent=round(100*aggregation['correct']/len(packets),2),latencySeconds=stats([r['latency'] for r in assess]),budgetTruncated=sum(r['finish']=='length' for r in assess),unsafeAcceptsPassingExcerptMechanics=sum(r['unsafeAccept'] and r['bindingGatePass'] for r in assess))
   overlaps=[len(set(a['rankedIds'][:5])&set(b['rankedIds'][:5]))/5 for a,b in itertools.combinations(ranks,2) if a['complete'] and b['complete']]

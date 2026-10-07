@@ -1,0 +1,73 @@
+{
+  "status": "Baseline checkpoint only; not a comparative recommendation",
+  "judgments": {
+    "home-chat/W1": {
+      "rater": "Codex",
+      "independentHumanRating": false,
+      "actualEditingMinutes": null,
+      "scores": {
+        "factual_support": 2,
+        "attribution": 4,
+        "citation_accuracy": 3,
+        "useful_insight": 3,
+        "specificity": 3,
+        "readability": 3,
+        "low_generic_filler": 2
+      },
+      "sentenceCount": 8,
+      "reviewRequiredSentences": 3,
+      "completeProseReviewed": true
+    },
+    "home-chat/W2": {
+      "rater": "Codex",
+      "independentHumanRating": false,
+      "actualEditingMinutes": null,
+      "scores": {
+        "factual_support": 3,
+        "attribution": 4,
+        "citation_accuracy": 3,
+        "useful_insight": 2,
+        "specificity": 3,
+        "readability": 2,
+        "low_generic_filler": 2
+      },
+      "sentenceCount": 9,
+      "reviewRequiredSentences": 2,
+      "completeProseReviewed": true
+    },
+    "home-chat/W3": {
+      "rater": "Codex",
+      "independentHumanRating": false,
+      "actualEditingMinutes": null,
+      "scores": {
+        "factual_support": 2,
+        "attribution": 3,
+        "citation_accuracy": 3,
+        "useful_insight": 2,
+        "specificity": 3,
+        "readability": 3,
+        "low_generic_filler": 2
+      },
+      "sentenceCount": 7,
+      "reviewRequiredSentences": 5,
+      "completeProseReviewed": true
+    },
+    "home-chat/W4": {
+      "rater": "Codex",
+      "independentHumanRating": false,
+      "actualEditingMinutes": null,
+      "scores": {
+        "factual_support": 2,
+        "attribution": 2,
+        "citation_accuracy": 2,
+        "useful_insight": 2,
+        "specificity": 3,
+        "readability": 3,
+        "low_generic_filler": 2
+      },
+      "sentenceCount": 8,
+      "reviewRequiredSentences": 5,
+      "completeProseReviewed": true
+    }
+  }
+}

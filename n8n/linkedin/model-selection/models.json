@@ -1,5 +1,5 @@
 {
-  "status": "selected; runtime build/access preflight pending; no quality scores yet",
+  "status": "Both artifacts verified; Qwen native partial-offload load/inference confirmed; Gemma native load pending resource-window decision",
   "shortlist": [
     {
       "id": "Qwen/Qwen3.8-27B",
@@ -67,7 +67,11 @@
   ],
   "runtime": {
     "repository": "ggml-org/llama.cpp",
-    "commit": "b86d2f07542b29ab099aed34fd6b6d1b2fd4b81c"
+    "commit": "b86d2f07542b29ab099aed34fd6b6d1b2fd4b81c",
+    "oneApiVersion": "2025.3.2",
+    "qwenUsableContextVerified": 16384,
+    "gemmaUsableContextVerified": null,
+    "bothGgufTemplatesExposeEnableThinking": true
   },
   "proposedEvaluationContext": 16384,
   "productionContextUnchanged": 131072,
@@ -87,6 +91,6 @@
   "comparabilityLimits": [
     "different quantizers and runtimes are deployment bundles, not a pure architecture experiment",
     "partial offload latency does not predict full-GPU latency",
-    "runtime/GPU feasibility still requires access inventory and an isolated load before scoring"
+    "Qwen partial offload measured; Gemma actual load/performance still unmeasured"
   ]
 }
