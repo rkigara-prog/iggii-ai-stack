@@ -44,8 +44,15 @@ function claimGate(claim,sources,assessments){
   const q=valid[0]?.quote;
   if(publisher&&eligible[0].judgment.role==='primary'&&clean(claim.text)===`${publisher} states: ${clean(q)}`&&
     ['document_statement','release_status'].includes(claim.factType)&&!/guarantee|eliminat|proves?|effective|compliant|safer|secure than/i.test(q))exception='attributed_authoritative_statement';
+  // A paraphrase is a separate representation, never an exact quotation.
+  // Page bindings and every semantic dimension above still have to pass.
+  if(publisher&&eligible[0].judgment.role==='primary'&&claim.form==='paraphrase'&&
+    claim.attribution?.publisher===publisher&&claim.attribution?.sourceId===s.id&&
+    clean(claim.text).startsWith(`${publisher} states (paraphrased): `)&&
+    ['document_statement','release_status'].includes(claim.factType)&&
+    !/guarantee|eliminat|proves?|effective|compliant|safer|secure than/i.test(q+' '+claim.text))exception='attributed_authoritative_paraphrase';
  }
- if(!exception&&/\b(our|we|my)\b/i.test(claimText))reasons.push('writer_attribution_unestablished');
+ if((!exception||exception==='attributed_authoritative_paraphrase')&&/\b(our|we|my)\b/i.test(claimText))reasons.push('writer_attribution_unestablished');
  if(!exception&&(origins.size<2||hosts.size<2))reasons.push('independent_corroboration_unresolved');
  if(!eligible.some(v=>v.judgment.role==='primary'))reasons.push('relevant_primary_source_missing');
  return {passed:!reasons.length,reasons:[...new Set(reasons)],exception,independentOrigins:origins.size,
@@ -62,9 +69,15 @@ function gate(packet,response){
   const publisher=source?authority(source):null;
   // Render an explicitly requested, exact authoritative statement with attribution.
   // Never substitute a different passage or turn a paraphrase into a quote.
-  if(publisher&&c.exception==='attributed_authoritative_statement'&&['document_statement','release_status'].includes(c.factType)&&exactCitation(refs[0],sources)&&clean(c.text)===clean(refs[0].quote)){
+  if(publisher&&c.form!=='paraphrase'&&c.exception==='attributed_authoritative_statement'&&['document_statement','release_status'].includes(c.factType)&&exactCitation(refs[0],sources)&&clean(c.text)===clean(refs[0].quote)){
    c.text=`${publisher} states: ${refs[0].quote}`;
    normalizations.push({kind:'explicit_publisher_attribution',originalText:original.text,renderedText:c.text,sourceId:source.id});
+  }
+  if(publisher&&c.exception==='attributed_authoritative_statement'&&c.form==='paraphrase'&&
+    c.attribution?.publisher===publisher&&c.attribution?.sourceId===source.id&&
+    exactCitation(refs[0],sources)&&!clean(c.text).startsWith(`${publisher} states (paraphrased): `)){
+   c.text=`${publisher} states (paraphrased): ${original.text}`;
+   normalizations.push({kind:'explicit_paraphrase_attribution',originalText:original.text,renderedText:c.text,sourceId:source.id});
   }
   return c;
  });

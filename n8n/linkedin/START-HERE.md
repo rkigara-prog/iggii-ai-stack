@@ -25,3 +25,5 @@ The weekly chain starts Monday at **07:00 America/New_York**: transcripts → an
 Evidence quality: read [Evidence-Quality-Repair.html](Evidence-Quality-Repair.html). Research claims now include source passages and recorded model judgments. Review unresolved prose and source independence in Reviews. `Evidence` holds generated public page snapshots; do not edit them. A completed cycle can contain only deferred topics when evidence is insufficient.
 
 Latest completion review: [Evidence-Completion.html](Evidence-Completion.html) ([PDF](Evidence-Completion.pdf)) explains the parser repair, the five earlier deferrals, and the uninterrupted cycle result.
+
+Model comparison: [open the review starting page](Reviews/Model-Comparison-20261007/START-HERE.html). The comparison is in progress; this page currently links to its checkpoint report and resource-window decision. No alternative-model recommendation or blind draft comparison is complete yet.

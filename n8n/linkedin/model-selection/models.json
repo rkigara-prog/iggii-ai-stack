@@ -1,0 +1,96 @@
+{
+  "status": "Both artifacts verified; Qwen native partial-offload load/inference confirmed; Gemma native load pending resource-window decision",
+  "shortlist": [
+    {
+      "id": "Qwen/Qwen3.8-27B",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "license": "apache-2.0",
+      "gated": false,
+      "modelType": "qwen3_5",
+      "weightsBytes": 55563006776,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B",
+      "checkedAt": "2026-10-07T19:47:11.522110+00:00",
+      "README.mdSha256": "57e4bdb258ee1a7d2635c5174ebd4e56abe392505cdb5f8bbb356b0dc4293641",
+      "config.jsonSha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab"
+    },
+    {
+      "id": "google/gemma-4-31B-it",
+      "revision": "842da3794eaa0b77d5f08bae87a17459d91ff475",
+      "license": "apache-2.0",
+      "gated": false,
+      "modelType": "gemma4",
+      "weightsBytes": 62546338248,
+      "source": "https://huggingface.co/google/gemma-4-31B-it",
+      "checkedAt": "2026-10-07T19:47:11.971029+00:00",
+      "README.mdSha256": "e209f5c435b1e66055bd6d7c29185103ae8d2027a03a96b359335154f206b82b",
+      "config.jsonSha256": "e967dd38bc5cfd38bd09a995a7bf4a754075df2b46aba68f7fbb5a791e6d8dd1"
+    },
+    {
+      "id": "Qwen/Qwen3.6-35B-A3B",
+      "revision": "995ad96eacd98c81ed38be0c5b274b04031597b0",
+      "license": "apache-2.0",
+      "gated": false,
+      "modelType": "qwen3_5_moe",
+      "weightsBytes": 71903776776,
+      "source": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B",
+      "checkedAt": "2026-10-07T19:47:12.387353+00:00",
+      "README.mdSha256": "c4ddaa065649ff6352648f64747a16eda31726f3e34add94ce04abb461c77b75",
+      "config.jsonSha256": "93a4693fa9d8392fbfccd4b3c9873f4bfdcb14fdede978b123d07d19675efe99"
+    }
+  ],
+  "selected": [
+    "Qwen/Qwen3.8-27B",
+    "google/gemma-4-31B-it"
+  ],
+  "quantizedArtifacts": [
+    {
+      "model": "Qwen/Qwen3.8-27B",
+      "publisher": "Ollama official library",
+      "quantization": "Q4_K_M",
+      "bytes": 16810714464,
+      "sha256": "f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d",
+      "url": "https://registry.ollama.ai/v2/library/qwen3.8/blobs/sha256:f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d",
+      "file": "qwen3.8-27b-Q4_K_M.gguf",
+      "upstreamCommitInQuantization": "not established; observed current upstream revision is not proof of quantization input revision"
+    },
+    {
+      "model": "google/gemma-4-31B-it",
+      "publisher": "ggml-org runtime-maintainer conversion",
+      "quantization": "Q4_0",
+      "bytes": 17992313088,
+      "sha256": "031dc1c5fa9c5a0abbf3c39c5173fb2af65f5ac2dc2a090268561d3c72dcd834",
+      "quantizationRevision": "4fa4fdf38bee237b5c9e8a5b4e72cf39404c9dcc",
+      "url": "https://huggingface.co/ggml-org/gemma-4-31B-it-GGUF/resolve/4fa4fdf38bee237b5c9e8a5b4e72cf39404c9dcc/gemma-4-31B-it-Q4_0.gguf",
+      "file": "gemma-4-31B-it-Q4_0.gguf",
+      "upstreamCommitInQuantization": "not established; declared base model is google/gemma-4-31B-it"
+    }
+  ],
+  "runtime": {
+    "repository": "ggml-org/llama.cpp",
+    "commit": "b86d2f07542b29ab099aed34fd6b6d1b2fd4b81c",
+    "oneApiVersion": "2025.3.2",
+    "qwenUsableContextVerified": 16384,
+    "gemmaUsableContextVerified": null,
+    "bothGgufTemplatesExposeEnableThinking": true
+  },
+  "proposedEvaluationContext": 16384,
+  "productionContextUnchanged": 131072,
+  "evaluationMode": "sequential isolated native llama.cpp SYCL, partial GPU0 offload plus system RAM; CPU fallback only for the same substantive model, never a weaker convenience candidate",
+  "memoryPlan": {
+    "availableHostRamGiB": 82,
+    "expectedProcessRamUpperGiB": 36,
+    "gpu0AllocationCeilingGiB": 10,
+    "gpu1EvaluationAllocation": 0,
+    "minimumFreeGpu0GiB": 3,
+    "cpuThreads": 4,
+    "gpu0OffloadLayers": {
+      "qwen3.8-27b": 32,
+      "gemma4-31b": 24
+    }
+  },
+  "comparabilityLimits": [
+    "different quantizers and runtimes are deployment bundles, not a pure architecture experiment",
+    "partial offload latency does not predict full-GPU latency",
+    "Qwen partial offload measured; Gemma actual load/performance still unmeasured"
+  ]
+}
