@@ -1,7 +1,7 @@
 # Final PR #12 cutover proposal
 
-Status: ready for code/documentation review; **merge and activation are not approved**.
-All migration/evaluation copies remain inactive. This proposal uses the completed
+Status: merge and gated cutover approved; PR #12 merged. **Activation blocked
+by the new production-profile privacy gate.** All migration/evaluation copies remain inactive. This proposal uses the completed
 acceptance evidence; no passed tests were repeated for its preparation.
 
 ## Workflow identities and proposed activation states
@@ -226,3 +226,36 @@ Rollback steps after an approved switch:
 Before any schedule change, failure/denial simply leaves the original activation
 states intact. OMC calendars/messages, publishing, images, backup/monitoring/ASM/
 NetBox and additional-model deployment remain outside this cutover.
+
+## Approved attempt — 2026-10-07
+
+PR #12 was squash-merged as `5093a8980fd7dbfd6e3ffd7e2216422d114087ab`
+with `[skip ci]`; no deployment workflow run was created. The approved production
+profiles and three helpers were installed in the isolated production namespace.
+All three replacement workflows remain inactive and unscheduled. Private before/after
+snapshots confirm unchanged activation states and unchanged nodes/connections for
+the other 27 workflows. Original sanitization remains active. No service restart,
+schedule switch, web research, editorial planning or publishing occurred.
+
+The controlled real-input sanitization attempt stopped at `Build Final Public-Safe
+Theme List`: **Rejected theme has no policy reason**. The attempt processed 17 meetings. Across 11 review responses
+and 61 decisions, three rejected decisions had all risk flags false. These are
+internally inconsistent privacy adjudications, not evidence that private content
+was disclosed or that the previously repaired four-meeting sample regressed.
+The current approval marker remains `pending`; no theme artifact was written.
+Enrichment and planning were deliberately not run. Passed acceptance checks were
+not repeated, and validation criteria were not relaxed.
+
+The approved gate requires stopping here with the old schedule unchanged. The
+remaining content blocker is reliable, complete policy explanations on this
+production batch; retain the separate review and fail-closed validation when
+remediating it. Private execution evidence is stored under
+`/home/node/.n8n/ias-cutover` in the persistent n8n data directory and
+`/tmp/ias-cutover` on Unraid, outside Git.
+
+A separate access prerequisite for the eventual native schedule switch is missing:
+this instance has no native n8n API key. An owner-authorized key with workflow
+read/update/activate/deactivate access was requested via a mode-0600 host file
+`/mnt/app_pool/appdata/n8n/data/ias-cutover-api-key`, never chat. It was absent
+at the final check. This access alone does not clear the privacy gate. No native
+activation operation or direct database flag edit was attempted.
