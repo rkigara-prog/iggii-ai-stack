@@ -1,12 +1,12 @@
-# Inactive local content-pipeline migration
+# Local content pipeline — deployment and inactive templates
 
-These are manual, inactive copies of the deployed meeting-to-content stages.
+The Git definitions are inactive preparation templates for the deployed meeting-to-content stages.
 They stop at an editorial plan. They contain no image-generation, post-drafting,
 message-sending, calendar-writing, or LinkedIn publishing actions.
 
 ## Discovery
 
-| Stage | Source ID | Deployed state | Migration copy ID |
+| Stage | Source ID | State at discovery | Migration copy ID |
 | --- | --- | --- | --- |
 | Transcript Sanitization, privacy gate v3.1 | `Yjc03gS873IHEJPI` | Active | `IASLinkedinSan01` |
 | Content Enrichment, deterministic recovery v4.7 | `7dhbdbE5Uk0jMbk2` | Inactive | `IASLinkedinEnr01` |
@@ -195,3 +195,17 @@ builds synthetic-only fixtures; `orchestration-fixture.cjs` and
 The fixture generator inlines child definitions because publishing inactive
 workflows is outside preparation. Tests exercise native waiting/error propagation
 with local file stubs, without model/search/publishing calls.
+
+## Live state after approved cutover
+
+PR #13 is merged and the weekly chain is active. Only `IASLinkedinSan01` has
+an enabled clock: Monday 07:00 America/New_York. It calls published enrichment,
+which calls published planning, waiting for successful current privacy/artifact
+handoffs. Child clock nodes remain disabled/disconnected. There is no LinkedIn
+posting action. The original sanitizer is inactive and its definition is retained.
+
+See [final deployment state](../../ops/n8n/content-pipeline-state.json) and
+[Cutover.md](Cutover.md) for exact version IDs, verified state and rollback.
+These committed templates remain inactive and credential-free; importing them
+over live IDs is an explicit maintenance action and can unpublish the live chain.
+Use the deployment record to distinguish templates from runtime state.

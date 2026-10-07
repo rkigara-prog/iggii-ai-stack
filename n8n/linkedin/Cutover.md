@@ -1,13 +1,15 @@
-# Final PR #12 cutover proposal
+# Content pipeline cutover — completed PR #13
 
-Status: **success-only weekly orchestration is prepared and validated; all
-migration workflows remain inactive.** The latest automated cutover plan at the
-end of this document supersedes the earlier manual-downstream proposal.
-No schedule switch or subworkflow publication has been performed.
+Status: **milestone complete.** PR #13 was merged and the explicitly approved
+revised cutover was applied. Sanitization has the sole enabled weekly content
+schedule; enrichment and planning are published callable children with their
+independent schedules disabled. LinkedIn posting remains disabled. Earlier
+proposal/attempt sections below are historical; the final state is recorded at
+the end and in [content-pipeline-state.json](../../ops/n8n/content-pipeline-state.json).
 
 ## Workflow identities and proposed activation states
 
-| Stage | Retained original ID | Current original state | Replacement ID | Initial cutover state |
+| Stage | Retained original ID | Original state at proposal | Replacement ID | Historical initial cutover proposal |
 | --- | --- | --- | --- | --- |
 | Sanitization/privacy v3.1 | `Yjc03gS873IHEJPI` | Active | `IASLinkedinSan01` | Original inactive; replacement active after gates pass |
 | Enrichment/recovery v4.7 | `7dhbdbE5Uk0jMbk2` | Inactive | `IASLinkedinEnr01` | Both inactive; replacement run manually |
@@ -486,3 +488,58 @@ No code/orchestration acceptance blocker remains. The remaining action is approv
 of this revised publication/schedule plan and PR review/merge. The disclosed
 same-model assurance limits and unavailable legacy inference fallback remain;
 this change neither weakens acceptance nor starts fallback models.
+
+## Applied final state — 2026-10-07T02:23:21.029Z
+
+The user explicitly approved merging PR #13 and the revised automated cutover.
+Reviewed head `42fc160df2865f5f33947680e31cef5fb86e2967` was squash-merged as
+`fd5488e87f3da5cd153bdcaa401bd2feaf0715a1` with `[skip ci]`. No main-push
+deployment workflow was created for that merge. Fresh private snapshots and
+profile/helper comparisons found no drift and no relevant running execution.
+
+Using the native owner API, the planner was unarchived/published first, then
+enrichment, each at its exact current reviewed version. Their existing schedule
+nodes remained disabled/disconnected. Sanitization was saved with the approved
+Monday 07:00 connection to `Begin Privacy Attempt`; the original was unpublished,
+then the replacement's exact configured version was published.
+
+| Workflow | Final state | Schedule/entry |
+| --- | --- | --- |
+| `Yjc03gS873IHEJPI` | Unpublished/inactive; original definition preserved | Original Monday 07:00 clock retained in definition, no runtime schedule |
+| `IASLinkedinSan01` | Published/active | Monday 07:00 America/New_York, `0 7 * * 1` → `Begin Privacy Attempt` |
+| `IASLinkedinEnr01` | Published/active, unarchived | Callable from sanitization; Monday 09:00 clock disabled/disconnected |
+| `IASLinkedinPlan1` | Published/active, unarchived | Callable from enrichment; Monday 10:00 clock disabled/disconnected |
+| `7dhbdbE5Uk0jMbk2`, `on2tXEPsd4eeK6X4` | Unchanged/inactive | Retained original enrichment/planner definitions |
+
+Final verification confirmed exactly **one enabled weekly content clock**, the
+correct parent entry and both waiting child-call IDs, published versions matching
+the saved nodes/connections, callable passthrough child triggers, and no child
+webhooks or enabled independent clocks. The 26 unrelated workflows' definitions,
+settings, active/archive states and published-version pointers were unchanged;
+all 30 workflows remain present. The original sanitizer's nodes/connections/settings
+remain intact. n8n `/healthz` returned 200.
+
+The completed content and orchestration tests were reused. No new content run,
+model inference, Brave research or LinkedIn action was initiated for cutover.
+The five completed content artifact hashes remain unchanged. No container/service
+restart, OMC action or inference configuration change occurred. Provider credential
+bindings and the private owner API key were preserved and never printed/exported.
+
+Next scheduled start: **Monday October 12, 2026, 07:00 America/New_York**
+(11:00 UTC). This is the first scheduled production run after cutover, not a claim
+that a post-cutover content execution has already occurred. At that start the
+privacy begin step invalidates the prior approval, and each succeeding stage
+waits for its predecessor and current artifact gates.
+
+Sanitized deployment metadata, exact published-version IDs and verification
+counts are in [content-pipeline-state.json](../../ops/n8n/content-pipeline-state.json).
+Raw API responses, workflow snapshots and operation records remain private under
+`/home/node/.n8n/ias-activation-20261007` and `/tmp/ias-activation-20261007`
+on Unraid. Git workflow templates remain inactive/unscheduled and credential-free;
+they are preparation artifacts, not live active-state exports.
+
+The rollback procedure immediately above remains the approved policy, including
+a fail-safe halt if legacy inference is unavailable. Manual source/webinar review
+and the documented same-model assurance limits still apply. **No remaining
+cutover blocker; this content-pipeline milestone is closed.** OMC integration and
+additional models remain separate future work.

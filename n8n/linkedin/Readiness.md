@@ -263,3 +263,22 @@ cutover includes unarchiving/publishing both children with their crons disabled.
 Only sanitization's Monday 07:00 clock is enabled at the approved switch.
 All migration copies remain inactive during preparation. See the latest complete
 plan and rollback in [Cutover.md](Cutover.md).
+
+## Approved cutover complete — 2026-10-07 UTC
+
+PR #13 is merged. The revised native publication/schedule switch was applied:
+`IASLinkedinSan01` is the sole weekly content clock (Monday 07:00 America/New_York)
+and waits for published `IASLinkedinEnr01`, which waits for published
+`IASLinkedinPlan1`. Both child clocks remain disabled/disconnected. The retained
+original sanitizer is inactive; its definition and the original inactive downstream
+workflows are preserved.
+
+Published-version/trigger/connection inspection, final snapshots and n8n health
+verification passed. All 26 unrelated workflows are unchanged. Completed tests
+were reused, and completed content artifact hashes are unchanged; no pipeline
+content run or LinkedIn action was initiated for cutover. No services restarted.
+The first scheduled production start is October 12 at 07:00 America/New_York.
+Final sanitized state and published-version IDs are recorded in
+[content-pipeline-state.json](../../ops/n8n/content-pipeline-state.json).
+The milestone is complete; the approved rollback and manual editorial/webinar
+review requirements remain in [Cutover.md](Cutover.md).

@@ -94,3 +94,14 @@ and does not describe the running container). Retain the current image digest an
 original mounts/env/network, remove only the added group, and recreate n8n again
 within the approved maintenance action. Restore the stored manifest separately.
 Do not change shared-file ownership or permissively open the transcript mount.
+
+## Content-pipeline activation — 2026-10-07 UTC
+
+The user-approved PR #13 cutover is complete. Native API publication activated
+`IASLinkedinPlan1` and `IASLinkedinEnr01` with their clocks disabled, then replaced
+the original sanitizer's clock with `IASLinkedinSan01` Monday 07:00 America/New_York.
+No container restart or mount/environment change was required.
+[content-pipeline-state.json](content-pipeline-state.json) records the exact final
+workflow/version state and verification counts. The complete rollback is in
+[Cutover.md](../../n8n/linkedin/Cutover.md). Historical inactive-state statements
+in the earlier mount-readiness record refer to that earlier maintenance step.

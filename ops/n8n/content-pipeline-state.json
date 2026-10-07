@@ -1,0 +1,100 @@
+{
+  "recordedAt": "2026-10-07T02:23:21.029Z",
+  "reviewedPr": 13,
+  "reviewedHead": "42fc160df2865f5f33947680e31cef5fb86e2967",
+  "mergeCommit": "fd5488e87f3da5cd153bdcaa401bd2feaf0715a1",
+  "timezone": "America/New_York",
+  "workflows": [
+    {
+      "id": "IASLinkedinSan01",
+      "publishedVersionId": "0f5efe7d-b8ff-4547-8910-35ab7ecc1049",
+      "active": true,
+      "archived": false,
+      "schedules": [
+        {
+          "name": "Weekly Schedule (Mon 7am)",
+          "enabled": true,
+          "cron": "0 7 * * 1"
+        }
+      ],
+      "calls": [
+        {
+          "workflowId": "IASLinkedinEnr01",
+          "waitForCompletion": true
+        }
+      ],
+      "callableAsChild": false
+    },
+    {
+      "id": "IASLinkedinEnr01",
+      "publishedVersionId": "70e431c0-d9b7-4a0d-a3b6-576b4d0ec7ac",
+      "active": true,
+      "archived": false,
+      "schedules": [
+        {
+          "name": "Weekly Schedule (Mon 9am)",
+          "enabled": false,
+          "cron": "0 9 * * 1"
+        }
+      ],
+      "calls": [
+        {
+          "workflowId": "IASLinkedinPlan1",
+          "waitForCompletion": true
+        }
+      ],
+      "callableAsChild": true
+    },
+    {
+      "id": "IASLinkedinPlan1",
+      "publishedVersionId": "bf7640a7-357a-47e4-9a74-8bfdd37fae63",
+      "active": true,
+      "archived": false,
+      "schedules": [
+        {
+          "name": "Weekly Schedule (Mon 10am)",
+          "enabled": false,
+          "cron": "0 10 * * 1"
+        }
+      ],
+      "calls": [],
+      "callableAsChild": true
+    }
+  ],
+  "retainedOriginals": [
+    {
+      "id": "Yjc03gS873IHEJPI",
+      "active": false,
+      "definitionPreserved": true
+    },
+    {
+      "id": "7dhbdbE5Uk0jMbk2",
+      "active": false,
+      "definitionPreserved": true
+    },
+    {
+      "id": "on2tXEPsd4eeK6X4",
+      "active": false,
+      "definitionPreserved": true
+    }
+  ],
+  "verification": {
+    "workflowCount": 30,
+    "unrelatedWorkflowsUnchanged": 26,
+    "enabledContentWeeklySchedules": 1,
+    "publishedVersionsAndCallableChildTriggersVerified": true,
+    "completedContentArtifactsUnchanged": true,
+    "n8nHealthStatus": 200,
+    "completedTestsReused": true,
+    "contentCycleRerun": false,
+    "linkedInPostingEnabled": false
+  },
+  "inputRoots": [
+    "/data/transcripts/Krisp-API",
+    "/data/transcripts/Krisp"
+  ],
+  "outputRoot": "/data/output/ias-linkedin",
+  "rollbackPolicy": "Unpublish parent, let in-flight executions finish, then unpublish children; quarantine current markers/outputs. Restore original only with available legacy inference and authorization; otherwise fail-safe halt.",
+  "nextScheduledStartLocal": "2026-10-12T07:00:00-04:00",
+  "nextScheduledStartUtc": "2026-10-12T11:00:00+00:00"
+}
