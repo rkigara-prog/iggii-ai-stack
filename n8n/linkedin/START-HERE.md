@@ -23,3 +23,5 @@ Source transcripts remain in **Shared/Transcripts/Krisp-API** (canonical API int
 The weekly chain starts Monday at **07:00 America/New_York**: transcripts → anonymized themes/privacy gate → Brave research and evidence checks → editorial plan → verified archive/index. The research/planner stages have no separate enabled clock. A gate failure stops the chain; CURRENT.md continues to identify the last complete archived set.
 
 Evidence quality: read [Evidence-Quality-Repair.html](Evidence-Quality-Repair.html). Research claims now include source passages and recorded model judgments. Review unresolved prose and source independence in Reviews. `Evidence` holds generated public page snapshots; do not edit them. A completed cycle can contain only deferred topics when evidence is insufficient.
+
+Latest completion review: [Evidence-Completion.html](Evidence-Completion.html) ([PDF](Evidence-Completion.pdf)) explains the parser repair, the five earlier deferrals, and the uninterrupted cycle result.

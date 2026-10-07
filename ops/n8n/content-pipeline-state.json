@@ -125,7 +125,7 @@
     ],
     "mondayClockAndPostingStatePreserved": true
   },
-  "latestAppliedMilestone": "evidenceQualityRepair",
+  "latestAppliedMilestone": "evidenceCompletion",
   "evidenceQualityRepair": {
     "recordedAt": "2026-10-07",
     "status": "deployed; focused gate passed; controlled cycle completed through documented continuation",
@@ -143,5 +143,20 @@
     "retention": "indefinite; no deletion",
     "humanEditingEffort": "unmeasured",
     "alternativeWriterQuality": "unmeasured"
+  },
+  "evidenceCompletion": {
+    "recordedAt": "2026-10-07T18:13:20.101Z",
+    "status": "deployed; focused saved-evidence check passed; full uninterrupted cycle archived",
+    "latestPublishedVersions": {
+      "IASLinkedinEnr01": "e5aeb231-eacc-481f-9abe-4be481538adb",
+      "IASLinkedinPlan1": "9f933cf3-6602-4f58-9809-cdbf17e4fcce",
+      "IASLinkedinSan01": "0f5efe7d-b8ff-4547-8910-35ab7ecc1049"
+    },
+    "report": "../../n8n/linkedin/Evidence-Completion.md",
+    "acceptance": "../../n8n/linkedin/evidence/completion-preflight.json",
+    "cycleResult": "../../n8n/linkedin/evidence/completion-cycle.json",
+    "homeChatUnchanged": true,
+    "mondayClockAndPostingStatePreserved": true,
+    "archive": "../Archive/ias-linkedin/2026-10-07-bb7d4a34a9ddd7cb0dc60fa23fb4a0ee9b58c6000916e83efc9f226b70e22ddf"
   }
 }

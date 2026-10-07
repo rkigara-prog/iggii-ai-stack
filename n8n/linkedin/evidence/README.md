@@ -9,7 +9,9 @@ or independent verification. Human editorial review remains required.
 
 1. Existing Brave discovery/recovery supplies at most four recovery groups and three
    foundation groups. The shortlist keeps up to four URLs per group and 18 unique URLs
-   overall. URLs come from approved public research, not private transcripts.
+   overall, allocated round-robin to avoid starving foundation groups. Two documented
+   followups link a retained utility news article to its company notice, and the legacy
+   NIST index to Revision 4. They do not add broad searches or count as independent corroboration. URLs come from approved public research, not private transcripts.
 2. `retrieve.cjs` fetches serially, checks/pins public DNS addresses and every redirect,
    rejects credentials/nonstandard ports, caps responses at 3 MB, and requires usable
    HTML text. Challenge pages, unsupported content types and failed requests remain
@@ -21,7 +23,7 @@ or independent verification. Human editorial review remains required.
    of whole passages. Omitted passage counts are explicit. A missing necessary passage
    requires deferral, never replacement with a search snippet.
 4. Final ranking uses the existing model node. Each proposed material claim binds to
-   source and passage IDs with exact quotes. The gate verifies those bindings, requires
+   source and passage IDs with quotes checked after whitespace, Unicode normalization and typographic quote normalization. No words are substituted. The gate verifies those bindings, requires
    explicit judgments for scope/attribution/dates/quantities/products/sectors/uncertainty,
    checks numeric identifiers, and blocks selected obvious scope/attribution conflicts.
    These limited checks do not prove natural-language entailment. Invalid evidence is
@@ -32,9 +34,11 @@ or independent verification. Human editorial review remains required.
    eligible distinct origins on different hosts. Promotional/syndicated origin bases
    cannot qualify. A model can still misinterpret a passage: the original source
    judgments are preserved for human review.
-6. **Narrow single-source exception:** an exact attributed statement from an official
-   NIST/CISA/Microsoft/AWS document, or the vendor's own release status. Claim text must
-   be `Publisher states: EXACT PASSAGE QUOTE`; source must pass the documented official
+6. **Narrow single-source exception:** an exact attributed statement from a
+   registered official government, research-laboratory or vendor document, or the vendor's own release status. Claims render as `Publisher states: EXACT PASSAGE QUOTE`. An exact unprefixed quote
+   explicitly requesting the exception gains the publisher attribution; paraphrases
+   do not. The approved registry also includes the Canadian Cyber Centre, the National
+   Laboratory of the Rockies and Southern Company for its own notice statements; source must pass the documented official
    host and content-path restriction, be primary, and have a valid origin basis. Only
    `document_statement` and `release_status` qualify. Efficacy, guaranteed outcomes,
    compliance, comparative superiority and community posts are excluded. This proves
@@ -100,3 +104,11 @@ One controlled production cycle follows deployment. No model comparison is repea
 Human editing effort and alternative-writer quality remain unmeasured.
 
 Deployed result, recovery limitations and review paths: [milestone report](../Evidence-Quality-Repair.md). Exact retrieval packets are now checkpointed in Evidence for failure recovery.
+
+## Completion repair
+
+PR #18 encoded an inline prompt to avoid an expression-parser defect. The request is now constructed as an object in the Code node; HTTP evaluates only `$json.requestBody`. Prompt/evidence text never enters expression source. The underlying n8n engine was not patched or restarted. The connector is idempotent.
+
+Extractor 1.1 prioritizes actual page prose/main content, removes related cards, and supports leaf text containers as well as paragraphs. Old successful cache entries are re-extracted from retained HTML into new immutable snapshots; original snapshots remain unchanged. Document URLs cannot be replaced by a generic root canonical link. Four targeted fetches addressed specific retained gaps; no general evidence expansion was performed.
+
+Query consolidation now explicitly matches the existing source-supported privacy contract. The fail-closed guard is unchanged; rejection errors record indices and risk categories without query text.

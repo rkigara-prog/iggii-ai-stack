@@ -5,6 +5,8 @@ must bind to retrieved passages; source eligibility and corroboration are enforc
 in code. Semantic support and origin classifications remain fallible home-chat
 judgments. No automatic publishing or production post-drafting stage was added.
 
+Subsequent parser, extraction and qualification repairs are documented in [Evidence-Completion.html](Evidence-Completion.html). This report preserves the PR #18 result and links to its original archive.
+
 ## Result to review
 
 Start at `\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin\CURRENT.md`.
@@ -12,9 +14,9 @@ The controlled cycle completed at **2026-10-07 17:27:45 UTC**. Its five output f
 were copied and checksum-verified in the existing archive. The previous archive's
 six files, including its manifest, remain byte-for-byte unchanged.
 
-- [Editorial plan](linkedin-editorial-plan-model-eval-2026-10-07.md): **zero selected topics**; five deferred research topics. This is a completed evidence-limited plan, not approval to draft.
-- [Research brief](content-brief-model-eval-2026-10-07.md): claims, exact source URLs, passage IDs, model judgments and blocking reasons.
-- [Machine evidence record](content-candidates-model-eval-2026-10-07.json): retained page passages, retrieval metadata, source judgments and all claim-check results.
+- [Editorial plan](../Archive/ias-linkedin/2026-10-07-fc22ada0a35725373abe9ef48be2b579ae6b0c24fbdd82c5e92044514489bed0/linkedin-editorial-plan-model-eval-2026-10-07.md): **zero selected topics**; five deferred research topics. This is a completed evidence-limited plan, not approval to draft.
+- [Research brief](../Archive/ias-linkedin/2026-10-07-fc22ada0a35725373abe9ef48be2b579ae6b0c24fbdd82c5e92044514489bed0/content-brief-model-eval-2026-10-07.md): claims, exact source URLs, passage IDs, model judgments and blocking reasons.
+- [Machine evidence record](../Archive/ias-linkedin/2026-10-07-fc22ada0a35725373abe9ef48be2b579ae6b0c24fbdd82c5e92044514489bed0/content-candidates-model-eval-2026-10-07.json): retained page passages, retrieval metadata, source judgments and all claim-check results.
 - Save source review, corrections and editorial decisions in **Reviews**, identifying this cycle. These records are not consumed by automation.
 
 The cycle attempted **18 public URLs: 13 usable pages, five unavailable**. All five
