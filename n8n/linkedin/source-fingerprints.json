@@ -1,0 +1,273 @@
+[
+  {
+    "id": "Yjc03gS873IHEJPI",
+    "name": "Weekly Transcript Sanitization - qwen3.5 + gpt-oss Privacy Gate - v3.1",
+    "activeAtDiscovery": true,
+    "nodes": [
+      {
+        "name": "Weekly Schedule (Mon 7am)",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "parametersSha256": "49b39567fbd27cc9fb386ebd0b570ad6441d9a09196cb9661d9cd7a1dffb5398"
+      },
+      {
+        "name": "Read Recent Transcripts From Disk",
+        "type": "n8n-nodes-base.readWriteFile",
+        "parametersSha256": "7a2e60ab710fcb2dd468b2ef7c92c948ada8c3dec65e00f41cff09161ce323e6"
+      },
+      {
+        "name": "Decode Each Transcript",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "594bf27be93541e6b5194303325689a418abdf62f08e75fb84bd59c6246ac514"
+      },
+      {
+        "name": "Sanitize via qwen3.5 (Per Meeting)",
+        "type": "n8n-nodes-base.httpRequest",
+        "parametersSha256": "79315a74c8b7bae22e8a0fad245e675133d9dba5668f8c397a68013f2ae36c94"
+      },
+      {
+        "name": "Aggregate Anonymous Candidate Themes",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "2011ffcc3a24ae2255ce493b157b701aae92b01144c6bad82fd4e8e81cefc4f5"
+      },
+      {
+        "name": "Prepare Theme File",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "b839636efc2b012064141ad671402d8006a30db7cb8d06fa4cb941c9e3fdbd2f"
+      },
+      {
+        "name": "Write Theme List",
+        "type": "n8n-nodes-base.readWriteFile",
+        "parametersSha256": "f6c185b3ea86a394fc525acad98f2ba64c7712500aa94d1401d1bf3d59c431dd"
+      },
+      {
+        "name": "Manual Model Eval Trigger",
+        "type": "n8n-nodes-base.manualTrigger",
+        "parametersSha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      {
+        "name": "Model Eval Notes",
+        "type": "n8n-nodes-base.stickyNote",
+        "parametersSha256": "c9f4bf2a902010124ebf2553c7309aae087227ddeba989543c7b34fb7343381b"
+      },
+      {
+        "name": "List Transcripts Modified in Last 10 Days",
+        "type": "n8n-nodes-base.executeCommand",
+        "parametersSha256": "9d107e46a413a04269db6cb0d435175d1065bdf93fea0dbeafcbd5ae79d90a7f"
+      },
+      {
+        "name": "Build Recent Transcript File List",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "0f20b333da975dce3b2dc2f631278c1fdb1f1dcf26858062479ceb66d2ed1d02"
+      },
+      {
+        "name": "Privacy Adjudication and Deduplication via gpt-oss",
+        "type": "n8n-nodes-base.httpRequest",
+        "parametersSha256": "0ce70930d1652d20ac32cb2d6caaae71e16e10a99b0873b828777b5bae27e9ec"
+      },
+      {
+        "name": "Build Final Public-Safe Theme List",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "cae9fc2df5036eadf2af6329f508ce83a64c69f58d64111febe7c298161540bc"
+      }
+    ]
+  },
+  {
+    "id": "7dhbdbE5Uk0jMbk2",
+    "name": "Weekly Technology and Security Content Enrichment - Deterministic Recovery - v4.7",
+    "activeAtDiscovery": false,
+    "nodes": [
+      {
+        "name": "Weekly Schedule (Mon 9am)",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "parametersSha256": "34a73a8afd91405eb2dba012b4a7fa0df3a5bedd737123a29968f2186958d01b"
+      },
+      {
+        "name": "Manual Test Trigger",
+        "type": "n8n-nodes-base.manualTrigger",
+        "parametersSha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      {
+        "name": "Read Theme Lists",
+        "type": "n8n-nodes-base.readWriteFile",
+        "parametersSha256": "db9378383479cbf2227e10ecb326c83083951f6d28a17ef9ed1cd45abd5a44ee"
+      },
+      {
+        "name": "Parse Latest Theme File",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "c2bb98bbfae65bb92faab7d62547203676e9d7f5af12eee3c1ea257273b4cad1"
+      },
+      {
+        "name": "Consolidate Themes via qwen3.5",
+        "type": "n8n-nodes-base.httpRequest",
+        "parametersSha256": "c821b92af370ec608013b4fa1fb4d2e36d9c673b07e6f0f89f0449f2a39132b7"
+      },
+      {
+        "name": "Parse Consolidated Themes",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "d37da94241d69a9ef72714f97f528d64c0004bb7db7b108f0ac091b681a69697"
+      },
+      {
+        "name": "Search Theme-Matched News",
+        "type": "n8n-nodes-base.httpRequest",
+        "parametersSha256": "4a0e16d1468cdc4ccdd3814fd9819b592fd689c547f0563e9f436dec5ee2d26a"
+      },
+      {
+        "name": "Create Discovery Queries",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "e5e31908e83c8124a3447b62c930721b0c5834d31a7f4f3e0c76cfe1b067d7d1"
+      },
+      {
+        "name": "Search Emerging and Authoritative News",
+        "type": "n8n-nodes-base.httpRequest",
+        "parametersSha256": "4a0e16d1468cdc4ccdd3814fd9819b592fd689c547f0563e9f436dec5ee2d26a"
+      },
+      {
+        "name": "Flatten Theme News",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "f6e8d0108200c1c5d7618bf6f9da15bdb9724fae461c3e50edfc0f5ebceb7779"
+      },
+      {
+        "name": "Flatten Discovery News",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "6d1fc817097591cd2676d2879b1f266e4b4d3a93a77f1ba02dff94b64b86651f"
+      },
+      {
+        "name": "Merge News Results",
+        "type": "n8n-nodes-base.merge",
+        "parametersSha256": "f6542b24c00c8eae3aafd4a98b2ec5d18cc08b31a7c24ae78a8c3c455e604c25"
+      },
+      {
+        "name": "Deduplicate and Package News",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "bda2689f09abd9e32c451bf782ec278b1c094433f3015f7be5f333ff5d06c1dc"
+      },
+      {
+        "name": "Rank Evidence-Bound Opportunities via gpt-oss",
+        "type": "n8n-nodes-base.httpRequest",
+        "parametersSha256": "d589768f6c3a0bd5bccf63f9048850fdab72004ff347db904948ac52cd52206f"
+      },
+      {
+        "name": "Build Content Brief Files",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "80b4a83bea2dda1e804e1836bb6dfdf818f751ac900e2c3a12c69020c7d9f3a8"
+      },
+      {
+        "name": "Write Content Brief Files",
+        "type": "n8n-nodes-base.readWriteFile",
+        "parametersSha256": "f6c185b3ea86a394fc525acad98f2ba64c7712500aa94d1401d1bf3d59c431dd"
+      },
+      {
+        "name": "Brave Credential Instructions",
+        "type": "n8n-nodes-base.stickyNote",
+        "parametersSha256": "31e501d9bad489269b67b7f92ab15e4c1870c294b2db1615b2a37a0125811059"
+      },
+      {
+        "name": "Workflow Notes",
+        "type": "n8n-nodes-base.stickyNote",
+        "parametersSha256": "bd95719ad7732346fa51f2a3c0e8d2cafcb9fc38c3cf94f828ae7eec12b5da03"
+      },
+      {
+        "name": "Create Evidence Recovery Queries",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "8ffaecfea64510d274cb40e2fadf8de6074606f7d7874965a9662110c4c7242b"
+      },
+      {
+        "name": "Search Evidence Recovery and Industry News",
+        "type": "n8n-nodes-base.httpRequest",
+        "parametersSha256": "7e31d6f5ce01473f2b58f3cd60fd7523089f1c9c66d971ae29fd65a42eecb840"
+      },
+      {
+        "name": "Merge and Reclassify Recovery Evidence",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "072b7667925c60456662f3d637cc24066e747a0d1762e92e48d3216ed1003eeb"
+      },
+      {
+        "name": "Final Rank Evidence-Bound Opportunities via gpt-oss",
+        "type": "n8n-nodes-base.httpRequest",
+        "parametersSha256": "43e597f55ad0a06ff13ed8f178ef4611f46371072495328d0c34669165b966d7"
+      },
+      {
+        "name": "Evidence Recovery Notes",
+        "type": "n8n-nodes-base.stickyNote",
+        "parametersSha256": "d30d77fbfadb00d4efe6b643b66df519a27ec546c1f57f8e44bdb16e58099a91"
+      },
+      {
+        "name": "Create Authoritative Foundation Queries",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "88f919065092854e48678bb53f84931e61260e2cb651f12dac770e881bf9c11d"
+      },
+      {
+        "name": "Search Authoritative Foundations",
+        "type": "n8n-nodes-base.httpRequest",
+        "parametersSha256": "f790636c986b458504cf39859fdb27cde19365d04f011c14993d21e9549651a6"
+      },
+      {
+        "name": "Flatten Authoritative Foundations",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "3a516ee9ab0f4f5fa7e1b91a76e3e973e21ef77a7b32327dcee4ce445bd5c653"
+      },
+      {
+        "name": "Web Foundation Credential Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "parametersSha256": "79a489110a843fdc4987b9127dd3c18234653033e5963a3c80aa6bdd16414ad0"
+      }
+    ]
+  },
+  {
+    "id": "on2tXEPsd4eeK6X4",
+    "name": "Weekly LinkedIn Editorial Planner - Natural Language - v1.6.3",
+    "activeAtDiscovery": false,
+    "nodes": [
+      {
+        "name": "Weekly Schedule (Mon 10am)",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "parametersSha256": "e91d703c74b5af128a9e90b9619385c1d99b3db30a6932d1bc80a986549908b7"
+      },
+      {
+        "name": "Manual Test Trigger",
+        "type": "n8n-nodes-base.manualTrigger",
+        "parametersSha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      {
+        "name": "Read Evidence-Calibrated Candidates",
+        "type": "n8n-nodes-base.readWriteFile",
+        "parametersSha256": "4646f3f243be9197fb5d443c9f3573999e230e50e42ce521ff497f6aeae11553"
+      },
+      {
+        "name": "Parse Latest Candidate File",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "a9862292d3e4dc4571dc8887158c445fb5f55c3856a1fb32c97ed47f693598e7"
+      },
+      {
+        "name": "Add Editorial Policy",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "b40bf84ff9ba497ea123eb2c4ba6d92382f5ee665d8ec12a1c8c907312e8824e"
+      },
+      {
+        "name": "Plan Dynamic Editorial Portfolio via gpt-oss",
+        "type": "n8n-nodes-base.httpRequest",
+        "parametersSha256": "ffdb2a7928ef5455aea69b58a7959d0c819e0839ce1eca766c30d7497f9bd40e"
+      },
+      {
+        "name": "Validate Editorial Plan",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "c64758cff98665cf40e21c3d6357969d081e10121192cf90e074018778485fad"
+      },
+      {
+        "name": "Prepare Editorial Plan Files",
+        "type": "n8n-nodes-base.code",
+        "parametersSha256": "bd190fa2aa24729f0d85f2e601f3b1eae8250f87dc9a7a3e207e93a0d7c475f8"
+      },
+      {
+        "name": "Write Editorial Plan Files",
+        "type": "n8n-nodes-base.readWriteFile",
+        "parametersSha256": "f6c185b3ea86a394fc525acad98f2ba64c7712500aa94d1401d1bf3d59c431dd"
+      },
+      {
+        "name": "Workflow Notes",
+        "type": "n8n-nodes-base.stickyNote",
+        "parametersSha256": "916854445158981e1805777fdab2815eef4c0ca6fc6f6e879ac00e42eeea887b"
+      }
+    ]
+  }
+]

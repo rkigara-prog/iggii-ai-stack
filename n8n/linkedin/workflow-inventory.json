@@ -1,0 +1,127 @@
+[
+  {
+    "id": "OSk9k4Sn6mSDAzVF",
+    "name": "Weekly Transcript Sanitization",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "F9U35NoHnNg4zfPJ",
+    "name": "Weekly Transcript Sanitization",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "8NC1BTABodk9OnNL",
+    "name": "Weekly Transcript Sanitization",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "BQ5Nm2RlHgvcgH6z",
+    "name": "Weekly Transcript Sanitization",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "7IeZSlMav2E5psRV",
+    "name": "Weekly Transcript Sanitization",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "rDLB2ruGv818nrxK",
+    "name": "Weekly Transcript Sanitization",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "njZiTodsOFPzQnYe",
+    "name": "Weekly Technology and Security Content Enrichment",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "S6KdgtLBKMoYYpJm",
+    "name": "Weekly Technology and Security Content Enrichment",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "AzQ3QJ9FgofMsnFG",
+    "name": "My workflow",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "Yjc03gS873IHEJPI",
+    "name": "Weekly Transcript Sanitization - qwen3.5 + gpt-oss Privacy Gate - v3.1",
+    "activeAtDiscovery": true
+  },
+  {
+    "id": "up5el6dumwgWkx6i",
+    "name": "Weekly Technology and Security Content Enrichment - Evidence Calibrated - v3.2",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "sHpYeAunGnCXg1Hl",
+    "name": "Weekly LinkedIn Editorial Planner - Dynamic Industry Selection - v1.1",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "7dhbdbE5Uk0jMbk2",
+    "name": "Weekly Technology and Security Content Enrichment - Deterministic Recovery - v4.7",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "on2tXEPsd4eeK6X4",
+    "name": "Weekly LinkedIn Editorial Planner - Natural Language - v1.6.3",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "cFKKDMlNSFD9iWtq",
+    "name": "Daily M365 Morning Brief - v1.0",
+    "activeAtDiscovery": true
+  },
+  {
+    "id": "19QDI5fNle3LrXKo",
+    "name": "OMC Console M365 Meeting Snapshot - v1.1",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "HL1gXRPoAsXIpHPn",
+    "name": "OMC Console M365 Meeting Snapshot - v1.2",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "lsQRAxjnvPuXOgCz",
+    "name": "OMC Console M365 Meeting Snapshot - v1.3",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "mLsU4vFAMnYCYgXj",
+    "name": "OMC Console M365 Meeting Snapshot - v1.4",
+    "activeAtDiscovery": true
+  },
+  {
+    "id": "dfhYyYK30v1RSXT0",
+    "name": "Weekly Transcript Sanitization - Qwen 3.8 27B Quality Eval - v3.2.1",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "6puhknL2ND5ZoHIp",
+    "name": "Weekly Technology and Security Content Enrichment - Qwen 3.8 27B Quality Eval - v4.7.1",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "xl5xFQvuJknODpCN",
+    "name": "Weekly LinkedIn Editorial Planner - Qwen 3.8 27B Quality Eval - v1.7.1",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "bTlOYfcPkmQRHBpi",
+    "name": "Weekly Transcript Sanitization - Qwen 3.8 27B Quality Eval - v3.2.1",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "szJqYdDcKGjUe6uP",
+    "name": "Weekly Technology and Security Content Enrichment - Qwen 3.8 27B Quality Eval - v4.7.1",
+    "activeAtDiscovery": false
+  },
+  {
+    "id": "lNIMf1y915NYA3SH",
+    "name": "Weekly LinkedIn Editorial Planner - Qwen 3.8 27B Quality Eval - v1.7.1",
+    "activeAtDiscovery": false
+  }
+]
