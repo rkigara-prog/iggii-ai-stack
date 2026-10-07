@@ -152,6 +152,9 @@ Activation remains unapproved, and cutover/current-cycle validation is still pen
 All copies remain inactive; no real themes were sent to web research. The same PR contains the
 applied mount-access fix and successful normal-user validation probe.
 
+The final [cutover proposal](Cutover.md) lists the exact approval actions,
+production paths, rollback policy and remaining activation gates.
+
 ## Remaining decisions
 
 Broader privacy assurance, current-cycle handoff, production activation and

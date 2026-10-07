@@ -165,6 +165,9 @@ No credentials, context limits, model routes or services changed during this rep
 
 ## Proposed cutover, after the gates pass
 
+The final [cutover proposal](Cutover.md) records exact IDs, cron connections, paths,
+merge behavior, approval boundaries and the legacy-inference rollback limitation.
+
 1. Mount-access prerequisite completed: approved recreation and normal-user/task-
    runner validation passed; all migration workflows remain inactive.
 2. Focused sample privacy remediation is complete. Review the private grounded
@@ -185,8 +188,8 @@ No credentials, context limits, model routes or services changed during this rep
    cycle and matching source artifact provenance at each handoff. The inherited
    three-day lookback is not a guarantee of a successful current cycle.
 5. Seek separate activation approval. Initially replace only the original active
-   sanitization schedule: deactivate its workflow (retain its definition), restore
-   the IAS sanitization copy's original Monday 07:00 schedule connection, and
+   sanitization schedule: deactivate its workflow (retain its definition), connect
+   the IAS sanitization copy's Monday 07:00 schedule to `Begin Privacy Attempt`, and
    activate that copy. Keep enrichment/planning manual until an approved
    success-dependent handoff is in place; do not activate three independent crons
    that could consume stale artifacts after a failed upstream run. Preserve the
