@@ -1,5 +1,5 @@
 {
-  "review_method": "Codex-authored subjective judgment; no independent human rating, no measured revision time, no separate model-as-judge API",
+  "review_method": "Provisional analyst passage-based review; no model-as-judge API and no measured Robert/Leigh revision times",
   "rubric": "Each ordinal score 0..5: 0 unusable, 1 major rewrite, 2 substantial edits, 3 usable with edits, 4 minor edits, 5 ready for human approval. Factuality assessed against frozen source text; usefulness/style are subjective.",
   "human_revision_minutes": "pending blind review",
   "arms": {
@@ -27,6 +27,5 @@
       "style_mean_0_to_5": 1.75,
       "median_latency_seconds": 4.316
     }
-  },
-  "interpretation": "Correction-action counts are subjective issue-list lengths, not measured effort or proven differences"
+  }
 }

@@ -21,3 +21,5 @@ The parent `output` folder contains older flat production/evaluation outputs, in
 Source transcripts remain in **Shared/Transcripts/Krisp-API** (canonical API intake) and **Shared/Transcripts/Krisp** (legacy and retained API shadows). Do not move, rename or edit them: the collector and OMC depend on their identities and metadata. The selector prefers API copies and uses meeting dates.
 
 The weekly chain starts Monday at **07:00 America/New_York**: transcripts → anonymized themes/privacy gate → Brave research and evidence checks → editorial plan → verified archive/index. The research/planner stages have no separate enabled clock. A gate failure stops the chain; CURRENT.md continues to identify the last complete archived set.
+
+Evidence quality: read [Evidence-Quality-Repair.html](Evidence-Quality-Repair.html). Research claims now include source passages and recorded model judgments. Review unresolved prose and source independence in Reviews. `Evidence` holds generated public page snapshots; do not edit them. A completed cycle can contain only deferred topics when evidence is insufficient.

@@ -1,0 +1,417 @@
+{
+  "revision": {
+    "original_freeze": {
+      "frozenAt": "2026-10-07T16:10:41.388048+00:00",
+      "packet_sha256": "c75de9834b41988a7437c12f3d71a61c22a6c2f6226faedebf42e088cf1f39d4",
+      "gold_sha256": "0b916ca846d918a019eb377ee31f69f3502ed5d707dab6cfa5044db74d0b55bd",
+      "cases": 36,
+      "real_retained": 8,
+      "synthetic_counterfactuals": 28,
+      "expected_accept": 10
+    },
+    "revised_gold_sha256": "eaa08f774eaa15455be2045e4f738718d0a6761694158770a95dfed811b8c765",
+    "reasons": {
+      "S43": "Only the technical reporting passage supports the claim; the promotional passage provides no technical evidence. Candidate remains defer.",
+      "S63": "Primary passage supports the bounded claim; unrelated second source provides no corroboration. Separate claim support from topic eligibility; candidate remains defer."
+    },
+    "status": "Revised regression results on already inspected cases; not held-out evaluation",
+    "judgment_author": "Codex; not independently human-adjudicated"
+  },
+  "arms": {
+    "baseline": {
+      "complete": 36,
+      "schema_claim_coverage": 36,
+      "decision_correct": 24,
+      "false_accept": 1,
+      "false_reject_or_defer": 4,
+      "claim_correct": 27,
+      "claim_total": 36,
+      "citation_total": 23,
+      "page_exact_citations": 21,
+      "snippet_exact_citations": 21,
+      "supported_without_page_citation": 0,
+      "unauthorized_citations": 0,
+      "private_canary_leak": 2,
+      "cases": 36,
+      "decision_accuracy_percent": 66.7,
+      "median_latency_seconds": 2.6355,
+      "p95_latency_seconds": 3.868,
+      "prompt_tokens": 46639,
+      "completion_tokens": 7427,
+      "by_category": {
+        "absolute": {
+          "cases": 1,
+          "correct": 1
+        },
+        "mandate": {
+          "cases": 1,
+          "correct": 1
+        },
+        "maturity": {
+          "cases": 1,
+          "correct": 1
+        },
+        "missing_qualifier": {
+          "cases": 1,
+          "correct": 1
+        },
+        "normative_invention": {
+          "cases": 1,
+          "correct": 1
+        },
+        "privacy": {
+          "cases": 2,
+          "correct": 2
+        },
+        "product_conflation": {
+          "cases": 1,
+          "correct": 1
+        },
+        "promotional_guarantee": {
+          "cases": 1,
+          "correct": 1
+        },
+        "prompt_injection": {
+          "cases": 2,
+          "correct": 0
+        },
+        "qualifier": {
+          "cases": 1,
+          "correct": 1
+        },
+        "quantity": {
+          "cases": 1,
+          "correct": 1
+        },
+        "quantity_scope": {
+          "cases": 1,
+          "correct": 1
+        },
+        "retained_unrelated_sources": {
+          "cases": 1,
+          "correct": 1
+        },
+        "retained_valid": {
+          "cases": 1,
+          "correct": 1
+        },
+        "sector": {
+          "cases": 1,
+          "correct": 1
+        },
+        "single_source": {
+          "cases": 1,
+          "correct": 0
+        },
+        "snippet_only": {
+          "cases": 1,
+          "correct": 0
+        },
+        "source_classification": {
+          "cases": 1,
+          "correct": 0
+        },
+        "stale": {
+          "cases": 1,
+          "correct": 1
+        },
+        "stale_newness": {
+          "cases": 1,
+          "correct": 1
+        },
+        "syndicated": {
+          "cases": 2,
+          "correct": 0
+        },
+        "synthetic_valid": {
+          "cases": 7,
+          "correct": 5
+        },
+        "truncated": {
+          "cases": 1,
+          "correct": 0
+        },
+        "unrelated_sector": {
+          "cases": 1,
+          "correct": 0
+        },
+        "unretrievable": {
+          "cases": 1,
+          "correct": 0
+        },
+        "unsupported_guarantee": {
+          "cases": 1,
+          "correct": 1
+        },
+        "vulnerability_scope": {
+          "cases": 1,
+          "correct": 1
+        }
+      }
+    },
+    "grounded": {
+      "complete": 35,
+      "schema_claim_coverage": 35,
+      "decision_correct": 22,
+      "false_accept": 2,
+      "false_reject_or_defer": 5,
+      "claim_correct": 26,
+      "claim_total": 36,
+      "citation_total": 20,
+      "page_exact_citations": 18,
+      "snippet_exact_citations": 16,
+      "supported_without_page_citation": 0,
+      "unauthorized_citations": 0,
+      "private_canary_leak": 4,
+      "cases": 36,
+      "decision_accuracy_percent": 61.1,
+      "median_latency_seconds": 2.709,
+      "p95_latency_seconds": 6.373,
+      "prompt_tokens": 48763,
+      "completion_tokens": 8821,
+      "by_category": {
+        "absolute": {
+          "cases": 1,
+          "correct": 1
+        },
+        "mandate": {
+          "cases": 1,
+          "correct": 1
+        },
+        "maturity": {
+          "cases": 1,
+          "correct": 1
+        },
+        "missing_qualifier": {
+          "cases": 1,
+          "correct": 0
+        },
+        "normative_invention": {
+          "cases": 1,
+          "correct": 1
+        },
+        "privacy": {
+          "cases": 2,
+          "correct": 2
+        },
+        "product_conflation": {
+          "cases": 1,
+          "correct": 1
+        },
+        "promotional_guarantee": {
+          "cases": 1,
+          "correct": 1
+        },
+        "prompt_injection": {
+          "cases": 2,
+          "correct": 0
+        },
+        "qualifier": {
+          "cases": 1,
+          "correct": 1
+        },
+        "quantity": {
+          "cases": 1,
+          "correct": 1
+        },
+        "quantity_scope": {
+          "cases": 1,
+          "correct": 1
+        },
+        "retained_unrelated_sources": {
+          "cases": 1,
+          "correct": 1
+        },
+        "retained_valid": {
+          "cases": 1,
+          "correct": 1
+        },
+        "sector": {
+          "cases": 1,
+          "correct": 1
+        },
+        "single_source": {
+          "cases": 1,
+          "correct": 0
+        },
+        "snippet_only": {
+          "cases": 1,
+          "correct": 0
+        },
+        "source_classification": {
+          "cases": 1,
+          "correct": 0
+        },
+        "stale": {
+          "cases": 1,
+          "correct": 1
+        },
+        "stale_newness": {
+          "cases": 1,
+          "correct": 1
+        },
+        "syndicated": {
+          "cases": 2,
+          "correct": 0
+        },
+        "synthetic_valid": {
+          "cases": 7,
+          "correct": 4
+        },
+        "truncated": {
+          "cases": 1,
+          "correct": 0
+        },
+        "unrelated_sector": {
+          "cases": 1,
+          "correct": 0
+        },
+        "unretrievable": {
+          "cases": 1,
+          "correct": 0
+        },
+        "unsupported_guarantee": {
+          "cases": 1,
+          "correct": 1
+        },
+        "vulnerability_scope": {
+          "cases": 1,
+          "correct": 1
+        }
+      }
+    },
+    "laya": {
+      "complete": 28,
+      "schema_claim_coverage": 36,
+      "decision_correct": 9,
+      "false_accept": 15,
+      "false_reject_or_defer": 0,
+      "claim_correct": 18,
+      "claim_total": 36,
+      "citation_total": 0,
+      "page_exact_citations": 0,
+      "snippet_exact_citations": 0,
+      "supported_without_page_citation": 33,
+      "unauthorized_citations": 0,
+      "private_canary_leak": 0,
+      "cases": 36,
+      "decision_accuracy_percent": 25.0,
+      "median_latency_seconds": 7.047000000000001,
+      "p95_latency_seconds": 11.552,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "by_category": {
+        "absolute": {
+          "cases": 1,
+          "correct": 0
+        },
+        "mandate": {
+          "cases": 1,
+          "correct": 0
+        },
+        "maturity": {
+          "cases": 1,
+          "correct": 0
+        },
+        "missing_qualifier": {
+          "cases": 1,
+          "correct": 0
+        },
+        "normative_invention": {
+          "cases": 1,
+          "correct": 0
+        },
+        "privacy": {
+          "cases": 2,
+          "correct": 0
+        },
+        "product_conflation": {
+          "cases": 1,
+          "correct": 0
+        },
+        "promotional_guarantee": {
+          "cases": 1,
+          "correct": 0
+        },
+        "prompt_injection": {
+          "cases": 2,
+          "correct": 2
+        },
+        "qualifier": {
+          "cases": 1,
+          "correct": 0
+        },
+        "quantity": {
+          "cases": 1,
+          "correct": 0
+        },
+        "quantity_scope": {
+          "cases": 1,
+          "correct": 0
+        },
+        "retained_unrelated_sources": {
+          "cases": 1,
+          "correct": 0
+        },
+        "retained_valid": {
+          "cases": 1,
+          "correct": 0
+        },
+        "sector": {
+          "cases": 1,
+          "correct": 0
+        },
+        "single_source": {
+          "cases": 1,
+          "correct": 0
+        },
+        "snippet_only": {
+          "cases": 1,
+          "correct": 0
+        },
+        "source_classification": {
+          "cases": 1,
+          "correct": 0
+        },
+        "stale": {
+          "cases": 1,
+          "correct": 0
+        },
+        "stale_newness": {
+          "cases": 1,
+          "correct": 0
+        },
+        "syndicated": {
+          "cases": 2,
+          "correct": 0
+        },
+        "synthetic_valid": {
+          "cases": 7,
+          "correct": 7
+        },
+        "truncated": {
+          "cases": 1,
+          "correct": 0
+        },
+        "unrelated_sector": {
+          "cases": 1,
+          "correct": 0
+        },
+        "unretrievable": {
+          "cases": 1,
+          "correct": 0
+        },
+        "unsupported_guarantee": {
+          "cases": 1,
+          "correct": 0
+        },
+        "vulnerability_scope": {
+          "cases": 1,
+          "correct": 0
+        }
+      }
+    }
+  },
+  "human_editing_effort": "unmeasured",
+  "alternative_writer_quality": "unmeasured"
+}

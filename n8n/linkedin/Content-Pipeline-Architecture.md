@@ -278,3 +278,10 @@ Repository references below support the current trace and distinguish historical
 - [Transcript intake and identity repair](https://github.com/rkigara-prog/iggii-ai-stack/blob/main/ops/n8n/krisp-api-repair-20261007/README.md)
 - [Cutover history and applied publication](https://github.com/rkigara-prog/iggii-ai-stack/blob/main/n8n/linkedin/Cutover.md)
 - [Archive implementation](https://github.com/rkigara-prog/iggii-ai-stack/blob/main/n8n/linkedin/archive-artifact.cjs)
+
+## Evidence-quality deployment addendum — October 7, 2026
+
+This addendum supersedes earlier descriptions of snippet-only evidence validation.
+`\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin\Evidence` stores public source HTML, extracted text, retrieval metadata and passage identifiers. The n8n retrieval helper creates it; final enrichment consumes bounded passage packets. Robert and Leigh may read but should not edit it. It exists separately to retain source provenance without mixing public evidence with private transcripts or generated plans. Immutable snapshots have no automatic expiry; successful retrievals can be reused for 24 hours through replaceable latest pointers. The existing archive still copies five outputs, including selected passages and semantic judgments embedded in candidate JSON; it does not copy the full page cache.
+
+Enrichment now applies page-binding and source-origin rules, including narrowly attributed authoritative single-source facts. Unsupported or unresolved topics defer. Semantic judgments remain home-chat judgments and require human review. No new production post-drafting stage exists. Full-prose review flags in the planner/evaluation path identify unmatched assertions; Reviews remains a human record. Read [the repair record](Evidence-Quality-Repair.html) and [policy](https://github.com/rkigara-prog/iggii-ai-stack/blob/main/n8n/linkedin/evidence/README.md).

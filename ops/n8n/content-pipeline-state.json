@@ -124,5 +124,24 @@
       1800
     ],
     "mondayClockAndPostingStatePreserved": true
+  },
+  "latestAppliedMilestone": "evidenceQualityRepair",
+  "evidenceQualityRepair": {
+    "recordedAt": "2026-10-07",
+    "status": "deployed; focused gate passed; controlled cycle completed through documented continuation",
+    "latestPublishedVersions": {
+      "IASLinkedinSan01": "0f5efe7d-b8ff-4547-8910-35ab7ecc1049",
+      "IASLinkedinEnr01": "23e9d7d0-1e58-4c88-ae04-397ea769b995",
+      "IASLinkedinPlan1": "053a477f-33e3-4625-b5b4-31f420cfb503"
+    },
+    "report": "../../n8n/linkedin/Evidence-Quality-Repair.md",
+    "acceptance": "../../n8n/linkedin/evidence/acceptance.json",
+    "cycleResult": "../../n8n/linkedin/evidence/cycle-result.json",
+    "mondayClockAndPostingStatePreserved": true,
+    "homeChatUnchanged": true,
+    "cacheRoot": "/data/output/ias-linkedin/Evidence",
+    "retention": "indefinite; no deletion",
+    "humanEditingEffort": "unmeasured",
+    "alternativeWriterQuality": "unmeasured"
   }
 }

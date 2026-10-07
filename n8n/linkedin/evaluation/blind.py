@@ -39,7 +39,7 @@ def main():
             draft = record['parsed']['draft']
             samples.append(f'### {bid}\n\n{draft}')
             key.append(f'## {bid}: home-chat / {arm} writing instructions\n\nCase {cid}. '
-                       'The draft is deliberately unedited. Required corrections:\n\n'
+                       'The draft is deliberately unedited. Provisional Codex judgments (not measured human effort):\n\n'
                        + '\n'.join('- ' + e for e in edits[f'{arm}-{cid}']['required_edits']))
         for source in packet['sources']:
             evidence_sources[source['id']] = source
@@ -111,7 +111,7 @@ minutes and changed sentences; a declined draft may be marked rewrite-required.
 There are three writing pairs and three short evidence-assessment pairs. Assessments
 should reject false claims and defer when independent evidence is insufficient.
 After scoring, open Answer-Key.md for model/instruction identities, expected decisions
-and concrete required corrections. Discuss disagreements against Evidence.md.
+and provisional Codex correction judgments. Discuss disagreements against Evidence.md.
 
 These review files are human records. The active n8n pipeline does not consume them.
 No publication, automation approval or model deployment occurs from these files.

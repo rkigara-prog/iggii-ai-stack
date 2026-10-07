@@ -1,0 +1,47 @@
+{
+  "status": "Regression review of saved drafts; no new model calls",
+  "coverage": {
+    "writing-baseline-R01": {
+      "sentences": 8,
+      "unmapped": 8,
+      "review_required": true
+    },
+    "writing-baseline-S11": {
+      "sentences": 8,
+      "unmapped": 8,
+      "review_required": true
+    },
+    "writing-baseline-S21": {
+      "sentences": 8,
+      "unmapped": 8,
+      "review_required": true
+    },
+    "writing-baseline-S31": {
+      "sentences": 12,
+      "unmapped": 12,
+      "review_required": true
+    },
+    "writing-grounded-R01": {
+      "sentences": 8,
+      "unmapped": 8,
+      "review_required": true
+    },
+    "writing-grounded-S11": {
+      "sentences": 7,
+      "unmapped": 6,
+      "review_required": true
+    },
+    "writing-grounded-S21": {
+      "sentences": 7,
+      "unmapped": 6,
+      "review_required": true
+    },
+    "writing-grounded-S31": {
+      "sentences": 11,
+      "unmapped": 11,
+      "review_required": true
+    }
+  },
+  "human_editing_effort": "unmeasured",
+  "alternative_writer_quality": "unmeasured"
+}
