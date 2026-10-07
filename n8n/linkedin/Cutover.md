@@ -1,8 +1,9 @@
 # Final PR #12 cutover proposal
 
-Status: ready for code/documentation review; **merge and activation are not approved**.
-All migration/evaluation copies remain inactive. This proposal uses the completed
-acceptance evidence; no passed tests were repeated for its preparation.
+Status: **success-only weekly orchestration is prepared and validated; all
+migration workflows remain inactive.** The latest automated cutover plan at the
+end of this document supersedes the earlier manual-downstream proposal.
+No schedule switch or subworkflow publication has been performed.
 
 ## Workflow identities and proposed activation states
 
@@ -226,3 +227,262 @@ Rollback steps after an approved switch:
 Before any schedule change, failure/denial simply leaves the original activation
 states intact. OMC calendars/messages, publishing, images, backup/monitoring/ASM/
 NetBox and additional-model deployment remain outside this cutover.
+
+## Approved attempt — 2026-10-07
+
+PR #12 was squash-merged as `5093a8980fd7dbfd6e3ffd7e2216422d114087ab`
+with `[skip ci]`; no deployment workflow run was created. The approved production
+profiles and three helpers were installed in the isolated production namespace.
+All three replacement workflows remain inactive and unscheduled. Private before/after
+snapshots confirm unchanged activation states and unchanged nodes/connections for
+the other 27 workflows. Original sanitization remains active. No service restart,
+schedule switch, web research, editorial planning or publishing occurred.
+
+The controlled real-input sanitization attempt stopped at `Build Final Public-Safe
+Theme List`: **Rejected theme has no policy reason**. The attempt processed 17 meetings. Across 11 review responses
+and 61 decisions, three rejected decisions had all risk flags false. These are
+internally inconsistent privacy adjudications, not evidence that private content
+was disclosed or that the previously repaired four-meeting sample regressed.
+The current approval marker remains `pending`; no theme artifact was written.
+Enrichment and planning were deliberately not run. Passed acceptance checks were
+not repeated, and validation criteria were not relaxed.
+
+The approved gate requires stopping here with the old schedule unchanged. The
+remaining content blocker is reliable, complete policy explanations on this
+production batch; retain the separate review and fail-closed validation when
+remediating it. Private execution evidence is stored under
+`/home/node/.n8n/ias-cutover` in the persistent n8n data directory and
+`/tmp/ias-cutover` on Unraid, outside Git.
+
+A separate access prerequisite for the eventual native schedule switch is missing:
+this instance has no native n8n API key. An owner-authorized key with workflow
+read/update/activate/deactivate access was requested via a mode-0600 host file
+`/mnt/app_pool/appdata/n8n/data/ias-cutover-api-key`, never chat. It was absent
+at the final check. This access alone does not clear the privacy gate. No native
+activation operation or direct database flag edit was attempted.
+
+## Targeted privacy repair — 2026-10-07
+
+The user authorized resolving the privacy gate while leaving schedules unchanged.
+The private native API key is now installed with mode 0600 and authenticated
+workflow reads succeeded. Its value was neither displayed nor added to Git.
+
+Inspection of all cached reviews located the three inconsistent decisions in
+**one** five-candidate batch. All three marked `educational=false` but every
+risk flag false. The review instructions did not explicitly connect absent
+educational support to `unsupported_topic`; the correction makes that mapping
+and the existing nonempty rejection-reason requirement explicit. The same rule
+is documented in query review. No validator or acceptance criterion changed.
+Separate extraction, source-aware privacy review and external-research guards remain.
+
+An attempted conditional generation schema produced an invalid response shape
+and was blocked. It was removed, retaining the established schema. With the
+corrected prompt, the one affected batch passed the unchanged validator: one
+retained, four rejected. The actual embedded final-list builder was replayed
+using that response and the ten previously passing cached responses: 61 decisions,
+49 rejected, 12 final themes. This is focused cached-input validation, **not**
+a newly completed production workflow execution or permission to approve its marker.
+
+A separate local audit of the affected batch's one retained theme found it clear,
+useful and grounded, with zero disclosure, ambiguity or missed safe educational
+opportunity. Both reviews use the same served model; the audit does not establish
+independent assurance for all twelve final themes. Earlier passed sample/model
+checks were not repeated. Private source material, responses, exact output and
+audit findings remain outside Git.
+
+The corrected review prompts are installed only in `IASLinkedinSan01` and
+`IASLinkedinEnr01`, both inactive and unscheduled. Native API update installed the
+sanitization change. The enrichment copy was already archived; its native API
+update was refused, so CLI import installed the prompt while preserving that
+archive state. No archive/activation state or production schedule was changed.
+
+**Remaining activation gate:** the production marker remains pending. A fresh
+controlled production-profile sanitization execution, review of its private
+evidence, then provenance-checked enrichment and planning are still required
+before the exact previously approved sanitization schedule switch. The cached
+repair must not be promoted into production approval. No research or downstream
+execution was performed during this repair.
+
+## Completed controlled cycle — 2026-10-07 UTC
+
+The user authorized one manual end-to-end production-profile cycle and requested
+readiness reporting, with schedules disabled throughout. No earlier passed
+synthetic, fixed-sample or targeted model checks were repeated.
+
+| Gate | Fresh execution result |
+| --- | --- |
+| Sanitization and separate source-aware privacy review | 17 meetings; 62 candidate decisions; 57 rejected; 5 final public-safe themes; new approved marker |
+| Web research and evidence ranking | 63 Brave queries; 15 qualified bundles; 1 verified candidate; 5 watchlist candidates |
+| Editorial planning | 1 selected verified topic; `partial` portfolio status; watchlist excluded; manual webinar review required; automatic publishing prohibited |
+| Source-link checks | 10 unique links across verified/watchlist content; all returned successful nonempty responses; both selected-topic links preserved exactly |
+
+The privacy gate and local source/response validation passed **before** enrichment
+was initiated. Every Brave branch's approval guard used the same current privacy
+run/hash. File-byte hashes matched the successful executions' binary output.
+The planner consumed the exact new candidates and preserved their exact source
+URLs. Evidence excerpts matched supplied source records; independent-source-family
+requirements and deterministic scoring passed. Link reachability does not itself
+establish factual accuracy; manual source/webinar review before drafting remains.
+
+All five newly written files are mode 0600 under `/data/output/ias-linkedin`
+(backing root `/mnt/user/Shared/ContentPipeline/output/ias-linkedin`):
+
+- `theme-list-model-eval-qwen35-2026-10-06.txt`
+- `content-brief-model-eval-2026-10-06.md`
+- `content-candidates-model-eval-2026-10-06.json`
+- `linkedin-editorial-plan-model-eval-2026-10-06.md`
+- `linkedin-editorial-plan-model-eval-2026-10-06.json`
+
+The filenames reflect the preserved `America/New_York` date (October 6 during
+this October 7 UTC execution). Exact outputs, workflow snapshots, CLI logs,
+source-link details and current-cycle hashes remain private in
+`/home/node/.n8n/ias-cycle-20261007` and `/tmp/ias-cycle-20261007` on Unraid.
+The output directory stays mode 0700. No content payload was committed.
+
+Before/after snapshots of all 30 workflows confirm unchanged nodes, connections,
+settings, active states and archive states. All three migration schedules remain
+disabled/disconnected. Enrichment and planner migration copies were already
+archived; their manual CLI execution path was exercised successfully and their
+archive states were preserved. Normal UI access to those archived copies would
+require unarchiving them while inactive; that change was not made in this cycle.
+
+No cycle blocker remains. The earlier pending-marker gate is superseded by this
+new approved execution, not by replayed/cached evidence. Native API access works.
+The recorded same-model assurance limits, manual webinar review, single-topic
+partial portfolio and unavailable legacy-inference fallback remain disclosed.
+PR #13 contains the prompt fix and validation tooling and still requires review/
+merge; merge it with `[skip ci]` to avoid unrelated service reconciliation.
+
+The next schedule change remains exactly: unpublish `Yjc03gS873IHEJPI`, then
+publish `IASLinkedinSan01` with `Weekly Schedule (Mon 7am)` enabled, cron
+`0 7 * * 1`, `America/New_York`, connected to **`Begin Privacy Attempt`**.
+Confirm exactly one active sanitization workflow. Keep `7dhbdbE5Uk0jMbk2` and
+`IASLinkedinEnr01` inactive (their stored Monday 09:00 `0 9 * * 1` schedule
+remains disabled in the migration); keep `on2tXEPsd4eeK6X4` and `IASLinkedinPlan1`
+inactive (stored Monday 10:00 `0 10 * * 1`, disabled in the migration).
+No activation endpoint was called. No LinkedIn post was drafted or published.
+
+## Complete automated cutover plan — PR #13 orchestration revision
+
+Review confirmed that the successful content cycle had used three separately
+started workflows. Sanitization did not trigger enrichment, and enrichment did
+not trigger planning. The revised inactive definitions now connect those stages:
+
+```mermaid
+flowchart LR
+  A[Monday 07:00 sanitization] --> B[Separate privacy review and approved artifact]
+  B --> C[Wait for enrichment]
+  C --> D[Current candidate proof]
+  D --> E[Wait for editorial planning]
+  E --> F[Private plan files and manual review]
+```
+
+`Approve Privacy Artifact` now prepares only approval metadata and calls
+`IASLinkedinEnr01` once, waiting for completion. The enrichment input gate verifies
+that exact privacy run/hash/file, in addition to the retained per-query and per-Brave
+branch privacy checks. After both content files are successfully written, it
+records `candidate-status.json`, binding their hashes to that approval, and calls
+`IASLinkedinPlan1` once, waiting for completion. Planning reads the exact candidate
+file from that proof and rechecks the same handoff before writing its two files.
+An old three-day-lookback file cannot stand in for the current successful handoff.
+New calls and guards stop on errors; the existing bounded evidence-recovery
+continuation/fallback behavior is preserved. No publishing node was introduced.
+
+Deploy the additional helper `pipeline-artifact.cjs` alongside the existing three
+helpers in `/data/output/ias-linkedin`, mode 0600, UID/GID 1000, directory mode 0700.
+The helper and all three revised production profiles are already installed inactive.
+The new candidate marker is created only after a successful new enrichment write;
+no marker was manufactured from the previously completed content check.
+
+### Orchestration-only validation and review
+
+Native n8n runtime checks with synthetic content stubs passed:
+
+| Scenario | Observed behavior |
+| --- | --- |
+| Success | Enrichment → planning → completion; parent waited for both children |
+| Privacy approval failure | Neither downstream stage called; parent failed |
+| Enrichment failure | Planning not called; parent failed |
+| Planner failure | Failure propagated through enrichment to sanitization |
+| Candidate hash changed after writing | Blocked before planning; parent failed |
+
+The installed n8n 2.40 runtime rejects database-ID calls to unpublished workflows.
+This was confirmed by a blocked fixture call. Consequently the cutover must publish
+both child workflows, with their schedule nodes still disabled/disconnected.
+The remaining success/error tests used inline synthetic children through the same
+waiting Execute Sub-workflow nodes, without publishing any fixture or migration.
+Temporary fixture workflows were removed. Synthetic logs/fixtures remain outside
+Git under `/home/node/.n8n/ias-orchestration` and `/data/output/ias-orchestration`.
+No inference, Brave research, transcripts or LinkedIn actions were used by these
+checks. The completed real content/privacy/source-link evidence above was reused.
+
+Diff review confirms preserved model requests, content/evidence/ranking/editorial
+validators, schedules, existing recovery behavior, workflow settings and credential
+bindings. Changes are confined to orchestration nodes/connections, the two file/input
+handoffs and the new helper/tooling/documentation. Sanitized exports omit credentials
+and payloads; private snapshots verify all other original definitions/states remain
+unchanged. Source/secret review found no private content or credential value.
+
+### Exact publication and schedule switch to approve
+
+This revised plan changes the earlier downstream-inactive proposal. **Do not infer
+approval to publish these children from the earlier sanitization-only switch.**
+All steps below remain proposed until the exact revised cutover is approved.
+
+1. Review/merge PR #13 at its approved head using a squash commit with `[skip ci]`,
+   avoiding unrelated LiteLLM reconciliation. Recheck repository checks/rules first.
+   Save fresh private workflow/version/state snapshots; wait for relevant running
+   executions without terminating them; refuse unexpected definition drift.
+2. Confirm the four installed helpers and three production profiles match the
+   reviewed revision. Retain the original flat output namespace and all original
+   workflow definitions. Inputs remain read-only `/data/transcripts/Krisp-API` and
+   `/data/transcripts/Krisp`; outputs remain `/data/output/ias-linkedin`.
+3. Unarchive `IASLinkedinPlan1` using the native API/UI, then publish that exact
+   reviewed version. Keep its Monday 10:00 cron `0 10 * * 1` **disabled and
+   disconnected**. Its active/published status permits subworkflow invocation only;
+   there is no enabled schedule or webhook. Original `on2tXEPsd4eeK6X4` stays inactive.
+4. Unarchive `IASLinkedinEnr01`, then publish that exact reviewed version. Keep its
+   Monday 09:00 cron `0 9 * * 1` **disabled and disconnected**. Confirm it calls
+   `IASLinkedinPlan1` with `waitForSubWorkflow: true`. Original `7dhbdbE5Uk0jMbk2`
+   stays inactive. No separate enrichment/planner clock triggers are enabled.
+5. Save `IASLinkedinSan01` with `Weekly Schedule (Mon 7am)` enabled, cron
+   `0 7 * * 1`, connected to **`Begin Privacy Attempt`**. Preserve
+   `America/New_York` and confirm its waiting call targets `IASLinkedinEnr01`.
+   Use native UI/API to unpublish `Yjc03gS873IHEJPI`, then publish the reviewed
+   `IASLinkedinSan01` version. Keep the original definition intact.
+6. Verify exactly one of the original/replacement sanitization pair is active;
+   the replacement has the sole enabled weekly clock; both child workflows are
+   published with schedule nodes disabled/disconnected; evaluation/probe workflows
+   remain inactive; all unrelated production workflow states remain unchanged.
+   Confirm the published versions contain the expected exact targets and guards.
+
+Supported native API operations are `POST /api/v1/workflows/<id>/unarchive`,
+`PUT /api/v1/workflows/<id>` while inactive, and
+`POST /api/v1/workflows/<id>/publish` / `.../unpublish`. Use the private installed
+owner API key without displaying/exporting it. No container restart, direct
+database flag edits or inference-service change is required. Publishing the
+children does not enable their stored clocks. No further model/content evaluation
+is proposed as an orchestration cutover prerequisite.
+
+After this switch, Monday 07:00 launches the entire chain when every gate passes;
+09:00 and 10:00 are no longer independent scheduled starts. Output basenames and
+private mount/backing paths remain those recorded above. There is no automatic
+LinkedIn drafting/publishing action. Manual source/webinar approval remains required
+before any separate future publishing workflow.
+
+### Rollback for the automated revision
+
+Unpublish `IASLinkedinSan01` first to stop new weekly starts. Let authorized
+in-flight executions finish; do not terminate them or start manual retries. Then
+unpublish `IASLinkedinEnr01` and `IASLinkedinPlan1`, leave all their schedules
+disabled/disconnected, and quarantine `privacy-status.json`, `candidate-status.json`
+and the new outputs privately. Retain original flat outputs. Restore prior inactive
+IAS definitions/archive states from the private snapshot if needed. Restore
+`Yjc03gS873IHEJPI` only if legacy inference is available and restoration is
+authorized; otherwise use the documented fail-safe halt with both sanitization
+workflows inactive. Original enrichment/planner stay inactive.
+
+No code/orchestration acceptance blocker remains. The remaining action is approval
+of this revised publication/schedule plan and PR review/merge. The disclosed
+same-model assurance limits and unavailable legacy inference fallback remain;
+this change neither weakens acceptance nor starts fallback models.

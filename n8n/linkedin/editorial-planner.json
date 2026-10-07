@@ -38,7 +38,7 @@
     },
     {
       "parameters": {
-        "fileSelector": "/data/output/ias-linkedin-acceptance/content-candidates-model-eval-2*.json",
+        "fileSelector": "={{ \"/data/output/ias-linkedin-acceptance/\" + JSON.parse($(\"Require Current Candidate Artifact\").first().json.stdout).candidate.fileName }}",
         "options": {}
       },
       "id": "d2596c2c-ac81-4fc9-a107-ce5817c50290",
@@ -153,6 +153,72 @@
         8384,
         16
       ]
+    },
+    {
+      "id": "ias-pipeline-stage-input",
+      "name": "Pipeline Stage Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        2400,
+        600
+      ],
+      "parameters": {
+        "inputSource": "passthrough"
+      }
+    },
+    {
+      "id": "ias-require-current-candidate-artifact",
+      "name": "Require Current Candidate Artifact",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        600
+      ],
+      "parameters": {
+        "command": "={{ \"IAS_PRIVACY_ROOT=/data/output/ias-linkedin-acceptance node /data/output/ias-linkedin-acceptance/pipeline-artifact.cjs verify-candidate \" + JSON.stringify($json).base64Encode() }}"
+      }
+    },
+    {
+      "id": "ias-validate-planner-artifact-selection",
+      "name": "Validate Planner Artifact Selection",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        600
+      ],
+      "parameters": {
+        "jsCode": "const proof=JSON.parse($('Require Current Candidate Artifact').first().json.stdout);\nconst items=$input.all();if(items.length!==1||items[0].json.sourceCandidateFile!==proof.candidate.fileName||items[0].json.sourceThemeFile!==proof.privacy.fileName)throw Error('Planner artifact handoff mismatch');\nreturn items;"
+      }
+    },
+    {
+      "id": "ias-check-handoff-before-writing-plan",
+      "name": "Check Handoff Before Writing Plan",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        600
+      ],
+      "parameters": {
+        "command": "={{ \"IAS_PRIVACY_ROOT=/data/output/ias-linkedin-acceptance node /data/output/ias-linkedin-acceptance/pipeline-artifact.cjs verify-candidate \" + JSON.stringify(JSON.parse($(\"Require Current Candidate Artifact\").first().json.stdout)).base64Encode() }}"
+      },
+      "executeOnce": true
+    },
+    {
+      "id": "ias-restore-current-plan-files",
+      "name": "Restore Current Plan Files",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        600
+      ],
+      "parameters": {
+        "jsCode": "return $('Prepare Editorial Plan Files').all();"
+      }
     }
   ],
   "connections": {
@@ -160,7 +226,7 @@
       "main": [
         [
           {
-            "node": "Read Evidence-Calibrated Candidates",
+            "node": "Require Current Candidate Artifact",
             "type": "main",
             "index": 0
           }
@@ -182,7 +248,7 @@
       "main": [
         [
           {
-            "node": "Add Editorial Policy",
+            "node": "Validate Planner Artifact Selection",
             "type": "main",
             "index": 0
           }
@@ -223,6 +289,61 @@
       ]
     },
     "Prepare Editorial Plan Files": {
+      "main": [
+        [
+          {
+            "node": "Check Handoff Before Writing Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pipeline Stage Input": {
+      "main": [
+        [
+          {
+            "node": "Require Current Candidate Artifact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Require Current Candidate Artifact": {
+      "main": [
+        [
+          {
+            "node": "Read Evidence-Calibrated Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Planner Artifact Selection": {
+      "main": [
+        [
+          {
+            "node": "Add Editorial Policy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Handoff Before Writing Plan": {
+      "main": [
+        [
+          {
+            "node": "Restore Current Plan Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restore Current Plan Files": {
       "main": [
         [
           {

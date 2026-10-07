@@ -200,3 +200,66 @@ state and leaves all IAS copies inactive. Original files/definitions are retaine
 outputs are separate. No full-post drafting or publishing is introduced. Webinar
 review remains mandatory, and `automaticPublishingAllowed` remains false. OMC,
 additional-model deployment, image generation and calendar work remain outside scope.
+
+## Targeted production-input privacy repair — 2026-10-07
+
+The production-profile attempt found three non-educational rejections with no
+policy flag, all in one five-candidate review batch. Review prompts now explicitly
+require `unsupported_topic` when educational support is absent and prohibit
+reasonless rejection. The response schema and fail-closed validators remain unchanged.
+
+Only the affected batch was rechecked. It passed with one retained/four rejected.
+`replay-privacy-final.cjs` exercised the actual final-list node against that response
+and ten cached passing responses, producing 12 themes from 61 decisions with 49
+rejections. A separate source-aware local audit of the affected retained theme
+found one clear/useful theme, zero disclosure/ambiguity/missed opportunity.
+The discarded conditional-schema attempt was blocked as invalid; it is not part
+of the deployed correction. No earlier passed model test was repeated.
+
+Native API read access is verified, and the inactive sanitization/enrichment
+prompts are updated. All production workflows/schedules remain unchanged.
+The production marker remains pending: this cached check does not complete
+a fresh production execution or the enrichment/planner cutover gates. See
+[Cutover.md](Cutover.md) for the remaining controlled-cycle requirements.
+
+## Completed production-profile cycle — 2026-10-07 UTC
+
+The newly authorized manual cycle passed through sanitization, privacy review,
+Brave research and editorial planning, with migration schedules disabled.
+Privacy passed first: 17 meetings, 62 decisions, 57 rejected, 5 final themes.
+Research produced 15 qualified bundles from 63 queries, one verified candidate
+and five watchlist items. Planning selected the verified candidate only, retained
+exact source links, required manual webinar review and prohibited automatic publishing.
+Its one-topic portfolio has `partial` status; the end-to-end acceptance requirement
+of at least one verified selection passed.
+
+`verify-production-cycle.cjs` verified actual file bytes/hashes, source pairing,
+current approval provenance, query guards, exact source evidence, scoring and
+planner handoff. `verify-source-links.py` checked all ten unique output source links:
+all successful/nonempty, including the two selected-topic links. Full page factual
+review is separate from reachability/excerpt validation. All five output files are
+private, mode 0600.
+
+Snapshots of all 30 workflows showed unchanged definitions/settings/active/archive
+states. Current approval remained the same throughout. No production schedule,
+service, calendar, messaging or publishing action changed. Earlier passed checks
+were reused, not rerun. See [Cutover.md](Cutover.md) for exact paths, filenames,
+workflow IDs and the ready schedule-switch proposal.
+
+## Weekly orchestration completion — PR #13 revision
+
+The prior content cycle was manually staged. The inactive definitions now chain
+`IASLinkedinSan01` → `IASLinkedinEnr01` → `IASLinkedinPlan1` with waiting native
+subworkflow calls. Enrichment requires the caller's exact privacy approval.
+A new candidate proof binds newly written candidate/brief hashes to that approval;
+planning selects that exact candidate and rechecks it before writing. Errors
+propagate to the parent; privacy failure prevents external research.
+
+Five native synthetic orchestration scenarios passed: ordered success, privacy
+failure, enrichment failure, planner failure propagation and changed candidate
+hash. No completed content/model/source-link checks were repeated. The installed
+n8n runtime requires published child workflows for database-ID calls, so the new
+cutover includes unarchiving/publishing both children with their crons disabled.
+Only sanitization's Monday 07:00 clock is enabled at the approved switch.
+All migration copies remain inactive during preparation. See the latest complete
+plan and rollback in [Cutover.md](Cutover.md).

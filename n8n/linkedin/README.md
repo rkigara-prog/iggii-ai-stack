@@ -161,3 +161,37 @@ Broader privacy assurance, current-cycle handoff, production activation and
 editorial quality approval remain separate decisions. No post may be drafted until the
 required webinar review. OMC integration and additional-model evaluation remain
 outside this milestone.
+
+## Current production-cycle verification
+
+After an authorized manual execution, use `verify-production-cycle.cjs` with the
+production output root, private CLI-log directory and stage (`sanitization`,
+`enrichment`, `editorial-planner`). It verifies newly produced file bytes and binds
+the downstream artifacts to the same approved privacy run/hash. The initial output
+metadata snapshot must be saved privately as `output-before.private.json`. Logs
+are named `<stage>-execution.log`; the helper imports the existing log reader and
+privacy validators. Stop on any failed gate before starting the next stage.
+
+After planning, `verify-source-links.py OUTPUT_ROOT PRIVATE_LOG_DIR` checks the
+current candidate/plan hashes, exact selected-source links and public link
+reachability. Detailed URLs/results stay private; console output contains counts.
+These tools do not activate workflows or publish content. The completed controlled
+cycle is recorded in [Cutover.md](Cutover.md).
+
+## Automated weekly handoffs
+
+The inactive definitions now chain successful sanitization/privacy approval into
+enrichment and then planning using waiting Execute Sub-workflow nodes. Only the
+sanitization schedule is proposed for activation. The child workflows must be
+published on this n8n version, while their own schedules remain disabled.
+`pipeline-artifact.cjs` enforces exact approval and current candidate-file handoffs;
+it prints metadata only and stores its marker privately.
+
+When regenerating privacy definitions, run `harden-privacy.py` followed by
+`connect-pipeline.py` before `prepare-cutover.py` / private credential binding.
+`connect-pipeline.py` is idempotent. `build-orchestration-check.py PRIVATE_DIR`
+builds synthetic-only fixtures; `orchestration-fixture.cjs` and
+`check-orchestration-result.cjs` are test tooling, never production helpers.
+The fixture generator inlines child definitions because publishing inactive
+workflows is outside preparation. Tests exercise native waiting/error propagation
+with local file stubs, without model/search/publishing calls.
