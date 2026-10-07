@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "completedAt": "2026-10-07T17:27:45.574Z",
+  "cycleHash": "fc22ada0a35725373abe9ef48be2b579ae6b0c24fbdd82c5e92044514489bed0",
+  "archive": "../Archive/ias-linkedin/2026-10-07-fc22ada0a35725373abe9ef48be2b579ae6b0c24fbdd82c5e92044514489bed0",
+  "files": [
+    "theme-list-model-eval-qwen35-2026-10-07.txt",
+    "content-brief-model-eval-2026-10-07.md",
+    "content-candidates-model-eval-2026-10-07.json",
+    "linkedin-editorial-plan-model-eval-2026-10-07.md",
+    "linkedin-editorial-plan-model-eval-2026-10-07.json"
+  ],
+  "oldArchiveFilesUnchanged": 6,
+  "diagnostics": {
+    "retrieved": 13,
+    "unavailable": 5,
+    "accepted": 0,
+    "deferred": 5,
+    "lexicalEvidenceRepairs": 0,
+    "deterministicFallbacks": 0
+  },
+  "selectedTopics": 0,
+  "reviewFlags": [],
+  "publishingDisabled": true,
+  "executionNote": "One controlled cycle recovered after n8n prompt expression parsing failed. Privacy/search/retrieval reused; continuation regrouped saved pages because the original shortlist was unavailable. Subsequent retrievals persist exact packet checkpoints.",
+  "finalGuardSavedResponseRescore": {
+    "accepted": 0,
+    "deferred": 5,
+    "modelsCalled": 0
+  },
+  "finalEnrichmentVersion": "23e9d7d0-1e58-4c88-ae04-397ea769b995",
+  "finalPlannerVersion": "053a477f-33e3-4625-b5b4-31f420cfb503",
+  "sanitizerVersionUnchanged": "0f5efe7d-b8ff-4547-8910-35ab7ecc1049"
+}

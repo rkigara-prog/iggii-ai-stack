@@ -19,7 +19,7 @@ blind review contains public/synthetic drafts only; original evidence stays loca
    and hashes. A reachable page is not sufficient evidence. Check selected passages
    against the retained text manually; HTML navigation can contaminate extraction.
 3. Build 30–50 private packets matching `schema.json`. Include positive and negative
-   cases. Label gold support and eligibility independently, using exact passages and
+   cases. Label gold support and eligibility separately, using exact passages and
    provenance, before inference. Freeze packet and gold hashes in `freeze.private.json`.
    Gold must not be sent to models. Keep full pages outside Git even when a packet uses
    selected passages. Stipulated synthetic provenance tests a hypothetical world;
@@ -62,9 +62,9 @@ Validate private packets against `schema.json`. `deployment-audit.json`,
 This is a deliberately adversarial, small benchmark with controlled synthetic
 counterfactuals. It is not a random sample of weekly content, a calibrated precision
 estimate, or proof of production privacy. The protocol correction and initial
-excluded responses are retained privately. Gold needs Robert/Leigh's independent
+excluded responses are retained privately. Codex-authored gold needs Robert/Leigh's independent
 review before using the scores as a deployment gate. Actual human revision time is
-pending the blind review; reported editorial-edit counts are an analyst proxy.
+pending the blind review; reported editorial-edit counts are an Codex judgment.
 
 ## Blind review
 
@@ -84,3 +84,5 @@ Install a CPU-only Torch wheel before Laya; explicitly select CPU to avoid autom
 XPU selection. Weights remain outside Git. No production Python environment changed.
 
 Privacy scoring reads `privacy-canaries.private.json` (a JSON string array) from the private evaluation root; canary values are never committed.
+
+S43/S63 corrections and saved-response rescoring: `revise_gold.py`. Original freeze, gold and responses remain unchanged. `revised-regression-results.json` is explicitly a regression result, not held-out evaluation. `prose_review.py` inspects complete drafts and routes all unmatched sentences to humans, including assertions omitted from writer claim lists.

@@ -24,7 +24,7 @@ function snapshot(input,bootstrap=false){
  const b=read(candidateName.replace('content-candidates-','content-brief-').replace('.json','.md'),patterns.brief);
  const p=read(input.planFile,patterns.plan),plan=JSON.parse(p.bytes);
  const md=read(input.planFile.replace('.json','.md'),/^linkedin-editorial-plan-model-eval-\d{4}-\d{2}-\d{2}\.md$/);
- check(data.status==='ready'&&plan.sourceCandidateFile===c.name&&plan.sourceThemeFile===t.name,'Cycle lineage mismatch');
+ check((data.status==='ready'||(data.status==='watchlist_only'&&data.evidencePolicyVersion==='1.0'))&&plan.sourceCandidateFile===c.name&&plan.sourceThemeFile===t.name,'Cycle lineage mismatch');
  check(['ready','partial','insufficient_verified_topics'].includes(plan.status),'Incomplete plan');
  check(plan.policySummary?.automaticPublishingAllowed===false,'Publishing guard missing');
  check(Number.isFinite(Date.parse(plan.generatedAt))&&Date.parse(plan.generatedAt)>=Date.parse(data.generatedAt),'Plan predates candidate');

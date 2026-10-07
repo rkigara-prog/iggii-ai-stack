@@ -1,3 +1,5 @@
+> Audit correction (October 7): subjective ratings and correction counts below are Codex judgments, not independent human measurements. Retrieval/validation are confirmed defects and repair priorities; their relative contribution to quality loss was not measured. Retain home-chat provisionally; no alternative writer was evaluated. Original results are preserved below. See [revised regression results](revised-regression-results.json) for S43/S63 label corrections using saved responses; these are not held-out scores.
+
 # LinkedIn content-quality and model evaluation — October 7, 2026
 
 **Recommendation: retain home-chat. Do not deploy Laya or the tested page-grounded
@@ -102,7 +104,7 @@ over the same packet. Its truncated responses are runtime defects, not quality e
 | Median assessment latency | 2.64 s | 2.71 s | 7.05 s including blocked attempts |
 
 Exact quotation matching is a deterministic check, **not proof of entailment**. Gold
-claim support, source authority and independence are separate analyst labels. A model
+claim support, source authority and independence are separate Codex-authored labels. A model
 confidence score or same-model review was never counted as independent verification.
 One grounded reply was incomplete; it was not repaired or silently retried.
 
@@ -125,7 +127,7 @@ retained packet. These subjective gold priorities are not publication authority.
 
 Writing used four preselected packets and the same home-chat model in both arms;
 decision-only alternatives cannot replace a writer. Scores below are a provisional
-passage-based analyst review, **not measured Robert/Leigh editing time**.
+passage-based Codex judgment, **not measured Robert/Leigh editing time**.
 
 | Writing metric | Baseline instructions | More prescriptive instructions |
 | --- | --- | --- |
@@ -146,8 +148,8 @@ remain labeled evaluation outputs and require revision.
 
 ## Deployment decision and review
 
-The main constraint is **retrieval plus validation**; writing instructions are a second
-constraint. A different decision model cannot recover missing page text or establish
+Confirmed repair priorities are **retrieval plus validation**. Their relative contribution
+to quality loss, and that of writing instructions, remains unmeasured. A different decision model cannot recover missing page text or establish
 independence from duplicated coverage. Retain the baseline, keep publishing disabled,
 and prioritize a separate repair that retrieves pages, binds every material claim to
 exact supporting passages, verifies origin/authority and preserves dates and qualifiers.
@@ -160,7 +162,7 @@ should independently review three writing pairs and three short assessment pairs
 editing minutes. Open **Answer-Key.html** afterwards for identities, expected decisions
 and concrete corrections. These are human records; n8n does not consume their approvals.
 
-Limitations: small adversarial set, predominantly synthetic counterfactuals; analyst
+Limitations: small adversarial set, predominantly synthetic counterfactuals; Codex-authored
 gold and style scores await human review; no sustained-load/energy/peak-VRAM measurement;
 cooperative queue checks cannot preempt a household request arriving mid-call. Laya's
 long-packet coverage failed. Jev needs a secure API key and explicit spend cap; if supplied,

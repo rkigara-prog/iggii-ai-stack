@@ -1,5 +1,5 @@
 {
-  "method": "Ranking evaluated independently on the same gold-eligible portfolio; gold priority is a provisional analyst rubric, not objective truth",
+  "method": "Ranking evaluated independently of model eligibility on the same gold-eligible portfolio; priorities are Codex judgments, not independent human ratings or objective truth",
   "candidate_count": 10,
   "arms": {
     "baseline": {

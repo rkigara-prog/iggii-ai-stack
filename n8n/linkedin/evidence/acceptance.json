@@ -1,0 +1,94 @@
+{
+  "nativeExpressionPassed": true,
+  "passed": true,
+  "cases": [
+    {
+      "case": "bounded_scope_accept",
+      "accepted": true,
+      "passed": true
+    },
+    {
+      "case": "exposure_not_compromise_accept",
+      "accepted": true,
+      "passed": true
+    },
+    {
+      "case": "scope_expansion_blocks_despite_positive_judgment",
+      "accepted": false,
+      "passed": true
+    },
+    {
+      "case": "exposure_to_breach_blocks",
+      "accepted": false,
+      "passed": true
+    },
+    {
+      "case": "syndication_blocks",
+      "accepted": false,
+      "passed": true
+    },
+    {
+      "case": "promotion_primary_label_blocks",
+      "accepted": false,
+      "passed": true
+    },
+    {
+      "case": "single_source_without_exception_blocks",
+      "accepted": false,
+      "passed": true
+    },
+    {
+      "case": "unavailable_required_page_blocks",
+      "accepted": false,
+      "passed": true
+    },
+    {
+      "case": "unsupported_quantity_blocks",
+      "accepted": false,
+      "passed": true
+    },
+    {
+      "case": "unresolved_semantic_sector_blocks",
+      "accepted": false,
+      "passed": true
+    },
+    {
+      "case": "missing_passage_blocks",
+      "accepted": false,
+      "passed": true
+    },
+    {
+      "case": "attributed_official_fact_exception_accept",
+      "accepted": true,
+      "passed": true
+    },
+    {
+      "case": "community_cannot_use_official_exception",
+      "accepted": false,
+      "passed": true
+    },
+    {
+      "case": "unknown_origin_blocks",
+      "accepted": false,
+      "passed": true
+    },
+    {
+      "case": "news_cannot_self_label_primary",
+      "accepted": false,
+      "passed": true
+    }
+  ],
+  "fullProseOmittedAssertionCaught": true,
+  "validProseRetained": true,
+  "pageExtractionAndMetadata": true,
+  "workflowCodeSyntax": true,
+  "modelsCalled": 0,
+  "heldOut": false,
+  "semanticModelAccuracyTest": false,
+  "authenticatedSmbReads": [
+    "leigh",
+    "rigarashi"
+  ],
+  "readFileChecksumsPassed": true,
+  "iterations": "Same focused gate repeated only for observed parser/runtime and source-eligibility defects; no new evaluation model calls."
+}

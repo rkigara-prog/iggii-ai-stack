@@ -18,7 +18,7 @@ function candidate(proof){
  const b=file(proof.brief.fileName,/^content-brief-model-eval-\d{4}-\d{2}-\d{2}\.md$/);
  requireThat(hash(c.bytes)===proof.candidate.sha256&&hash(b.bytes)===proof.brief.sha256);
  const data=JSON.parse(c.bytes),approval=JSON.parse(fs.readFileSync(path.join(root,'privacy-status.json')));
- requireThat(data.sourceThemeFile===privacy.fileName&&data.status==='ready'&&Array.isArray(data.themeAligned)&&Array.isArray(data.emerging)&&data.themeAligned.length+data.emerging.length>0);
+ requireThat(data.sourceThemeFile===privacy.fileName&&(['ready','watchlist_only'].includes(data.status))&&Array.isArray(data.themeAligned)&&Array.isArray(data.emerging)&&(data.themeAligned.length+data.emerging.length>0||(data.evidencePolicyVersion==='1.0'&&data.status==='watchlist_only')));
  const created=Date.parse(data.generatedAt);
  requireThat(Number.isFinite(created)&&created>=Date.parse(approval.approvedAt)&&created<=Date.now());
  return {...proof,privacy};

@@ -12,6 +12,7 @@ import urllib.parse
 import urllib.request
 
 from prompts import ASSESSMENT, RANKING, WRITING
+from prose_review import review_prose
 
 
 def digest(value):
@@ -136,6 +137,8 @@ def main():
             elif parsed.get('decision') not in ['accept', 'reject', 'defer'] or not isinstance(parsed.get('claims'), list):
                 raise ValueError('Assessment schema invalid')
             record['complete'] = choice['finish_reason'] == 'stop'
+            if args.phase == 'writing':
+                record['full_prose_review'] = review_prose(parsed['draft'], packet['claims'])
         except Exception as exc:
             record['error_category'] = type(exc).__name__
         save(target, record)
