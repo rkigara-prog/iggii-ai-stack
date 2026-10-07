@@ -1,10 +1,10 @@
 // Pure, shared gate. Semantic assessments remain fallible model judgments.
 const list=x=>Array.isArray(x)?x:[];
-const clean=x=>String(x??'').replace(/\s+/g,' ').trim();
+const clean=x=>String(x??'').normalize('NFC').replace(/[\u200b\ufeff]/g,'').replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/\s+/g,' ').trim();
 function host(u){return String(u||'').match(/^https?:\/\/([^/?#:]+)/i)?.[1]?.toLowerCase().replace(/^www\./,'')||'';}
 function exactCitation(c,sources){const s=sources.find(x=>x.id===c?.sourceId);const p=s?.passages?.find(x=>x.id===c.passageId);return !!(s?.retrievalStatus==='retrieved'&&p&&clean(c.quote).length>=12&&clean(p.text).includes(clean(c.quote)));}
 const dimensions=['scope','attribution','dates','quantities','products','sectors','uncertainty'];
-const official={ 'nist.gov':'NIST', 'pages.nist.gov':'NIST', 'csrc.nist.gov':'NIST', 'cisa.gov':'CISA', 'aws.amazon.com':'AWS', 'learn.microsoft.com':'Microsoft', 'microsoft.com':'Microsoft', 'docs.aws.amazon.com':'AWS' };
+const official={ 'nist.gov':'NIST', 'pages.nist.gov':'NIST', 'csrc.nist.gov':'NIST', 'cisa.gov':'CISA', 'aws.amazon.com':'AWS', 'learn.microsoft.com':'Microsoft', 'microsoft.com':'Microsoft', 'docs.aws.amazon.com':'AWS', 'cyber.gc.ca':'Canadian Centre for Cyber Security', 'research-hub.nlr.gov':'National Laboratory of the Rockies', 'nlr.gov':'National Laboratory of the Rockies', 'southerncompany.com':'Southern Company' };
 function authority(source){const h=host(source.canonicalUrl);if(/\/(?:community|forums?|users?|answers|blogs\/community)\b/i.test(source.canonicalUrl)||h==='techcommunity.microsoft.com')return null;return official[h]||null;}
 function criticalTokens(text){return [...new Set((String(text).match(/\bCVE-\d{4}-\d{4,7}\b|\b\d[\d,.]*(?:%|\b)/gi)||[]).map(x=>x.toLowerCase()))];}
 function sourceGate(a,sources){
@@ -28,7 +28,7 @@ function claimGate(claim,sources,assessments){
  const passageText=valid.map(c=>c.quote).join(' ').toLowerCase();
  for(const token of criticalTokens(claim?.text))if(!criticalTokens(passageText).includes(token))reasons.push('unbound_numeric_or_product_identifier');
  const claimText=clean(claim?.text);
- if(/\b(our|we|my)\b/i.test(claimText))reasons.push('writer_attribution_unestablished');
+
  if(/\b(all|every|guarantee[sd]?|eliminates?)\b/i.test(claimText)&&!/\b(all|every|guarantee[sd]?|eliminates?)\b/i.test(passageText))reasons.push('absolute_scope_not_in_passage');
  if(/\b(confirmed compromises?|confirmed breaches|were breached|are compromised)\b/i.test(claimText)&&/\b(not|potentially|may be|exposed)\b/i.test(passageText)&&!claimText.match(/\b(not|potentially|may be|exposed)\b/i))reasons.push('exposure_compromise_scope_conflict');
  if(/\b(newly|this week|launched today)\b/i.test(claimText)&&valid.some(c=>{const s=sources.find(s=>s.id===c.sourceId);return !s?.publicationDate||Date.now()-Date.parse(s.publicationDate)>14*86400000;}))reasons.push('current_event_date_unresolved');
@@ -45,6 +45,7 @@ function claimGate(claim,sources,assessments){
   if(publisher&&eligible[0].judgment.role==='primary'&&clean(claim.text)===`${publisher} states: ${clean(q)}`&&
     ['document_statement','release_status'].includes(claim.factType)&&!/guarantee|eliminat|proves?|effective|compliant|safer|secure than/i.test(q))exception='attributed_authoritative_statement';
  }
+ if(!exception&&/\b(our|we|my)\b/i.test(claimText))reasons.push('writer_attribution_unestablished');
  if(!exception&&(origins.size<2||hosts.size<2))reasons.push('independent_corroboration_unresolved');
  if(!eligible.some(v=>v.judgment.role==='primary'))reasons.push('relevant_primary_source_missing');
  return {passed:!reasons.length,reasons:[...new Set(reasons)],exception,independentOrigins:origins.size,
@@ -55,14 +56,25 @@ function gate(packet,response){
  const sources=list(packet.sources),assessments=list(response?.sourceAssessments),seen=new Set();
  const rows=[];
  for(const topic of list(packet.shortlist)){
-  const proposed=list(response?.candidates).find(c=>c.id===topic.id);const claims=list(proposed?.claims);
+  const proposed=list(response?.candidates).find(c=>c.id===topic.id);const normalizations=[];
+ const claims=list(proposed?.claims).map(original=>{
+  const c={...original};const refs=list(c.citations),source=refs.length===1?sources.find(s=>s.id===refs[0].sourceId):null;
+  const publisher=source?authority(source):null;
+  // Render an explicitly requested, exact authoritative statement with attribution.
+  // Never substitute a different passage or turn a paraphrase into a quote.
+  if(publisher&&c.exception==='attributed_authoritative_statement'&&['document_statement','release_status'].includes(c.factType)&&exactCitation(refs[0],sources)&&clean(c.text)===clean(refs[0].quote)){
+   c.text=`${publisher} states: ${refs[0].quote}`;
+   normalizations.push({kind:'explicit_publisher_attribution',originalText:original.text,renderedText:c.text,sourceId:source.id});
+  }
+  return c;
+ });
   const checks=claims.map(c=>claimGate(c,sources.filter(s=>topic.sourceIds.includes(s.id)),assessments));const reasons=checks.flatMap(c=>c.reasons);
   if(!claims.length)reasons.push('no_bound_material_claims');
   if(claims.length>3)reasons.push('claim_limit_exceeded');
   if(proposed?.decision!=='accept')reasons.push('model_deferred');
   if(claims.some(c=>seen.has(clean(c.text).toLowerCase())))reasons.push('duplicate_claim');
   const accepted=!reasons.length;if(accepted)claims.forEach(c=>seen.add(clean(c.text).toLowerCase()));
-  rows.push({id:topic.id,topic:topic.topic,accepted,claims,checks,reasons:[...new Set(reasons)],score:Math.max(0,Math.min(100,Number(proposed?.editorialScore)||0)),reviewRequired:true});
+  rows.push({id:topic.id,topic:topic.topic,normalizations,accepted,claims,checks,reasons:[...new Set(reasons)],score:Math.max(0,Math.min(100,Number(proposed?.editorialScore)||0)),reviewRequired:true});
  }
  return {version:'1.0',semanticAssessor:'home-chat',independentVerification:false,rows};
 }

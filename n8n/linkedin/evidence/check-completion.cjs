@@ -1,0 +1,33 @@
+// Bounded completion gate. Saved evidence stays outside Git. No model or network calls.
+const fs=require('fs'),assert=require('assert/strict');
+const {Expression}=require('/usr/local/lib/node_modules/n8n/node_modules/n8n-workflow');
+const {gate,claimGate}=require('./policy.cjs'),{extract}=require('./retrieve.cjs');
+const dir=process.argv[2],workflows=JSON.parse(fs.readFileSync(dir+'/proposed.private.json'));
+const enr=workflows.find(w=>w.id==='IASLinkedinEnr01'),restore=enr.nodes.find(n=>n.name==='Restore Retrieved Evidence');
+const packet={shortlist:[],sources:[],testData:'untrusted }} {{ braces " and quotes'};
+const prepared=new Function('$json',restore.parameters.jsCode)({stdout:JSON.stringify(packet)})[0].json;
+const expr=new Expression('America/New_York');
+const newExpression=enr.nodes.find(n=>n.name==='Final Rank Evidence-Bound Opportunities via gpt-oss').parameters.jsonBody;
+assert.equal(newExpression,'={{ $json.requestBody }}');
+const body=expr.resolveSimpleParameterValue(newExpression,{$json:prepared});
+assert.deepEqual(JSON.parse(body.messages[1].content),packet);assert.equal(body.model,'home-chat');
+let unsafeRejected=false;try{expr.resolveSimpleParameterValue('={{ JSON.stringify('+JSON.stringify(prepared.requestBody,null,2)+') }}',{$json:packet});}catch{unsafeRejected=true;}
+assert(unsafeRejected,'Expected original inline-prompt expression defect to reproduce');
+const saved=JSON.parse(fs.readFileSync(dir+'/saved-cycle-assessment.private.json'));
+const oldClaims=gate(saved.packet,saved.response).rows;
+assert(oldClaims.find(r=>r.id==='resume-t3').accepted,'Exact Microsoft document statements should gain explicit attribution');
+assert(!oldClaims.find(r=>r.id==='resume-t1').accepted,'Uncorroborated news figures must remain deferred');
+const s=saved.packet.sources.find(s=>s.id==='s13'),passage=s.passages.find(p=>p.id==='p0015');
+const judgment={support:'supported',reason:'Stipulated regression judgment of directly quoted guidance',...Object.fromEntries(['scope','attribution','dates','quantities','products','sectors','uncertainty'].map(k=>[k,'preserved']))};
+const response={sourceAssessments:saved.response.sourceAssessments,candidates:[{id:'bounded',decision:'accept',claims:[{text:passage.text,factType:'document_statement',exception:'attributed_authoritative_statement',citations:[{sourceId:s.id,passageId:passage.id,quote:passage.text}],judgment}]}]};
+const result=gate({sources:[s],shortlist:[{id:'bounded',topic:s.title,sourceIds:[s.id]}]},response);
+assert(result.rows[0].accepted,'Attributed Cyber Centre guidance should qualify');
+const bad=structuredClone(response);bad.candidates[0].claims[0].text='All companies must isolate systems for 9000 days.';
+assert(!gate({sources:[s],shortlist:[{id:'bounded',sourceIds:[s.id]}]},bad).rows[0].accepted);
+const ms=extract(fs.readFileSync(dir+'/msblog.html'),'https://www.microsoft.com/en-us/security/blog/2026/09/29/phishing-abuses-rmm-tools-persistent-access/');
+assert(ms.text.includes('Microsoft Defender Experts observed'));assert(ms.text.length>10000);
+const cisa=extract(fs.readFileSync(dir+'/cisa.html'),'https://www.cisa.gov/resources-tools/resources/ci-fortify-advice-isolating-vital-systems');assert(cisa.text.includes('practical steps'));assert(!cisa.text.includes('Using Cyber Decoys'));
+const nist=extract(fs.readFileSync(dir+'/nist4.html'),'https://pages.nist.gov/800-63-4/');assert.equal(nist.canonicalUrl,'https://pages.nist.gov/800-63-4/');assert(nist.text.includes('July 2025'));
+const rootCanonical=extract(Buffer.from('<html><head><link rel="canonical" href="/"></head><body><main><h1>Document title</h1><p>'+('Retained document text. '.repeat(20))+'</p></main></body></html>'),'https://pages.nist.gov/800-63-3/');assert.equal(rootCanonical.canonicalUrl,'https://pages.nist.gov/800-63-3/');
+for(const w of workflows)for(const n of w.nodes)if(n.type.endsWith('.code'))new Function(n.parameters.jsCode.replace(/await this\.helpers\.getBinaryDataBuffer/g,'this.helpers.getBinaryDataBuffer'));
+console.log(JSON.stringify({passed:true,originalParserFailureReproduced:true,promptKeptAsData:true,authoritativeMicrosoftStatementAccepted:true,canadianGuidanceAccepted:true,uncorroboratedIncidentCountDeferred:true,falseUniversalClaimBlocked:true,microsoftExtractionRepaired:true,cisaExtractionRepaired:true,documentCanonicalPathPreserved:true,workflowCodeSyntax:true,modelCalls:0,networkCalls:0}));

@@ -44,10 +44,12 @@ nav {padding:14px 18px;background:#e8f1f6;border-left:4px solid #16445a} footer 
 @media(max-width:800px) {main{padding:20px 16px}table{font-size:11px}th,td{padding:7px 4px}h1{font-size:27px}}
 @media print {body{background:white}main{padding:0}pre{color:black;background:#eee}h2{break-after:avoid}tr{break-inside:avoid}}
 '''
+title = next((line[2:] for line in source.splitlines() if line.startswith('# ')), stem)
+walkthrough = ' · <a href="#leighs-practical-walkthrough">Leigh’s walkthrough</a>' if 'id="leighs-practical-walkthrough"' in body else ''
 html_doc = f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Content pipeline folder architecture and operating guide</title><style>{css}</style></head>
-<body><main><nav><a href="{stem}.pdf">Printable PDF</a> · <a href="{stem}.md">Canonical Markdown copy</a> · <a href="#leighs-practical-walkthrough">Leigh's walkthrough</a></nav>
+<title>{html.escape(title)}</title><style>{css}</style></head>
+<body><main><nav><a href="{stem}.pdf">Printable PDF</a> · <a href="{stem}.md">Canonical Markdown copy</a>{walkthrough}</nav>
 {body}
 <footer>Generated from {html.escape(args.source.name)}. Source SHA-256: {digest}. Shared copies are reference documents; edit the canonical source through Git.</footer>
 </main></body></html>'''

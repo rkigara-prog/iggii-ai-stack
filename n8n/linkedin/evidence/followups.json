@@ -1,0 +1,14 @@
+[
+  {
+    "matchUrl": "securityweek.com/georgia-power-alabama-power-data-breach-hits-400000-accounts",
+    "url": "https://www.southerncompany.com/miscellaneous-pages/georgia-power-information-regarding-recent-incident-involving-customer-information.html",
+    "publisher": "Southern Company",
+    "reason": "Company incident notice linked by the retained news article; supports attributed notice contents, not the uncorroborated account-count breakdown."
+  },
+  {
+    "matchUrl": "pages.nist.gov/800-63-3",
+    "url": "https://pages.nist.gov/800-63-4/",
+    "publisher": "NIST",
+    "reason": "Current revision linked by the legacy index; assess a durable identity-guideline transition, not a new October launch."
+  }
+]

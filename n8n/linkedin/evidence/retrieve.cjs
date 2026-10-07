@@ -19,15 +19,15 @@ async function get(url,depth=0){
 }
 function extract(raw,finalUrl){
  const $=cheerio.load(raw.toString('utf8'));const declared=$('link[rel="canonical"]').attr('href');let canon=canonical(finalUrl);
- if(declared){try{const d=canonical(declared,finalUrl);if(new URL(d).hostname===new URL(finalUrl).hostname)canon=d;}catch{}}
+ if(declared){try{const d=canonical(declared,finalUrl);const declaredUrl=new URL(d),resolvedUrl=new URL(finalUrl);if(declaredUrl.hostname===resolvedUrl.hostname && !(declaredUrl.pathname==='/'&&resolvedUrl.pathname!=='/'))canon=d;}catch{}}
  const publisher=$('meta[property="og:site_name"]').attr('content')||new URL(canon).hostname;
  const publicationDate=$('meta[property="article:published_time"]').attr('content')||$('meta[name="date"]').attr('content')||$('time[datetime]').first().attr('datetime')||null;
  const title=$('h1').first().text().trim()||$('title').text().trim();
- $('script,style,noscript,nav,header,footer,form,aside').remove();const body=$('article').first().length?$('article').first():$('main').first().length?$('main').first():$('body');
- const blocks=[];body.find('h1,h2,h3,p,li,td,pre').each((_i,e)=>{if($(e).find('p,li').length)return;const text=$(e).text().replace(/\s+/g,' ').trim();if(text.length>=30&&blocks.at(-1)!==text)blocks.push(text);});
+ $('script,style,noscript,nav,header,footer,form,aside,[class*="related"],[class*="card-block"],[aria-hidden="true"],[hidden],.visually-hidden').remove();const prose=$('.entry-content,.wp-block-post-content').first();const body=prose.length?prose:$('main').first().length?$('main').first():$('article').first().length?$('article').first():$('body');
+ const blocks=[];body.find('h1,h2,h3,p,li,td,pre,div,section').each((_i,e)=>{if($(e).find('h1,h2,h3,p,li,td,pre,div,section').length)return;const text=$(e).text().replace(/\s+/g,' ').trim();if(text.length>=30&&blocks.at(-1)!==text)blocks.push(text);});
  const text=blocks.join('\n');if(text.length<300||/just a moment|verify you are human|access denied/i.test(title))throw Error('unusable_page_text');
  const passages=blocks.flatMap(b=>{const a=[];for(let i=0;i<b.length;i+=1600)a.push(b.slice(i,i+1600));return a;}).map((text,i)=>({id:'p'+String(i+1).padStart(4,'0'),text}));
- return {canonicalUrl:canon,publisher,publicationDate,title,text,passages};
+ return {canonicalUrl:canon,publisher,publicationDate,title,text,passages,extractionVersion:'1.1'};
 }
 async function main(){
  const root=process.env.IAS_PRIVACY_ROOT;if(!root)throw Error('root_required');const input=JSON.parse(Buffer.from(process.argv[2],'base64'));
@@ -36,6 +36,13 @@ async function main(){
  for(const raw of input.sources.slice(0,18)){
   const requestedUrl=raw.url,key=sha(requestedUrl),index=path.join(cache,key+'.latest.json');let record;
   if(fs.existsSync(index)){const old=JSON.parse(fs.readFileSync(index));if(Date.now()-Date.parse(old.retrievedAt)<24*3600000&&old.retrievalStatus==='retrieved')record=old;}
+  if(record&&record.extractionVersion!=='1.1'){
+   try{const old=record;const raw=fs.readFileSync(path.join(root,old.cacheFile.replace(/\.json$/,'.html')));const parsed=extract(raw,old.finalUrl||old.requestedUrl);record={...old,...parsed,extractedAt:new Date().toISOString(),textSha256:sha(parsed.text)};
+    const version=key+'-'+record.rawSha256+'-v11-'+record.extractedAt.replace(/[^0-9]/g,'');record.cacheFile='Evidence/'+version+'.json';
+    for(const [ext,bytes] of [['html',raw],['json',Buffer.from(JSON.stringify(record,null,2))]]){const file=path.join(cache,version+'.'+ext);fs.writeFileSync(file,bytes,{mode:0o640,flag:'wx'});readable(file);}
+    fs.writeFileSync(index,JSON.stringify(record),{mode:0o640});readable(index);
+   }catch{record=null;}
+  }
   if(!record){
    record={id:raw.id,requestedUrl,retrievedAt:new Date().toISOString(),retrievalStatus:'unavailable',publisher:raw.publisher||null,publicationDate:null,canonicalUrl:requestedUrl,passages:[]};
    try{const got=await get(requestedUrl);const parsed=extract(got.bytes,got.finalUrl);record={...record,...parsed,finalUrl:got.finalUrl,rawSha256:sha(got.bytes),textSha256:sha(parsed.text),retrievalStatus:'retrieved'};
@@ -53,4 +60,4 @@ async function main(){
  console.log(JSON.stringify(packet));
 }
 if(require.main===module)main().catch(e=>{console.error('Evidence retrieval failed: '+e.message);process.exitCode=1;});
-module.exports={canonical,address,extract};
+module.exports={canonical,address,extract,get};

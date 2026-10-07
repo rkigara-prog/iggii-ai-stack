@@ -234,3 +234,5 @@ Only the production profile explicitly assigns GID 1800; test outputs stay isola
 Content quality: [October 2026 evaluation report](evaluation/Report.md), with corrected regression records.
 
 The deployed [evidence policy 1.0](evidence/README.md) supersedes the historical snippet/excerpt validation and fallback behavior above. It retrieves source pages, binds claims to passages, enforces origin/corroboration requirements, and records semantic judgments and human review flags. It retains the same home-chat service and five-file cycle. Deploy `evidence/policy.cjs` and `evidence/retrieve.cjs` under the existing runtime root; regenerate with `evidence/connect.py` after the existing connectors.
+
+Parser and deferred-topic completion: [Evidence-Completion.md](Evidence-Completion.md). This follows PR #18 and preserves its original archived results.
