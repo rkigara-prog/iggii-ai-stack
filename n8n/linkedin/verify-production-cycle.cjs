@@ -28,7 +28,7 @@ function metadata(items){return items.map(({fileName,sha256})=>({fileName,sha256
 function verify(){
 const r=execution(stage);assert(!r.error,'Workflow execution failed');
 if(stage==='sanitization'){
- assert.equal(r.lastNodeExecuted,'Approve Privacy Artifact');
+ assert(['Approve Privacy Artifact','Run Enrichment After Privacy Approval'].includes(r.lastNodeExecuted));
  const decoded=outputs(r,'Decode Each Transcript').map(x=>x.json);
  const extracts=outputs(r,'Sanitize via qwen3.5 (Per Meeting)').map(x=>extraction(x.json));
  const inputs=outputs(r,'Aggregate Anonymous Candidate Themes').map(x=>x.json);

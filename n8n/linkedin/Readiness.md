@@ -245,3 +245,21 @@ states. Current approval remained the same throughout. No production schedule,
 service, calendar, messaging or publishing action changed. Earlier passed checks
 were reused, not rerun. See [Cutover.md](Cutover.md) for exact paths, filenames,
 workflow IDs and the ready schedule-switch proposal.
+
+## Weekly orchestration completion — PR #13 revision
+
+The prior content cycle was manually staged. The inactive definitions now chain
+`IASLinkedinSan01` → `IASLinkedinEnr01` → `IASLinkedinPlan1` with waiting native
+subworkflow calls. Enrichment requires the caller's exact privacy approval.
+A new candidate proof binds newly written candidate/brief hashes to that approval;
+planning selects that exact candidate and rechecks it before writing. Errors
+propagate to the parent; privacy failure prevents external research.
+
+Five native synthetic orchestration scenarios passed: ordered success, privacy
+failure, enrichment failure, planner failure propagation and changed candidate
+hash. No completed content/model/source-link checks were repeated. The installed
+n8n runtime requires published child workflows for database-ID calls, so the new
+cutover includes unarchiving/publishing both children with their crons disabled.
+Only sanitization's Monday 07:00 clock is enabled at the approved switch.
+All migration copies remain inactive during preparation. See the latest complete
+plan and rollback in [Cutover.md](Cutover.md).

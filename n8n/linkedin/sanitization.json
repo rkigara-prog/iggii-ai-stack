@@ -229,6 +229,41 @@
       "parameters": {
         "command": "={{ \"node /data/output/ias-linkedin-acceptance/privacy-artifact.cjs approve \" + JSON.parse($(\"Begin Privacy Attempt\").first().json.stdout).runId + \" \" + $(\"Prepare Theme File\").first().json.fileName }}"
       }
+    },
+    {
+      "id": "ias-prepare-enrichment-invocation",
+      "name": "Prepare Enrichment Invocation",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        600
+      ],
+      "parameters": {
+        "jsCode": "const items=$input.all();\nif(items.length!==1)throw Error('Privacy handoff count invalid');\nconst privacy=JSON.parse(items[0].json.stdout);\nif(!privacy.runId||!privacy.sha256||!privacy.fileName)throw Error('Privacy handoff invalid');\nreturn [{json:{privacy}}];"
+      }
+    },
+    {
+      "id": "ias-run-enrichment-after-privacy-approval",
+      "name": "Run Enrichment After Privacy Approval",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        2400,
+        600
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "IASLinkedinEnr01",
+          "mode": "id"
+        },
+        "mode": "once",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
     }
   ],
   "connections": {
@@ -358,6 +393,28 @@
         [
           {
             "node": "Approve Privacy Artifact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approve Privacy Artifact": {
+      "main": [
+        [
+          {
+            "node": "Prepare Enrichment Invocation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Enrichment Invocation": {
+      "main": [
+        [
+          {
+            "node": "Run Enrichment After Privacy Approval",
             "type": "main",
             "index": 0
           }
