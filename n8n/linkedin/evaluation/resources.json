@@ -1,0 +1,30 @@
+{
+  "assessment": {
+    "baseline": {
+      "calls": 36,
+      "complete": 36,
+      "elapsed_inference_seconds": 96.252,
+      "queue_wait_seconds": 0.184,
+      "peak_rss_gib": "not independently measured; existing vLLM allocation unchanged"
+    },
+    "grounded": {
+      "calls": 36,
+      "complete": 35,
+      "elapsed_inference_seconds": 114.945,
+      "queue_wait_seconds": 0.184,
+      "peak_rss_gib": "not independently measured; existing vLLM allocation unchanged"
+    },
+    "laya": {
+      "calls": 36,
+      "complete": 28,
+      "elapsed_inference_seconds": 284.551,
+      "queue_wait_seconds": 0,
+      "peak_rss_gib": 2.726
+    }
+  },
+  "gpu_budget_unchanged": true,
+  "new_gpu_models_loaded": 0,
+  "gpu_power_or_peak_vram_measured": false,
+  "initial_excluded_harness_responses": 92,
+  "excluded_ranking_harness_responses": 2
+}

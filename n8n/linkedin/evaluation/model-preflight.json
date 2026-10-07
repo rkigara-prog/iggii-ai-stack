@@ -1,0 +1,75 @@
+{
+  "checkedAt": "2026-10-07",
+  "baseline": {
+    "route": "home-chat",
+    "checkpoint": "Qwen/Qwen3.5-35B-A3B",
+    "revision": "59d61f3ce65a6d9863b86d2e96597125219dc754",
+    "runtime_image_digest": "sha256:52218ad85513ab6686d4c090c83c2bd8c5b02423c63aa4dabd41837fe641fe3b",
+    "quantization": "sym_int4",
+    "gpu_count": 2,
+    "gpu_memory_utilization": 0.55,
+    "context": 131072,
+    "max_sequences": 2,
+    "thinking": false,
+    "license": "Apache-2.0"
+  },
+  "historical_qwen_identity": {
+    "workflow_request": "qwen3.8:27b",
+    "retained_ollama_trace_response": "qwen3.8:27b",
+    "official_checkpoint": "Qwen/Qwen3.8-27B",
+    "official_ollama_architecture": "qwen35",
+    "official_ollama_quantization": "Q4_K_M",
+    "official_ollama_parameter_count": "27.3B",
+    "installed_now": false,
+    "historical_weight_digest": "not retained; cannot prove old bytes match current registry tag",
+    "candidate_status": "not selected for this comparison; no safe independent serving slot verified",
+    "license": "Apache-2.0",
+    "official_bf16_download_gb": 55.6,
+    "official_ollama_download_gb": 18
+  },
+  "laya": {
+    "checkpoint": "convaiinnovations/laya-typed-decisions",
+    "revision": "e929ae5cf69bc34259cd2f95c9e91145b818b1f0",
+    "license": "Apache-2.0",
+    "encoder": "answerdotai/ModernBERT-large",
+    "parameters": 421000000,
+    "context": 1024,
+    "weights_bytes": 842609220,
+    "weights_sha256": "4fa56de72383a9d3efa9cfa78955733c81b9fc8067a587ca4beb82c78107a24e",
+    "runtime": "laya 0.4.0, torch 2.14.1+cpu, transformers 5.19.0",
+    "device": "cpu",
+    "threads": 2,
+    "nice_increment": 10,
+    "host_available_memory_before_gib": 82,
+    "anticipated_float32_weights_gib": 1.57,
+    "anticipated_peak_ram_gib": 4,
+    "status": "evaluated; no production service deployed",
+    "measured_peak_rss_gib": 2.726
+  },
+  "jev": {
+    "model": "jev-1.13.0",
+    "endpoint": "https://api.typesafe.ai/v1/systemone",
+    "output": "choice, score, noul; no text generation",
+    "license": "hosted commercial API under provider terms; no open-weight self-host license established",
+    "context_total": 64000,
+    "state_plus_longest_question": 32000,
+    "price_usd_per_million_input_tokens": 0.042,
+    "status": "pending secure API key and explicit existing-account spend cap; no requests made"
+  },
+  "other_local_candidates_inspected": {
+    "AnyJev": "Open Apache-2.0 decision readout/head for existing LLMs; new L2 question requires calibration labels and backend hidden states. Not a separately selected/evaluated candidate.",
+    "DeBERTa_NLI": "Efficient CPU claim classifier identified; not selected because the two slots are Laya and hosted Jev."
+  },
+  "sources": [
+    "https://huggingface.co/Qwen/Qwen3.5-35B-A3B",
+    "https://huggingface.co/Qwen/Qwen3.8-27B",
+    "https://ollama.com/library/qwen3.8:27b",
+    "https://github.com/intel/llm-scaler/issues/738",
+    "https://huggingface.co/convaiinnovations/laya-typed-decisions",
+    "https://github.com/NandhaKishorM/laya",
+    "https://docs.typesafe.ai/models",
+    "https://docs.typesafe.ai/api",
+    "https://docs.typesafe.ai/legal",
+    "https://github.com/nokia-applied-research/AnyJev"
+  ]
+}

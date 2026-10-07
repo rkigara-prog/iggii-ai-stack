@@ -1,0 +1,50 @@
+{
+  "active_enrichment_id": "IASLinkedinEnr01",
+  "http_request_nodes": 8,
+  "search_api_nodes": 4,
+  "local_model_nodes": 4,
+  "source_page_fetch_nodes": 0,
+  "source_text_basis": "Brave title and description",
+  "claim_entailment_page_check": false,
+  "checks_implemented": [
+    "exact snippet substring",
+    "URL membership",
+    "domain-family source counting",
+    "sourceTier allowlist",
+    "lexical shared terms",
+    "score sums/caps",
+    "watchlist exclusion",
+    "source-aware privacy stages",
+    "posting disabled"
+  ],
+  "validation_defects": [
+    "No page text retrieval or passage lineage",
+    "Exact snippet substring is not claim entailment",
+    "Different domains may syndicate one original report",
+    "Domain allowlist treats user content and vendor promotion as primary",
+    "Repair can replace invalid supportingEvidence with a matching lexical window without validating the whole claim"
+  ],
+  "reported_historical_failures": {
+    "v3.2": "Retained Aug17 model-eval artifact confirms zero verified and five watchlist candidates",
+    "v3.4": "User history reports 240 results without qualifying primary evidence; exact v3.4 execution unavailable",
+    "v3.6": "User history reports source-classification and endpoint defects; exact v3.6 execution unavailable"
+  },
+  "endpoint_defects_current": "Old Ollama endpoint 192.168.113.32:11434 unreachable; active stages correctly use local LiteLLM route",
+  "production_before": {
+    "IASLinkedinSan01": {
+      "sha256": "08f2a0584d3a6f76b6517069334d5e0b85bbdc5c8402c24abc9ade73db175396",
+      "active": true,
+      "activeVersionId": "0f5efe7d-b8ff-4547-8910-35ab7ecc1049"
+    },
+    "IASLinkedinEnr01": {
+      "sha256": "64a1717f1301596cd1d5c5ff74a288cfbe042cf72ccfe5af2b60f6861c5a3bf2",
+      "active": true,
+      "activeVersionId": "70e431c0-d9b7-4a0d-a3b6-576b4d0ec7ac"
+    },
+    "IASLinkedinPlan1": {
+      "sha256": "1a27f668fb2a7b524689deda82a3d490f0f4c361d846103af1d9547b0d1895c3",
+      "active": true,
+      "activeVersionId": "acfd5d24-452d-42aa-af06-96cabe56b6b3"
+    }
+  }
+}

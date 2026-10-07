@@ -230,3 +230,5 @@ copies a checksummed set under the existing `Archive/ias-linkedin`, and updates
 permissions. No age-based deletion or source-transcript archiving is configured.
 The production service requires supplementary GID 1800 as well as GID 100.
 Only the production profile explicitly assigns GID 1800; test outputs stay isolated.
+
+Content quality: [October 2026 evaluation report](evaluation/Report.md).

@@ -1,0 +1,31 @@
+{
+  "method": "Ranking evaluated independently on the same gold-eligible portfolio; gold priority is a provisional analyst rubric, not objective truth",
+  "candidate_count": 10,
+  "arms": {
+    "baseline": {
+      "complete": true,
+      "ndcg_at_5": 0.906,
+      "highest_gold_priority_rank": 1,
+      "latency_seconds": 3.117,
+      "ndcg_at_5_reversed_order": 1.0,
+      "top5_overlap_after_order_reversal": 4,
+      "ranking_changed_with_input_order": true
+    },
+    "grounded": {
+      "complete": true,
+      "ndcg_at_5": 0.906,
+      "highest_gold_priority_rank": 1,
+      "latency_seconds": 3.263,
+      "ndcg_at_5_reversed_order": 0.9897,
+      "top5_overlap_after_order_reversal": 4,
+      "ranking_changed_with_input_order": true
+    },
+    "laya": {
+      "complete_candidates": 9,
+      "runtime_blocked_candidates": 1,
+      "ndcg_at_5_on_untruncated_only": 0.7166,
+      "highest_gold_priority_rank": "not scoreable; highest-priority retained packet truncated",
+      "median_latency_seconds": 2.159
+    }
+  }
+}
