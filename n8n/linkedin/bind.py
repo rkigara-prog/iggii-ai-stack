@@ -9,10 +9,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument('output', type=Path)
 parser.add_argument('--litellm-id', required=True)
 parser.add_argument('--brave-id', required=True)
+parser.add_argument('--source-dir', type=Path, default=Path(__file__).parent)
 args = parser.parse_args()
 args.output.mkdir(parents=True, exist_ok=True)
 for stage, workflow_id in STAGES:
-    workflow = json.loads((Path(__file__).parent / (stage + '.json')).read_text())
+    workflow = json.loads((args.source_dir / (stage + '.json')).read_text())
     workflow['id'] = workflow_id
     for node in workflow['nodes']:
         url = node['parameters'].get('url', '')

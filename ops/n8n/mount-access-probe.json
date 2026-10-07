@@ -1,0 +1,123 @@
+{
+  "id": "IASMountProbe01",
+  "name": "IAS_Normal User Mount Access Probe - inactive",
+  "active": false,
+  "nodes": [
+    {
+      "id": "ias-mount-probe-0",
+      "name": "Manual Mount Probe",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "ias-mount-probe-1",
+      "name": "Check Normal User Mounts",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "command": "node /data/output/ias-linkedin-acceptance/mount-access-probe.cjs"
+      }
+    },
+    {
+      "id": "ias-mount-probe-2",
+      "name": "Read Benign Probe",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "fileSelector": "/data/output/ias-linkedin-acceptance/mount-access-probe.json",
+        "options": {}
+      }
+    },
+    {
+      "id": "ias-mount-probe-3",
+      "name": "Verify Task Runner",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const buffer = await this.helpers.getBinaryDataBuffer(0, 'data');\nif (JSON.parse(buffer.toString('utf8')).mountAccessProbe !== true) throw new Error('File access probe failed');\nreturn [{json: {normalUserFileAccessAndRunnerPassed: true}}];"
+      }
+    },
+    {
+      "id": "ias-mount-probe-4",
+      "name": "Remove Benign Probe",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        960,
+        0
+      ],
+      "parameters": {
+        "command": "node -e 'require(\"fs\").unlinkSync(\"/data/output/ias-linkedin-acceptance/mount-access-probe.json\"); console.log(\"Benign probe removed\");'"
+      }
+    }
+  ],
+  "connections": {
+    "Manual Mount Probe": {
+      "main": [
+        [
+          {
+            "node": "Check Normal User Mounts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Normal User Mounts": {
+      "main": [
+        [
+          {
+            "node": "Read Benign Probe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Benign Probe": {
+      "main": [
+        [
+          {
+            "node": "Verify Task Runner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Task Runner": {
+      "main": [
+        [
+          {
+            "node": "Remove Benign Probe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none",
+    "saveManualExecutions": false
+  }
+}
