@@ -4,3 +4,4 @@ services:
     image: docker.n8n.io/n8nio/n8n@sha256:ffeb52485f78b1b06c9a832205853cf75da72a07a514c9a27724df85979d6c34
     group_add:
       - "100"
+      - "1800" # private Robert/Leigh content access; explicit output GID

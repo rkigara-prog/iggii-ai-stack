@@ -219,6 +219,20 @@
       "parameters": {
         "jsCode": "return $('Prepare Editorial Plan Files').all();"
       }
+    },
+    {
+      "parameters": {
+        "command": "={{ \"IAS_PRIVACY_ROOT=/data/output/ias-linkedin-acceptance node /data/output/ias-linkedin-acceptance/archive-artifact.cjs complete \" + JSON.stringify({proof: JSON.parse($(\"Require Current Candidate Artifact\").first().json.stdout), planFile: $(\"Prepare Editorial Plan Files\").all().find(i => i.json.fileName.endsWith(\".json\")).json.fileName}).base64Encode() }}"
+      },
+      "id": "ias-archive-completed-cycle",
+      "name": "Archive Completed Cycle",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        9824,
+        448
+      ],
+      "executeOnce": true
     }
   ],
   "connections": {
@@ -348,6 +362,17 @@
         [
           {
             "node": "Write Editorial Plan Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Editorial Plan Files": {
+      "main": [
+        [
+          {
+            "node": "Archive Completed Cycle",
             "type": "main",
             "index": 0
           }
