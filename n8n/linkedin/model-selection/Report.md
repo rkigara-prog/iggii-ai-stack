@@ -1,5 +1,10 @@
 # Three-model content comparison — completion report
 
+For the model-selection decision, read the [decision brief](Decision-Brief.md):
+exact runtimes, mutually exclusive decision counts, denominators and the two
+different groups of five. This clarification reuses all saved results and leaves
+the blind review unchanged.
+
 **Completed 8 October 2026: 129 saved calls, with no replacement sampling.**
 Gemma 4 31B IT is the provisional choice for reviewed writing and evidence assessment.
 It delivers more completed positive assessments and clearer drafts than the other
@@ -91,6 +96,10 @@ All twelve unedited drafts are available for blind review. The following means a
 **unblinded Codex judgments on complete prose**, on a 0–5 scale. Every sentence was
 reviewed against the frozen evidence, including assertions absent from a writer's
 claim list. These are neither independent human ratings nor measured editing effort.
+Each mean includes **all four drafts per model** (twelve total), including schema
+or formatting failures. No writing response was incomplete; incomplete assessment
+and ranking outputs do not affect these writing averages. The saved JSON field
+`writing.complete` counts schema passes, not completed prose.
 
 | Dimension | home-chat | Qwen3.8-27B | Gemma 4 31B IT |
 |---|---:|---:|---:|

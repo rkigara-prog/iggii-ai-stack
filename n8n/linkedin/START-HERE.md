@@ -27,3 +27,5 @@ Evidence quality: read [Evidence-Quality-Repair.html](Evidence-Quality-Repair.ht
 Latest completion review: [Evidence-Completion.html](Evidence-Completion.html) ([PDF](Evidence-Completion.pdf)) explains the parser repair, the five earlier deferrals, and the uninterrupted cycle result.
 
 Model comparison: [open the blind review](Reviews/Model-Comparison-20261007/START-HERE.html). Twelve unedited evaluation drafts cover four topics, with frozen source evidence and a blank score sheet for your preferences and actual editing minutes. Read the answer key after scoring. The [comparison report](Reviews/Model-Comparison-20261007/Report.html) contains the completed reasoning and writing comparison, runtime measurements and provisional recommendation. Review records do not change production models or publish content.
+
+After blind scoring, use the [model-selection decision brief](Reviews/Model-Comparison-20261007/Decision-Brief.html) for exact model settings, completion versus correctness, and provisional reasoning/writing roles.
