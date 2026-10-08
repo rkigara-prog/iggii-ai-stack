@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-08T14:59:50.822321+00:00",
+  "pilotActivationDisabled": true,
+  "pilotAuthorizedKeyRemoved": true,
+  "n8nPilotCredentialFilesRemoved": true,
+  "pilotLocalPrivateKeyRemoved": true,
+  "pilotLoopbackListenerClosed": true,
+  "existingGpuAclRollbackChanged": false,
+  "gpuAclCleanupConfirmed": false,
+  "gpuAclNote": "Separate existing root-owned rollback still governs render ACLs; verify actual restoration separately.",
+  "gpuAclRestoreAttempt": {
+    "noninteractiveSystemctl": "denied: interactive authentication required",
+    "noninteractiveSudo": "denied: password required",
+    "interactiveCommandRequested": true
+  },
+  "existingGpuAclRollbackAt": "2026-10-08T20:51:03Z",
+  "existingConfirmationAt": "2026-10-08T20:52:00Z",
+  "scheduledRollbackAndObserverPreserved": true,
+  "pilotCleanupRetryCronRemovedAfterSuccessfulCredentialCleanup": true
+}

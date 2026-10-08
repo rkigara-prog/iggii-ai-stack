@@ -1,0 +1,101 @@
+{
+  "reviewedBy": "Codex",
+  "judgmentType": "model_judgment_not_independent_verification",
+  "humanReviewCompleted": false,
+  "humanEditingMinutes": null,
+  "publicationApproval": null,
+  "samples": [
+    {
+      "requestId": "20261008-identity-reference",
+      "recommendation": "revise_before_human_approval",
+      "assertions": [
+        {
+          "id": "assertion-1",
+          "judgment": "framing_requires_revision",
+          "reason": "Most current implies present-day completeness beyond the two dated NIST statements; frame as a historical reference/version question."
+        },
+        {
+          "id": "assertion-2",
+          "judgment": "editorial_opinion",
+          "reason": "Generic importance statement adds little specific insight; remove or make the recommendation explicit."
+        },
+        {
+          "id": "assertion-3",
+          "judgment": "supported_paraphrase",
+          "evidence": [
+            "s6/p0002"
+          ],
+          "reason": "NIST and July 2025 revision release are preserved; mechanical unmapped status does not make this false."
+        },
+        {
+          "id": "assertion-4",
+          "judgment": "supported_core_with_chronology_caveat",
+          "evidence": [
+            "s13/p0001"
+          ],
+          "reason": "The supersession date is supported. Shortly thereafter NIST stated implies a statement-publication chronology not established by that effective date."
+        },
+        {
+          "id": "assertion-5",
+          "judgment": "unsupported_causal_assertion",
+          "reason": "Neither approved claim nor saved NIST passages establish that the date gap causes versioning confusion in technical audits. Remove or separately substantiate."
+        },
+        {
+          "id": "assertion-6",
+          "judgment": "recommendation_requires_scope_review",
+          "reason": "Checking document versions is clearly labeled advice; avoid implying the August 2025 status alone establishes current compliance or suitability."
+        }
+      ]
+    },
+    {
+      "requestId": "20261008-infrastructure-reference",
+      "recommendation": "revise_before_human_approval",
+      "assertions": [
+        {
+          "id": "assertion-1",
+          "judgment": "historical_framing_error",
+          "reason": "Recent federal frameworks implies current news; approved input explicitly describes historical background."
+        },
+        {
+          "id": "assertion-2",
+          "judgment": "historical_framing_error",
+          "reason": "Current policy milestones is not established by a 2024 publication fact."
+        },
+        {
+          "id": "assertion-3",
+          "judgment": "supported_attributed_paraphrase",
+          "evidence": [
+            "s5/p0006"
+          ],
+          "reason": "CISA attribution, publication date, body and memorandum title are preserved."
+        },
+        {
+          "id": "assertion-4",
+          "judgment": "source_supported_extra_claim_outside_approved_set",
+          "evidence": [
+            "s5/p0006"
+          ],
+          "reason": "The saved paragraph says the NSM replaces PPD-21, issued more than a decade ago. Gemma omitted this from its claim list and used in place rather than issued, plus subjective significant update. Remove or explicitly bind and review the added claim; do not label the entire detail fabricated."
+        },
+        {
+          "id": "assertion-5",
+          "judgment": "unsupported_necessity_and_benefit_assertion",
+          "reason": "Saved guidance does not establish that aligning internal standards with federal guidance is a critical step maintaining this audience's operational stability. Remove or restate as bounded advice without a promised benefit."
+        },
+        {
+          "id": "assertion-6",
+          "judgment": "bounded_recommendation",
+          "reason": "Review current applicability is labeled advice. It does not itself claim legal applicability; Robert/Leigh still need to assess audience relevance."
+        },
+        {
+          "id": "assertion-7",
+          "judgment": "correct_source_link",
+          "evidence": [
+            "s5"
+          ],
+          "reason": "URL matches the supplied CISA source; source reachability was not rerun and is not treated as claim proof."
+        }
+      ]
+    }
+  ]
+}

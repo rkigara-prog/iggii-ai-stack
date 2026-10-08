@@ -29,3 +29,5 @@ Latest completion review: [Evidence-Completion.html](Evidence-Completion.html) (
 Model comparison: [open the blind review](Reviews/Model-Comparison-20261007/START-HERE.html). Twelve unedited evaluation drafts cover four topics, with frozen source evidence and a blank score sheet for your preferences and actual editing minutes. Read the answer key after scoring. The [comparison report](Reviews/Model-Comparison-20261007/Report.html) contains the completed reasoning and writing comparison, runtime measurements and provisional recommendation. Review records do not change production models or publish content.
 
 After blind scoring, use the [model-selection decision brief](Reviews/Model-Comparison-20261007/Decision-Brief.html) for exact model settings, completion versus correctness, and provisional reasoning/writing roles.
+
+Authorized manual pilot: [open the two Gemma drafts and review notes](Reviews/Gemma-Pilot/START-HERE.html). Both need revisions and human approval. This pilot does not mark your blind review complete or enable publishing; recurring execution remains disabled.
