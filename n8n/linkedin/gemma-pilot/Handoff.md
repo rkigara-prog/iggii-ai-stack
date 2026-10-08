@@ -15,8 +15,10 @@ The exact PR #21 Gemma artifact was used with 24 GPU0 layers, full evidence,
 peak process RSS was 17.210 GiB. Production models, OMC routing, Monday scheduling
 and publishing settings were unchanged. The imported manual workflow is inactive;
 its temporary key and activation were removed/disabled after the run. GPU ACL
-restoration awaits the requested interactive rollback; the existing 20:51 UTC
-rollback and 20:52 verification remain scheduled. See `pilot-cleanup.json`.
+restoration was physically confirmed at 15:38 UTC after the user ran the existing
+rollback. Both render devices have their original permissions and no temporary
+user access. The 20:51 UTC rollback and 20:52 verification remain as fallbacks.
+See `pilot-cleanup.json`.
 
 **Content outcome:** NIST's dated revision facts were supported, but the draft
 added an unsupported audit-confusion claim. CISA's dated publication fact was

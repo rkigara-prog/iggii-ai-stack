@@ -42,7 +42,7 @@
   "recurringPilotDisabled": true,
   "benchmarkReruns": 0,
   "productionStops": 0,
-  "gpuAclCleanup": "See pilot-cleanup.json; separate from successful draft/access acceptance",
+  "gpuAclCleanup": "Confirmed early restoration at 2026-10-08T15:38:41.574388+00:00; physical permissions match original state on both devices; see pilot-cleanup.json",
   "repositoryRulesets": [],
   "mainProtected": false,
   "requiredRemoteChecks": [],
