@@ -101,7 +101,10 @@ def main():
   record={'arm':a.arm,'phase':phase,'id':id,'startedAt':datetime.now(timezone.utc).isoformat(),'inputSha256':digest(input_text.encode()),'systemPromptSha256':digest(prompt.encode()),'requestParameters':{k:v for k,v in body.items() if k!='messages'},'status':'error'}
   try:
    req=urllib.request.Request(a.base+'/v1/chat/completions',data=json.dumps(body).encode(),headers=headers)
-   with urllib.request.urlopen(req,timeout=1200) as response:reply=json.load(response)
+   # Transport patience is separate from the frozen generation-token budget.
+   # Long full-evidence native calls must not be cut off by a short socket read
+   # timeout; the isolated wrapper independently enforces the resource lease.
+   with urllib.request.urlopen(req,timeout=2400) as response:reply=json.load(response)
    record.update(status='response',reply=reply,**extract(reply))
   except Exception as e:record.update(errorType=type(e).__name__,error=str(e))
   finally:

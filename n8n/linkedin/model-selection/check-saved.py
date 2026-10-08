@@ -23,12 +23,13 @@ def main():
    id='order-'+str(i+1) if phase=='ranking' else packet['id']
    body=packet['candidates'] if phase=='ranking' else packet
    tasks[phase+'-'+id]=(phase,id,body,prompt,budget,thinking)
- judgments=json.loads((root/'writing-judgments.json').read_text());report={'verifiedAt':datetime.now(timezone.utc).isoformat(),'networkCalls':0,'modelCalls':0,'frozenInputsUnchanged':True,'arms':{}}
+ judgments=json.loads((root/'writing-judgments.json').read_text());report={'verifiedAt':datetime.now(timezone.utc).isoformat(),'networkCalls':0,'modelCalls':0,'frozenInputsUnchanged':True,'writingJudgmentsSha256':sha((root/'writing-judgments.json').read_bytes()),'responseSha256':{},'arms':{}}
  for arm in ['home-chat','qwen3.8-27b','gemma4-31b']:
   files={f.stem:f for f in (root/'responses'/arm).glob('*.json')}
   assert set(files)==set(tasks),(arm,'missing or extra checkpoints',sorted(set(tasks)-set(files)))
   finishes=Counter();max_prompt=0;max_total=0
   for name,file in files.items():
+   report['responseSha256'][arm+'/'+file.name]=sha(file.read_bytes())
    r=json.loads(file.read_text());phase,id,packet,prompt,budget,thinking=tasks[name]
    assert (r['arm'],r['phase'],r['id'],r['status'])==(arm,phase,id,'response')
    assert r['inputSha256']==sha(json.dumps(packet,ensure_ascii=False,separators=(',',':')).encode())
@@ -45,6 +46,6 @@ def main():
     assert j['rater']=='Codex' and j['independentHumanRating'] is False and j['actualEditingMinutes'] is None and j['completeProseReviewed']
     assert j['sentenceCount']==len(j['sentences'])>0
   report['arms'][arm]={'savedCalls':len(files),'sameFrozenPacketsAndPrompts':True,'sameRequestBudgets':True,'finishCounts':dict(finishes),'maxPromptTokens':max_prompt,'maxTotalTokens':max_total,'completeProseReviews':4}
- a.output.write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report))
+ a.output.write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items() if k!='responseSha256'}))
 
 if __name__=='__main__':main()

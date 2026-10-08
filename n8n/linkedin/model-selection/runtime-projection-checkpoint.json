@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-07T23:00:53.457822+00:00",
+  "initialProjectionHours": 18.442284722222222,
+  "initialMethod": "85 remaining calls multiplied by first cold Qwen end-to-end call, not a measured full-run duration",
+  "currentMethod": "Remaining output-token ceilings divided by each arm\u2019s observed median native decode rate; excludes prefill, reload and household queue delays",
+  "qualityInference": false,
+  "arms": {
+    "qwen3.8-27b": {
+      "remainingCalls": {
+        "assessment": 25,
+        "ranking": 3,
+        "writing": 0
+      },
+      "remainingMaximumOutputTokens": 82944,
+      "observedMedianDecodeTokensPerSecond": 4.957898988879242,
+      "projectedDecodeHoursAtFullBudgets": 4.64712977244587
+    },
+    "gemma4-31b": {
+      "remainingCalls": {
+        "assessment": 36,
+        "ranking": 3,
+        "writing": 0
+      },
+      "remainingMaximumOutputTokens": 116736,
+      "observedMedianDecodeTokensPerSecond": 3.672524719768455,
+      "projectedDecodeHoursAtFullBudgets": 8.829529857789792
+    }
+  },
+  "projectedDecodeHoursAtFullBudgets": 13.476659630235662
+}

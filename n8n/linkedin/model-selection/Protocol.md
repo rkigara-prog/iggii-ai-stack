@@ -112,3 +112,16 @@ These are deterministic comparisons against existing Codex gold judgments, not n
 independent proof. The original checkpoint scores and all raw responses are retained.
 Publication metadata without a passage ID is reported separately in prose review;
 it is not automatically labeled a fabricated date or repaired into a new excerpt.
+
+Final privacy reporting covers assessment, ranking and writing separately. It
+distinguishes exact synthetic-canary echoes anywhere in returned API content from
+echoes inside a complete final task object and echoes in unseparated/incomplete
+content. These categories overlap and are not independent incident counts. Exact
+canary absence is not a complete privacy audit; no real transcripts were used.
+
+Before the remaining Gemma reasoning phase, increase the client socket-read
+timeout from 20 to 40 minutes to leave margin for long full-evidence native calls.
+This does not change model requests, generation budgets, evidence or scoring, and
+does not replace any response. The wrapper still enforces the earlier access-lease
+deadline and resource guards independently. Earlier calls completed below the old
+transport limit; the active Qwen process keeps its already-loaded client setting.
