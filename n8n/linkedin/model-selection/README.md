@@ -5,7 +5,11 @@ and the comparison reports. **Evidence packets, private canaries, raw responses,
 source-page text and blind draft contents stay outside Git.** No production model
 replacement or automatic publishing is part of this milestone.
 
-- [Checkpoint report](Checkpoint-Report.md) and [resource decision](Resource-Decision.md): current coverage and the remaining access-window decision. No model recommendation yet; PR #20 completes the repair/setup checkpoint, with comparison results to follow.
+- [Completed comparison report](Report.md): findings, provisional roles, runtime and blind-review instructions.
+- [Decision brief](Decision-Brief.md): exact identities/settings, completion versus correctness, writing denominators and the two different groups of five.
+- [Decision-count audit](decision-counts.json): disjoint case outcomes derived from saved details by `summarize-decisions.py`, without rescoring or new calls.
+- [Scored results](results.json), [frozen-response verification](final-verification.json), and [runtime measurements](runtime-results.json): all 129 saved calls, with task failures separate from coverage.
+- [Checkpoint report](Checkpoint-Report.md) and [resource decision](Resource-Decision.md) are historical PR #20 records, retained unchanged.
 - [Candidate selection](Candidate-Selection.md): exact artifacts, official references,
   historical tag uncertainty and resource tradeoffs.
 - [Frozen protocol](Protocol.md) and [review rubric](Review-Rubric.md): what was compared,
@@ -65,6 +69,16 @@ mode snapshots metadata and applies temporary named-user render-device ACLs with
 root-owned rollback timer. It does not grant Docker socket access or change sudoers.
 Credentials are never requested, recorded or sent to a service.
 
+`confirm-access-expiry.py --output PRIVATE/access-cleanup-confirmation.json` only
+observes the existing root-owned rollback and device permissions. Before the
+8 October 20:51:03 UTC expiry it reports pending, never success. Afterwards it
+checks original root:render 0660 permissions, absent extended ACLs, unchanged device
+identities and loss of this user's effective read/write access. It records root
+service execution when available; a collected transient service can lose that
+metadata. It cannot extend access or repair a failed rollback. The shared
+`Access-Cleanup.json` is the operational confirmation record, separate from the
+immutable evaluation results.
+
 The quotation/paraphrase contract correction was deployed with the established
 native n8n API procedure in `../evidence/deploy.cjs`. It leaves schedule nodes,
 sanitizer, service routing and disabled publishing unchanged. The focused checks
@@ -74,3 +88,12 @@ Repository push-to-main CI restarts the household Docker stack. Follow the estab
 `[skip ci]` commit/merge convention for these evaluation artifacts, while completing
 focused local checks and checking PR mergeability. Do not trigger that unrelated
 restart to manufacture a green evaluation check.
+
+The completed batch used the verified 24-hour extension. `resume.py` reused every
+existing checkpoint; `summarize-runtime.py` reads the saved phase records and logs.
+The final checks make no inference or retrieval calls. Codex reviewed all twelve
+drafts and every accepted reasoning argument; raw reviews and evidence stay private.
+The common presentation adapter handles whole-message JSON fences (including an
+adjacent closing marker) without repairing payload JSON; strict compliance stays
+separate. Human ratings and actual editing minutes remain pending. Production models
+and publishing are unchanged.

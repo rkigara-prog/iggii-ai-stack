@@ -48,11 +48,20 @@ def extract(reply):
  try:parsed=json.loads(content.strip());error=None;strict=True;adapter='json_or_explicit_reasoning_channel'
  except Exception as e:
   parsed=None;error=type(e).__name__;strict=False;adapter=None
+  # Accept a single whole-message JSON fence as presentation only. Keep the raw
+  # reply and strict_json=False; never repair malformed JSON or task content.
+  fence=re.fullmatch(r'\s*```(?:json)?\s*\n(.*?)```\s*',content,re.S)
+  if fence:
+   try:
+    value=json.loads(fence[1])
+    if isinstance(value,dict) and set(value)&{'decision','ranked_ids','draft'}:
+     parsed=value;content=fence[1];error=None;adapter='single_json_code_fence'
+   except (ValueError,TypeError):pass
   # Some serving stacks emit reasoning as untagged content. Extract only one
   # complete terminal task object. Preserve/report the non-JSON preamble; no
   # malformed JSON, evidence or judgment is rewritten and no call is repeated.
   terminals=[]
-  for index,char in enumerate(content):
+  for index,char in enumerate(content if parsed is None else ''):
    if char!='{':continue
    try:
     value,end=json.JSONDecoder().raw_decode(content[index:])
@@ -92,7 +101,10 @@ def main():
   record={'arm':a.arm,'phase':phase,'id':id,'startedAt':datetime.now(timezone.utc).isoformat(),'inputSha256':digest(input_text.encode()),'systemPromptSha256':digest(prompt.encode()),'requestParameters':{k:v for k,v in body.items() if k!='messages'},'status':'error'}
   try:
    req=urllib.request.Request(a.base+'/v1/chat/completions',data=json.dumps(body).encode(),headers=headers)
-   with urllib.request.urlopen(req,timeout=1200) as response:reply=json.load(response)
+   # Transport patience is separate from the frozen generation-token budget.
+   # Long full-evidence native calls must not be cut off by a short socket read
+   # timeout; the isolated wrapper independently enforces the resource lease.
+   with urllib.request.urlopen(req,timeout=2400) as response:reply=json.load(response)
    record.update(status='response',reply=reply,**extract(reply))
   except Exception as e:record.update(errorType=type(e).__name__,error=str(e))
   finally:

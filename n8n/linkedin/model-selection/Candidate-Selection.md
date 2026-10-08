@@ -91,3 +91,20 @@ runtime metadata and granted this user temporary named ACL access to the two Int
 render nodes, with a root-owned six-hour rollback timer. It did not grant Docker
 socket access, modify sudoers, store a password, restart services or expose devices
 world-wide. The current process immediately gained GPU access.
+
+The user subsequently extended that same access by 24 hours, at 20:51:03 UTC on
+7 October. The active root-owned rollback timer expires at **20:51:03 UTC on
+8 October 2026**; the evaluator shuts down one minute earlier. The prior timer is
+inactive, the device rights are unchanged, and Docker/sudo rights remain unchanged.
+Both selected alternatives have now loaded and produced saved responses within
+the 16,384-token context and the existing resource envelope. The sanitized
+verification is in `access-extension-verification.json`.
+
+## Completed comparison
+
+All three arms now have 43 saved calls; completed judgments and schema failures are
+reported separately in [the final report](Report.md). The two native alternatives
+retained every frozen packet, with maximum prompt sizes of 8,753 and 9,019 tokens
+and no context truncation. No production model was replaced. The original access
+snapshot is retained for the scheduled rollback; final service health was observed
+without another inference or pipeline test.

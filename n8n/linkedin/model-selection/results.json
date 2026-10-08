@@ -1,0 +1,445 @@
+{
+  "protocol": "Frozen model-selection comparison; regression reasoning labels and editorial priorities are Codex judgments",
+  "arms": {
+    "gemma4-31b": {
+      "coverageComplete": true,
+      "assessment": {
+        "complete": 26,
+        "strictJson": 0,
+        "correct": 20,
+        "unsafeAccept": 5,
+        "harmlessRejectDefer": 3,
+        "missedOpportunity": 0,
+        "claimCorrect": 25,
+        "claimCount": 36,
+        "citations": 26,
+        "exactPassageCitations": 26,
+        "unsupportedSourceReferences": 0,
+        "bindingGatePass": 8,
+        "publicAnswerCanaryEcho": 2,
+        "anyResponseCanaryEcho": 2,
+        "decisionAvailable": 36,
+        "decisionGoldAgreement": 28,
+        "claimLabelsAvailable": 36,
+        "claimLabelsGoldAgreement": 35,
+        "supportedClaimLabelsCorrect": 15,
+        "unsupportedClaimLabelsCorrect": 20,
+        "acceptedEligibleOpportunities": 10,
+        "unsafeUnsupportedClaimAccept": 0,
+        "unsafeEligibilityAccept": 5,
+        "expectedSupportedClaims": 16,
+        "expectedUnsupportedClaims": 20,
+        "expectedEligibleOpportunities": 10,
+        "cases": 36,
+        "expectedCases": 36,
+        "decisionAccuracyPercent": 55.56,
+        "latencySeconds": {
+          "median": 304.856,
+          "p95": 570.554,
+          "min": 119.529,
+          "max": 718.609
+        },
+        "budgetTruncated": 0,
+        "unsafeAcceptsPassingExcerptMechanics": 3,
+        "eligibleAcceptsPassingExcerptMechanics": 5
+      },
+      "ranking": {
+        "orders": 3,
+        "complete": 2,
+        "ndcg5": {
+          "median": 0.905,
+          "p95": 0.99,
+          "min": 0.82,
+          "max": 0.99
+        },
+        "meanTopFiveOverlap": 0.4
+      },
+      "writing": {
+        "drafts": 4,
+        "complete": 4,
+        "withinWordRange": 3,
+        "exactPassageCitations": 16,
+        "listedCitations": 16,
+        "allSuppliedUrlsPresent": 4,
+        "firstPersonFlags": 0,
+        "latencySeconds": {
+          "median": 224.065,
+          "p95": 269.471,
+          "min": 187.022,
+          "max": 269.471
+        }
+      },
+      "sampledResources": {
+        "gpu0": {
+          "XPUM_STATS_MEMORY_USED": {
+            "median": 27727.328,
+            "p95": 27729.758,
+            "min": 27522.402,
+            "max": 27729.766
+          },
+          "XPUM_STATS_GPU_UTILIZATION": null,
+          "XPUM_STATS_POWER": {
+            "median": 98.23,
+            "p95": 99.47,
+            "min": 0.0,
+            "max": 229.63
+          }
+        },
+        "gpu1": {
+          "XPUM_STATS_MEMORY_USED": {
+            "median": 18911.609,
+            "p95": 18914.027,
+            "min": 18911.602,
+            "max": 18914.039
+          },
+          "XPUM_STATS_GPU_UTILIZATION": null,
+          "XPUM_STATS_POWER": {
+            "median": 3.05,
+            "p95": 9.21,
+            "min": 0.0,
+            "max": 160.12
+          }
+        },
+        "processRssKiB": {
+          "median": 21678068.0,
+          "p95": 22207024,
+          "min": 13538884,
+          "max": 23808268
+        }
+      },
+      "nativeDecodeTokensPerSecond": {
+        "median": 3.613,
+        "p95": 3.672,
+        "min": 2.727,
+        "max": 3.689
+      },
+      "nativePromptTokensPerSecond": {
+        "median": 25.564,
+        "p95": 28.156,
+        "min": 22.991,
+        "max": 28.253
+      },
+      "totalCallSeconds": 15497.024,
+      "privacy": {
+        "syntheticCanariesOnly": true,
+        "exactMatchIsNotACompletePrivacyAudit": true,
+        "byPhase": {
+          "assessment": {
+            "canaryChallenge": 4,
+            "completedCanaryChallenge": 4,
+            "anyResponseCanaryEcho": 2,
+            "completeTaskCanaryEcho": 2,
+            "unseparatedOrIncompleteCanaryEcho": 0
+          },
+          "ranking": {
+            "canaryChallenge": 3,
+            "completedCanaryChallenge": 2,
+            "anyResponseCanaryEcho": 0,
+            "completeTaskCanaryEcho": 0,
+            "unseparatedOrIncompleteCanaryEcho": 0
+          },
+          "writing": {
+            "canaryChallenge": 0,
+            "completedCanaryChallenge": 0,
+            "anyResponseCanaryEcho": 0,
+            "completeTaskCanaryEcho": 0,
+            "unseparatedOrIncompleteCanaryEcho": 0
+          }
+        },
+        "allPhases": {
+          "canaryChallenge": 7,
+          "completedCanaryChallenge": 6,
+          "anyResponseCanaryEcho": 2,
+          "completeTaskCanaryEcho": 2,
+          "unseparatedOrIncompleteCanaryEcho": 0
+        }
+      }
+    },
+    "home-chat": {
+      "coverageComplete": true,
+      "assessment": {
+        "complete": 7,
+        "strictJson": 0,
+        "correct": 7,
+        "unsafeAccept": 0,
+        "harmlessRejectDefer": 0,
+        "missedOpportunity": 0,
+        "claimCorrect": 7,
+        "claimCount": 36,
+        "citations": 8,
+        "exactPassageCitations": 7,
+        "unsupportedSourceReferences": 0,
+        "bindingGatePass": 0,
+        "publicAnswerCanaryEcho": 4,
+        "anyResponseCanaryEcho": 4,
+        "decisionAvailable": 9,
+        "decisionGoldAgreement": 9,
+        "claimLabelsAvailable": 9,
+        "claimLabelsGoldAgreement": 9,
+        "supportedClaimLabelsCorrect": 0,
+        "unsupportedClaimLabelsCorrect": 9,
+        "acceptedEligibleOpportunities": 0,
+        "unsafeUnsupportedClaimAccept": 0,
+        "unsafeEligibilityAccept": 0,
+        "expectedSupportedClaims": 16,
+        "expectedUnsupportedClaims": 20,
+        "expectedEligibleOpportunities": 10,
+        "cases": 36,
+        "expectedCases": 36,
+        "decisionAccuracyPercent": 19.44,
+        "latencySeconds": {
+          "median": 34.716,
+          "p95": 35.878,
+          "min": 18.226,
+          "max": 38.073
+        },
+        "budgetTruncated": 27,
+        "unsafeAcceptsPassingExcerptMechanics": 0,
+        "eligibleAcceptsPassingExcerptMechanics": 0
+      },
+      "ranking": {
+        "orders": 3,
+        "complete": 0,
+        "ndcg5": null,
+        "meanTopFiveOverlap": null
+      },
+      "writing": {
+        "drafts": 4,
+        "complete": 2,
+        "withinWordRange": 4,
+        "exactPassageCitations": 16,
+        "listedCitations": 16,
+        "allSuppliedUrlsPresent": 0,
+        "firstPersonFlags": 0,
+        "latencySeconds": {
+          "median": 7.99,
+          "p95": 9.785,
+          "min": 6.851,
+          "max": 9.785
+        }
+      },
+      "sampledResources": {
+        "gpu0": {
+          "XPUM_STATS_MEMORY_USED": {
+            "median": 18792.551,
+            "p95": 18792.68,
+            "min": 18787.898,
+            "max": 18792.684
+          },
+          "XPUM_STATS_GPU_UTILIZATION": null,
+          "XPUM_STATS_POWER": {
+            "median": 148.2,
+            "p95": 152.91,
+            "min": 15.97,
+            "max": 255.55
+          }
+        },
+        "gpu1": {
+          "XPUM_STATS_MEMORY_USED": {
+            "median": 18904.695,
+            "p95": 18904.824,
+            "min": 18900.035,
+            "max": 18904.828
+          },
+          "XPUM_STATS_GPU_UTILIZATION": null,
+          "XPUM_STATS_POWER": {
+            "median": 144.68,
+            "p95": 147.78,
+            "min": 0.0,
+            "max": 149.6
+          }
+        },
+        "processRssKiB": null
+      },
+      "nativeDecodeTokensPerSecond": null,
+      "nativePromptTokensPerSecond": null,
+      "totalCallSeconds": 1286.885,
+      "privacy": {
+        "syntheticCanariesOnly": true,
+        "exactMatchIsNotACompletePrivacyAudit": true,
+        "byPhase": {
+          "assessment": {
+            "canaryChallenge": 4,
+            "completedCanaryChallenge": 1,
+            "anyResponseCanaryEcho": 4,
+            "completeTaskCanaryEcho": 1,
+            "unseparatedOrIncompleteCanaryEcho": 3
+          },
+          "ranking": {
+            "canaryChallenge": 3,
+            "completedCanaryChallenge": 0,
+            "anyResponseCanaryEcho": 1,
+            "completeTaskCanaryEcho": 0,
+            "unseparatedOrIncompleteCanaryEcho": 1
+          },
+          "writing": {
+            "canaryChallenge": 0,
+            "completedCanaryChallenge": 0,
+            "anyResponseCanaryEcho": 0,
+            "completeTaskCanaryEcho": 0,
+            "unseparatedOrIncompleteCanaryEcho": 0
+          }
+        },
+        "allPhases": {
+          "canaryChallenge": 7,
+          "completedCanaryChallenge": 1,
+          "anyResponseCanaryEcho": 5,
+          "completeTaskCanaryEcho": 1,
+          "unseparatedOrIncompleteCanaryEcho": 4
+        }
+      }
+    },
+    "qwen3.8-27b": {
+      "coverageComplete": true,
+      "assessment": {
+        "complete": 18,
+        "strictJson": 18,
+        "correct": 17,
+        "unsafeAccept": 0,
+        "harmlessRejectDefer": 1,
+        "missedOpportunity": 0,
+        "claimCorrect": 18,
+        "claimCount": 36,
+        "citations": 21,
+        "exactPassageCitations": 21,
+        "unsupportedSourceReferences": 0,
+        "bindingGatePass": 0,
+        "publicAnswerCanaryEcho": 2,
+        "anyResponseCanaryEcho": 2,
+        "decisionAvailable": 18,
+        "decisionGoldAgreement": 17,
+        "claimLabelsAvailable": 18,
+        "claimLabelsGoldAgreement": 18,
+        "supportedClaimLabelsCorrect": 0,
+        "unsupportedClaimLabelsCorrect": 18,
+        "acceptedEligibleOpportunities": 0,
+        "unsafeUnsupportedClaimAccept": 0,
+        "unsafeEligibilityAccept": 0,
+        "expectedSupportedClaims": 16,
+        "expectedUnsupportedClaims": 20,
+        "expectedEligibleOpportunities": 10,
+        "cases": 36,
+        "expectedCases": 36,
+        "decisionAccuracyPercent": 47.22,
+        "latencySeconds": {
+          "median": 637.621,
+          "p95": 760.708,
+          "min": 366.541,
+          "max": 781.085
+        },
+        "budgetTruncated": 18,
+        "unsafeAcceptsPassingExcerptMechanics": 0,
+        "eligibleAcceptsPassingExcerptMechanics": 0
+      },
+      "ranking": {
+        "orders": 3,
+        "complete": 0,
+        "ndcg5": null,
+        "meanTopFiveOverlap": null
+      },
+      "writing": {
+        "drafts": 4,
+        "complete": 3,
+        "withinWordRange": 1,
+        "exactPassageCitations": 23,
+        "listedCitations": 24,
+        "allSuppliedUrlsPresent": 4,
+        "firstPersonFlags": 0,
+        "latencySeconds": {
+          "median": 184.611,
+          "p95": 240.786,
+          "min": 154.807,
+          "max": 240.786
+        }
+      },
+      "sampledResources": {
+        "gpu0": {
+          "XPUM_STATS_MEMORY_USED": {
+            "median": 27448.203,
+            "p95": 27450.633,
+            "min": 27331.266,
+            "max": 27456.199
+          },
+          "XPUM_STATS_GPU_UTILIZATION": null,
+          "XPUM_STATS_POWER": {
+            "median": 102.42,
+            "p95": 116.59,
+            "min": 0.0,
+            "max": 201.92
+          }
+        },
+        "gpu1": {
+          "XPUM_STATS_MEMORY_USED": {
+            "median": 18911.605,
+            "p95": 18914.023,
+            "min": 18911.598,
+            "max": 18914.039
+          },
+          "XPUM_STATS_GPU_UTILIZATION": null,
+          "XPUM_STATS_POWER": {
+            "median": 3.1,
+            "p95": 9.38,
+            "min": 0.0,
+            "max": 160.73
+          }
+        },
+        "processRssKiB": {
+          "median": 18071164.0,
+          "p95": 18461316,
+          "min": 9664604,
+          "max": 18490540
+        }
+      },
+      "nativeDecodeTokensPerSecond": {
+        "median": 4.882,
+        "p95": 5.087,
+        "min": 4.345,
+        "max": 5.139
+      },
+      "nativePromptTokensPerSecond": {
+        "median": 34.872,
+        "p95": 36.529,
+        "min": 30.812,
+        "max": 37.631
+      },
+      "totalCallSeconds": 23691.99,
+      "privacy": {
+        "syntheticCanariesOnly": true,
+        "exactMatchIsNotACompletePrivacyAudit": true,
+        "byPhase": {
+          "assessment": {
+            "canaryChallenge": 4,
+            "completedCanaryChallenge": 2,
+            "anyResponseCanaryEcho": 2,
+            "completeTaskCanaryEcho": 2,
+            "unseparatedOrIncompleteCanaryEcho": 0
+          },
+          "ranking": {
+            "canaryChallenge": 3,
+            "completedCanaryChallenge": 0,
+            "anyResponseCanaryEcho": 0,
+            "completeTaskCanaryEcho": 0,
+            "unseparatedOrIncompleteCanaryEcho": 0
+          },
+          "writing": {
+            "canaryChallenge": 0,
+            "completedCanaryChallenge": 0,
+            "anyResponseCanaryEcho": 0,
+            "completeTaskCanaryEcho": 0,
+            "unseparatedOrIncompleteCanaryEcho": 0
+          }
+        },
+        "allPhases": {
+          "canaryChallenge": 7,
+          "completedCanaryChallenge": 2,
+          "anyResponseCanaryEcho": 2,
+          "completeTaskCanaryEcho": 2,
+          "unseparatedOrIncompleteCanaryEcho": 0
+        }
+      }
+    }
+  },
+  "humanEditingMinutes": "unmeasured",
+  "humanPreferenceRatings": "pending",
+  "writingQualityRatings": "separate Codex review; not generated by this scorer"
+}

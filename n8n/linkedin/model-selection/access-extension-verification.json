@@ -1,0 +1,30 @@
+{
+  "verifiedAt": "2026-10-07T20:55:08.947967+00:00",
+  "leaseStartedAt": "2026-10-07T20:51:03.634187+00:00",
+  "leaseHours": 24,
+  "expiryUtc": "2026-10-08T20:51:03.634187+00:00",
+  "newTimerActive": true,
+  "oldTimerInactive": true,
+  "automaticRollbackService": "/usr/bin/python3 /var/lib/linkedin-model-eval-access/20261007T205103Z/restore.py",
+  "newPermissions": false,
+  "evaluatorStopMarginSeconds": 60,
+  "baselineSavedCallsReused": 43,
+  "qwenSavedCallsReused": 1,
+  "productionMaintenance": false,
+  "pastOriginalExpiryCheck": {
+    "verifiedAt": "2026-10-08T02:00:37.170282+00:00",
+    "newTimerActive": true,
+    "oldTimerInactive": true,
+    "namedUserUid": 1000,
+    "intelRenderDevicesReadWrite": true,
+    "otherDevicePermissions": 0,
+    "automaticRollbackStillConfigured": true
+  },
+  "rollbackBaseline": "Extension helper copies the original pre-grant ACL snapshot, not the temporary granted ACL",
+  "finalTimerCheck": {
+    "checkedAt": "2026-10-08T07:42:01.521191+00:00",
+    "active": true,
+    "isolatedEvaluatorStopped": true,
+    "rollbackExecutionObserved": false
+  }
+}

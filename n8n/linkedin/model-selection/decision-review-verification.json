@@ -1,0 +1,37 @@
+{
+  "reviewedAt": "2026-10-08T13:01:49.406044+00:00",
+  "modelCalls": 0,
+  "scoringChanges": false,
+  "originalResultsUnchanged": true,
+  "savedResponseHashesUnchanged": 129,
+  "frozenEvidenceAndReviewHashesUnchanged": true,
+  "blindFilesUnchanged": 8,
+  "effectiveSharedAccess": [
+    "Robert",
+    "Leigh"
+  ],
+  "newLocalReportLinksChecked": 7,
+  "pythonCompilation": "passed",
+  "jsonParsing": "passed",
+  "privateMarkerCredentialPatternScan": "passed",
+  "decisionCountPartition": "36 per arm; derived from saved details",
+  "observerFocusedChecks": "original permissions confirm; named ACL/effective access prevent confirmation; live pre-expiry observation pending",
+  "priorValidationReused": [
+    "quotation-contract-results.json",
+    "deployment-integrity.json",
+    "final-verification.json",
+    "runtime-results.json"
+  ],
+  "requiredGitHubChecks": [],
+  "mainProtected": false,
+  "repositoryRulesets": [],
+  "mergeDeploymentGuard": "[skip ci] squash title; production deploy workflow must not run",
+  "cleanup": {
+    "rootRollbackUnchanged": true,
+    "expiryUtc": "2026-10-08T20:51:03.634187+00:00",
+    "executionObserved": false,
+    "confirmationUtc": "2026-10-08T20:52:00+00:00",
+    "observer": "unprivileged one-date cron; retry 20:55/20:58 only if needed; self-removes after confirmation/publication",
+    "sharedStatus": "Access-Cleanup.txt and Access-Cleanup.json"
+  }
+}

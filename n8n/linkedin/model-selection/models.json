@@ -1,5 +1,5 @@
 {
-  "status": "Both artifacts verified; Qwen native partial-offload load/inference confirmed; Gemma native load pending resource-window decision",
+  "status": "Completed 43 frozen calls per arm; task/schema failures remain explicit in results; production unchanged",
   "shortlist": [
     {
       "id": "Qwen/Qwen3.8-27B",
@@ -70,8 +70,9 @@
     "commit": "b86d2f07542b29ab099aed34fd6b6d1b2fd4b81c",
     "oneApiVersion": "2025.3.2",
     "qwenUsableContextVerified": 16384,
-    "gemmaUsableContextVerified": null,
-    "bothGgufTemplatesExposeEnableThinking": true
+    "gemmaUsableContextVerified": 16384,
+    "bothGgufTemplatesExposeEnableThinking": true,
+    "contextVerificationScope": "16,384 configured native context; all unchanged evaluation packets fit. Actual token maxima recorded above; advertised maxima and exhaustive context-boundary performance were not tested."
   },
   "proposedEvaluationContext": 16384,
   "productionContextUnchanged": 131072,
@@ -91,6 +92,68 @@
   "comparabilityLimits": [
     "different quantizers and runtimes are deployment bundles, not a pure architecture experiment",
     "partial offload latency does not predict full-GPU latency",
-    "Qwen partial offload measured; Gemma actual load/performance still unmeasured"
-  ]
+    "Both candidates load and infer with partial offload; full-GPU deployment performance unmeasured"
+  ],
+  "completedComparison": {
+    "home-chat": {
+      "savedCalls": 43,
+      "maxPromptTokens": 8715,
+      "maxTotalTokens": 10763
+    },
+    "qwen3.8-27b": {
+      "savedCalls": 43,
+      "maxPromptTokens": 8753,
+      "maxTotalTokens": 10801
+    },
+    "gemma4-31b": {
+      "savedCalls": 43,
+      "maxPromptTokens": 9019,
+      "maxTotalTokens": 11067
+    }
+  },
+  "baseline": {
+    "evaluationId": "home-chat",
+    "modelId": "Qwen/Qwen3.5-35B-A3B",
+    "deployedSnapshotRevision": "59d61f3ce65a6d9863b86d2e96597125219dc754",
+    "quantization": "sym_int4",
+    "separateQuantizedArtifactSha256": null,
+    "artifactLimitation": "No separate quantized-weight digest captured",
+    "runtime": "0.26.1.dev0+g568afb3a1.d20260907.xpu",
+    "torch": "2.12.0+xpu",
+    "transformers": "5.8.0",
+    "containerImageId": "sha256:52218ad85513ab6686d4c090c83c2bd8c5b02423c63aa4dabd41837fe641fe3b",
+    "tensorParallelSize": 2,
+    "dtype": "float16",
+    "mambaSsmCacheDtype": "float16",
+    "maxModelLen": 131072,
+    "maxNumBatchedTokens": 4096,
+    "maxNumSeqs": 2,
+    "gpuMemoryUtilization": 0.55,
+    "blockSize": 64,
+    "enforceEager": true,
+    "defaultEnableThinking": false,
+    "enableAutoToolChoice": true,
+    "toolCallParser": "qwen3_coder"
+  },
+  "evaluationRequestSettings": {
+    "seed": 714919,
+    "top_p": 0.95,
+    "stream": false,
+    "jsonGrammar": false,
+    "assessment": {
+      "enableThinking": true,
+      "temperature": 0.6,
+      "maxTokens": 3072
+    },
+    "ranking": {
+      "enableThinking": true,
+      "temperature": 0.6,
+      "maxTokens": 2048
+    },
+    "writing": {
+      "enableThinking": false,
+      "temperature": 0.8,
+      "maxTokens": 2048
+    }
+  }
 }

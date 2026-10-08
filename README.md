@@ -5,9 +5,10 @@ API), Anthropic (Claude API), and local Ollama models, plus SSH-triggered
 coding automation (Claude Code / Codex) on the always-on workstation.
 
 This repo is **separate from OMC** (Outlook Multi-Context Automation).
-OMC keeps handling confidential/regulated data with Ollama-only
-processing and is not touched by anything here. See the architecture
-doc for the full design and the confidentiality boundary rationale.
+OMC handles confidential/regulated data through local inference. Its deployed
+intelligence configuration shares the `home-chat` service, so GPU maintenance must
+account for OMC availability. Content-pipeline work preserves OMC calendars, data
+and processing settings. See the architecture doc for the confidentiality boundary.
 
 ## What's here
 

@@ -1,0 +1,182 @@
+{
+  "generatedAt": "2026-10-08T07:41:18.378796+00:00",
+  "modelCalls": 0,
+  "networkCalls": 0,
+  "controllerStartedAt": "2026-10-07T21:08:06.218867+00:00",
+  "controllerFinishedAt": "2026-10-08T07:39:14.156249+00:00",
+  "measurementLimits": [
+    "GPU memory/power samples include existing production allocations.",
+    "Incremental GPU memory is relative to each native load baseline.",
+    "RSS is resident memory, not the complete mapped model size.",
+    "No controlled household latency, full-GPU or higher-thread comparison.",
+    "Native process wall time includes reload, queue, generation and sampling.",
+    "Output-token budget truncation differs from source/context truncation."
+  ],
+  "nativeRuns": [
+    {
+      "arm": "gemma4-31b",
+      "phase": "writing",
+      "status": "completed",
+      "startedAt": "2026-10-07T21:21:24.021086+00:00",
+      "finishedAt": "2026-10-07T21:37:18.733731+00:00",
+      "processWallSeconds": 954.713,
+      "loadToReadySeconds": 29.997,
+      "resourceSampleCount": 137,
+      "peakIncrementalGpuMiB": {
+        "0": 8887.09,
+        "1": 9.211
+      },
+      "peakRssKiB": 23808268,
+      "nativeReleaseRecords": 4,
+      "nativeContextTruncatedRecords": 0,
+      "checkpointStopExit15": false
+    },
+    {
+      "arm": "gemma4-31b",
+      "phase": "all",
+      "status": "completed",
+      "startedAt": "2026-10-08T03:33:43.520397+00:00",
+      "finishedAt": "2026-10-08T07:39:14.131155+00:00",
+      "processWallSeconds": 14730.611,
+      "loadToReadySeconds": 8.996,
+      "resourceSampleCount": 2105,
+      "peakIncrementalGpuMiB": {
+        "0": 8937.09,
+        "1": 9.215
+      },
+      "peakRssKiB": 22297636,
+      "nativeReleaseRecords": 39,
+      "nativeContextTruncatedRecords": 0,
+      "checkpointStopExit15": false
+    },
+    {
+      "arm": "qwen3.8-27b",
+      "phase": "initial checkpoint",
+      "status": "blocked",
+      "startedAt": "2026-10-07T20:24:43.518693+00:00",
+      "finishedAt": "2026-10-07T20:38:31.730867+00:00",
+      "processWallSeconds": 828.212,
+      "loadToReadySeconds": 44.0,
+      "resourceSampleCount": 119,
+      "peakIncrementalGpuMiB": {
+        "0": 8641.961,
+        "1": 9.215
+      },
+      "peakRssKiB": 16864332,
+      "nativeReleaseRecords": 1,
+      "nativeContextTruncatedRecords": 0,
+      "checkpointStopExit15": true
+    },
+    {
+      "arm": "qwen3.8-27b",
+      "phase": "initial checkpoint",
+      "status": "blocked",
+      "startedAt": "2026-10-07T20:52:46.017674+00:00",
+      "finishedAt": "2026-10-07T21:08:05.231225+00:00",
+      "processWallSeconds": 919.214,
+      "loadToReadySeconds": 9.001,
+      "resourceSampleCount": 132,
+      "peakIncrementalGpuMiB": {
+        "0": 8657.961,
+        "1": 9.207
+      },
+      "peakRssKiB": 16836928,
+      "nativeReleaseRecords": 2,
+      "nativeContextTruncatedRecords": 0,
+      "checkpointStopExit15": true
+    },
+    {
+      "arm": "qwen3.8-27b",
+      "phase": "writing",
+      "status": "completed",
+      "startedAt": "2026-10-07T21:08:08.545121+00:00",
+      "finishedAt": "2026-10-07T21:21:21.780322+00:00",
+      "processWallSeconds": 793.235,
+      "loadToReadySeconds": 8.972,
+      "resourceSampleCount": 114,
+      "peakIncrementalGpuMiB": {
+        "0": 8657.949,
+        "1": 9.203
+      },
+      "peakRssKiB": 16867604,
+      "nativeReleaseRecords": 4,
+      "nativeContextTruncatedRecords": 0,
+      "checkpointStopExit15": false
+    },
+    {
+      "arm": "qwen3.8-27b",
+      "phase": "all",
+      "status": "completed",
+      "startedAt": "2026-10-07T21:37:21.020813+00:00",
+      "finishedAt": "2026-10-08T03:33:41.582623+00:00",
+      "processWallSeconds": 21380.562,
+      "loadToReadySeconds": 8.997,
+      "resourceSampleCount": 3055,
+      "peakIncrementalGpuMiB": {
+        "0": 8657.969,
+        "1": 9.219
+      },
+      "peakRssKiB": 18490612,
+      "nativeReleaseRecords": 36,
+      "nativeContextTruncatedRecords": 0,
+      "checkpointStopExit15": false
+    }
+  ],
+  "arms": {
+    "home-chat": {
+      "savedCalls": 43,
+      "totalCallSeconds": 1286.885,
+      "outputTokens": 112396,
+      "nativePromptSeconds": null,
+      "nativeGenerationSeconds": null,
+      "nativeDecodeWeightedTokensPerSecond": null
+    },
+    "qwen3.8-27b": {
+      "savedCalls": 43,
+      "totalCallSeconds": 23691.99,
+      "outputTokens": 104086,
+      "nativePromptSeconds": 2110.102,
+      "nativeGenerationSeconds": 21567.194,
+      "nativeDecodeWeightedTokensPerSecond": 4.826
+    },
+    "gemma4-31b": {
+      "savedCalls": 43,
+      "totalCallSeconds": 15497.024,
+      "outputTokens": 43451,
+      "nativePromptSeconds": 2830.844,
+      "nativeGenerationSeconds": 12615.179,
+      "nativeDecodeWeightedTokensPerSecond": 3.444
+    }
+  },
+  "cpuObservations": [
+    {
+      "sampledAt": "2026-10-07T22:29:25.578968+00:00",
+      "phase": "qwen-assessment",
+      "processElapsed": "52:04",
+      "processCpuPercent": 396.0,
+      "nice": 10,
+      "rssKiB": 14401156,
+      "hostCpuPressureSomeAvg10_60_300": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controlledContentionMeasurement": false
+    },
+    {
+      "sampledAt": "2026-10-08T03:37:36.477088+00:00",
+      "phase": "gemma-assessment",
+      "processElapsed": "03:52",
+      "processCpuPercent": 162.0,
+      "nice": 10,
+      "rssKiB": 15632524,
+      "hostCpuPressureSomeAvg10_60_300": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controlledContentionMeasurement": false
+    }
+  ],
+  "recordedHouseholdWaitMessagesInResumeLogs": 0
+}
