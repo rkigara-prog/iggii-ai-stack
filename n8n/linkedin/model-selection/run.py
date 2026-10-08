@@ -50,7 +50,7 @@ def extract(reply):
   parsed=None;error=type(e).__name__;strict=False;adapter=None
   # Accept a single whole-message JSON fence as presentation only. Keep the raw
   # reply and strict_json=False; never repair malformed JSON or task content.
-  fence=re.fullmatch(r'\s*```(?:json)?\s*\n(.*?)\n```\s*',content,re.S)
+  fence=re.fullmatch(r'\s*```(?:json)?\s*\n(.*?)```\s*',content,re.S)
   if fence:
    try:
     value=json.loads(fence[1])

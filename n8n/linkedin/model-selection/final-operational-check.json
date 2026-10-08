@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-08T07:42:01.521191+00:00",
+  "readOnlyServiceChecks": {
+    "homeChatHealth": 200,
+    "comfyQueue": 200
+  },
+  "isolatedEvaluationServerStopped": true,
+  "rollbackTimerActive": true,
+  "rollbackExpiryUtc": "2026-10-08T20:51:03.634187+00:00",
+  "rollbackExecutionObserved": false,
+  "productionConfigurationChangedByThisMilestone": false,
+  "linkedInPublishingEnabledByThisMilestone": false,
+  "omcValidation": "Existing home-chat route preserved; reused configuration validation. No new end-to-end OMC or latency test.",
+  "unrelatedInferencePipelineOrCalendarTests": 0
+}

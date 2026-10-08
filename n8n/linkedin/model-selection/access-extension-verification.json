@@ -10,5 +10,21 @@
   "evaluatorStopMarginSeconds": 60,
   "baselineSavedCallsReused": 43,
   "qwenSavedCallsReused": 1,
-  "productionMaintenance": false
+  "productionMaintenance": false,
+  "pastOriginalExpiryCheck": {
+    "verifiedAt": "2026-10-08T02:00:37.170282+00:00",
+    "newTimerActive": true,
+    "oldTimerInactive": true,
+    "namedUserUid": 1000,
+    "intelRenderDevicesReadWrite": true,
+    "otherDevicePermissions": 0,
+    "automaticRollbackStillConfigured": true
+  },
+  "rollbackBaseline": "Extension helper copies the original pre-grant ACL snapshot, not the temporary granted ACL",
+  "finalTimerCheck": {
+    "checkedAt": "2026-10-08T07:42:01.521191+00:00",
+    "active": true,
+    "isolatedEvaluatorStopped": true,
+    "rollbackExecutionObserved": false
+  }
 }

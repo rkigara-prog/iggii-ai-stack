@@ -1,5 +1,5 @@
 {
-  "status": "Both artifacts verified and native partial-offload load/inference confirmed; frozen comparison running",
+  "status": "Completed 43 frozen calls per arm; task/schema failures remain explicit in results; production unchanged",
   "shortlist": [
     {
       "id": "Qwen/Qwen3.8-27B",
@@ -71,7 +71,8 @@
     "oneApiVersion": "2025.3.2",
     "qwenUsableContextVerified": 16384,
     "gemmaUsableContextVerified": 16384,
-    "bothGgufTemplatesExposeEnableThinking": true
+    "bothGgufTemplatesExposeEnableThinking": true,
+    "contextVerificationScope": "16,384 configured native context; all unchanged evaluation packets fit. Actual token maxima recorded above; advertised maxima and exhaustive context-boundary performance were not tested."
   },
   "proposedEvaluationContext": 16384,
   "productionContextUnchanged": 131072,
@@ -92,5 +93,22 @@
     "different quantizers and runtimes are deployment bundles, not a pure architecture experiment",
     "partial offload latency does not predict full-GPU latency",
     "Both candidates load and infer with partial offload; full-GPU deployment performance unmeasured"
-  ]
+  ],
+  "completedComparison": {
+    "home-chat": {
+      "savedCalls": 43,
+      "maxPromptTokens": 8715,
+      "maxTotalTokens": 10763
+    },
+    "qwen3.8-27b": {
+      "savedCalls": 43,
+      "maxPromptTokens": 8753,
+      "maxTotalTokens": 10801
+    },
+    "gemma4-31b": {
+      "savedCalls": 43,
+      "maxPromptTokens": 9019,
+      "maxTotalTokens": 11067
+    }
+  }
 }

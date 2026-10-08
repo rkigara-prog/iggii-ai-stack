@@ -24,10 +24,13 @@ def main():
    body=packet['candidates'] if phase=='ranking' else packet
    tasks[phase+'-'+id]=(phase,id,body,prompt,budget,thinking)
  judgments=json.loads((root/'writing-judgments.json').read_text());report={'verifiedAt':datetime.now(timezone.utc).isoformat(),'networkCalls':0,'modelCalls':0,'frozenInputsUnchanged':True,'writingJudgmentsSha256':sha((root/'writing-judgments.json').read_bytes()),'responseSha256':{},'arms':{}}
+ argument_notes=json.loads((root/'reasoning-review-notes.json').read_text())
+ assert argument_notes['rater']=='Codex' and argument_notes['independentVerification'] is False
+ report['reasoningReviewNotesSha256']=sha((root/'reasoning-review-notes.json').read_bytes())
  for arm in ['home-chat','qwen3.8-27b','gemma4-31b']:
   files={f.stem:f for f in (root/'responses'/arm).glob('*.json')}
   assert set(files)==set(tasks),(arm,'missing or extra checkpoints',sorted(set(tasks)-set(files)))
-  finishes=Counter();max_prompt=0;max_total=0
+  finishes=Counter();max_prompt=0;max_total=0;accepted_arguments=0
   for name,file in files.items():
    report['responseSha256'][arm+'/'+file.name]=sha(file.read_bytes())
    r=json.loads(file.read_text());phase,id,packet,prompt,budget,thinking=tasks[name]
@@ -40,12 +43,15 @@ def main():
    usage=r['reply']['usage'];max_prompt=max(max_prompt,usage['prompt_tokens']);max_total=max(max_total,usage['total_tokens'])
    assert usage['completion_tokens']<=budget
    if arm!='home-chat':assert usage['total_tokens']<=16384
+   if phase=='assessment' and isinstance(e['parsed'],dict) and e['parsed'].get('decision')=='accept':
+    assert arm+'/'+id in argument_notes['notes'], 'Accepted argument has not been reviewed'
+    accepted_arguments+=1
    if phase=='writing':
     assert e['finish_reason']=='stop' and isinstance(e['parsed'],dict) and isinstance(e['parsed'].get('draft'),str)
     j=judgments[arm+'/'+id]
     assert j['rater']=='Codex' and j['independentHumanRating'] is False and j['actualEditingMinutes'] is None and j['completeProseReviewed']
     assert j['sentenceCount']==len(j['sentences'])>0
-  report['arms'][arm]={'savedCalls':len(files),'sameFrozenPacketsAndPrompts':True,'sameRequestBudgets':True,'finishCounts':dict(finishes),'maxPromptTokens':max_prompt,'maxTotalTokens':max_total,'completeProseReviews':4}
+  report['arms'][arm]={'savedCalls':len(files),'sameFrozenPacketsAndPrompts':True,'sameRequestBudgets':True,'finishCounts':dict(finishes),'maxPromptTokens':max_prompt,'maxTotalTokens':max_total,'completeProseReviews':4,'acceptedArgumentReviews':accepted_arguments}
  a.output.write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items() if k!='responseSha256'}))
 
 if __name__=='__main__':main()

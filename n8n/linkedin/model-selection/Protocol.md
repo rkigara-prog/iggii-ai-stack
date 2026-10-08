@@ -13,6 +13,13 @@ reasoner. Laya and JEV do not fill either alternative-model slot.
 
 Exact input, gold, full-source and prompt hashes are in the private freeze. Response records include input and system-prompt hashes. The runner loads gold only for hash integrity; it never inserts gold or an answer key into a request. It actually sends only the relevant packet and common phase prompt.
 
+The ten eligible IDs represent eight distinct topic texts: S41/S44 and S31/S34 are
+paired privacy-context variants. The unchanged ranking task requires every ID,
+so its scores describe ordering these regression cases, not selecting ten distinct
+stories or an independently validated editorial mix. All accepted reasoning
+arguments are also reviewed by Codex for assertions beyond the supplied claim list;
+those private notes are hash-pinned separately from the writing reviews.
+
 ## Model conditions
 
 The same common phase instructions and output budget apply to all three models.
@@ -37,6 +44,10 @@ Gemma's first saved draft exposed a single whole-message JSON code fence. The co
 adapter also unwraps that exact presentation form without editing its contents;
 strict JSON compliance remains false and the original parse error/raw response stays
 preserved. This rescoring uses saved responses, with no replacement inference.
+The same whole-message wrapper handling permits a closing fence immediately after
+the JSON object, as observed in Gemma R07. It removes only the enclosing markers;
+the JSON payload must still parse unchanged. This presentation correction applies
+to every arm and does not convert the response into strict JSON compliance.
 No retry silently replaces a weak response. A transport/runtime failure stops the arm
 with its checkpoint intact. All model calls stay on fixed local endpoints.
 
@@ -108,6 +119,9 @@ invalid. Whole-response schema compliance stays separate. Supported-claim agreem
 uses 16 gold-supported claims; eligible-opportunity recall uses ten gold-accepted
 candidates. Six supported-claim cases are still ineligible/deferred under the gold.
 Unsafe acceptance is split into unsupported-claim and evidence-eligibility failures.
+Eligible acceptances are also counted after response-schema, exact-excerpt and final
+canary checks, separately from a completed semantic accept decision. Passing those
+mechanics still does not prove source authority or the proposed argument's meaning.
 These are deterministic comparisons against existing Codex gold judgments, not new
 independent proof. The original checkpoint scores and all raw responses are retained.
 Publication metadata without a passage ID is reported separately in prose review;
@@ -118,6 +132,9 @@ distinguishes exact synthetic-canary echoes anywhere in returned API content fro
 echoes inside a complete final task object and echoes in unseparated/incomplete
 content. These categories overlap and are not independent incident counts. Exact
 canary absence is not a complete privacy audit; no real transcripts were used.
+Challenge denominators count actual frozen requests containing synthetic markers,
+with completed task answers shown separately. Public-only writing inputs do not
+constitute a privacy stress test merely because their outputs contain no markers.
 
 Before the remaining Gemma reasoning phase, increase the client socket-read
 timeout from 20 to 40 minutes to leave margin for long full-evidence native calls.

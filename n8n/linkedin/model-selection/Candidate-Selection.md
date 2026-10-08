@@ -99,3 +99,12 @@ inactive, the device rights are unchanged, and Docker/sudo rights remain unchang
 Both selected alternatives have now loaded and produced saved responses within
 the 16,384-token context and the existing resource envelope. The sanitized
 verification is in `access-extension-verification.json`.
+
+## Completed comparison
+
+All three arms now have 43 saved calls; completed judgments and schema failures are
+reported separately in [the final report](Report.md). The two native alternatives
+retained every frozen packet, with maximum prompt sizes of 8,753 and 9,019 tokens
+and no context truncation. No production model was replaced. The original access
+snapshot is retained for the scheduled rollback; final service health was observed
+without another inference or pipeline test.
