@@ -1,0 +1,157 @@
+{
+  "cycleId": "20261008-authorized-gemma-pilot",
+  "authorizationRecord": "pilot-authorization.json",
+  "cycleStartedAt": "2026-10-08T14:47:22.360Z",
+  "cycleFinishedAt": "2026-10-08T14:55:35.753Z",
+  "n8nExecutionSeconds": 493.393,
+  "n8nExecutionStatus": "success",
+  "eligibleRetainedTopics": 2,
+  "deferredRetainedTopicsNotDrafted": 5,
+  "maximumAuthorizedDrafts": 3,
+  "modelCalls": 2,
+  "completeResponses": 2,
+  "outputBudgetExhaustions": 0,
+  "transportTimeouts": 0,
+  "runtimeErrorsDuringCycle": 0,
+  "preInferenceCliStartupFailures": 1,
+  "startupFix": "Separate CLI task-runner broker port 5681; production broker unchanged",
+  "benchmarkReruns": 0,
+  "productionModelChanges": 0,
+  "productionServiceStops": 0,
+  "blindReviewCompleted": false,
+  "humanEditingMinutes": null,
+  "humanPublicationApprovals": 0,
+  "automaticPublishingAllowed": false,
+  "recurringExecutionEnabled": false,
+  "samples": [
+    {
+      "requestId": "20261008-identity-reference",
+      "checkpointSha256": "ab4c703253387a1de2f87e6ea89b952b5f94403df55af23bcc41a9ac0c4e198c",
+      "packetSha256": "db963623ecc2aacfd403a6c8b629a7be74b110ce9d48f7cdd1abeeb156fdfdb4",
+      "status": "response",
+      "finishReason": "stop",
+      "adapter": "whole_message_json_fence",
+      "elapsedSecondsIncludingLoadAndUnload": 264.243,
+      "tokens": {
+        "completion_tokens": 545,
+        "prompt_tokens": 2435,
+        "total_tokens": 2980,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "nativeTimings": {
+        "cache_n": 0,
+        "prompt_n": 2435,
+        "prompt_ms": 95022.209,
+        "prompt_per_token_ms": 39.02349445585216,
+        "prompt_per_second": 25.62558822432764,
+        "predicted_n": 545,
+        "predicted_ms": 150976.117,
+        "predicted_per_token_ms": 277.5296268382353,
+        "predicted_per_second": 3.6032189117699986
+      },
+      "wordCountExcludingUrls": 115,
+      "evidenceBoundInputClaims": 2,
+      "writerListedClaims": 2,
+      "wholeProseReviewFlags": 6,
+      "independentSemanticVerification": false,
+      "publicationApproval": null,
+      "resourceSampleCount": 37,
+      "baselineGpuMiB": [
+        18792.67578125,
+        18904.8203125
+      ],
+      "peakGpuMiB": [
+        27679.74609375,
+        18911.6015625
+      ],
+      "peakAdditionalGpuGiB": [
+        8.678779602050781,
+        0.006622314453125
+      ],
+      "peakProcessRssGiB": 17.18515396118164,
+      "peakGpuPowerWatts": [
+        98.41,
+        3.5
+      ],
+      "guardReasons": [],
+      "serverStopped": true
+    },
+    {
+      "requestId": "20261008-infrastructure-reference",
+      "checkpointSha256": "f3b566f68452086e78210b56e168dd9ab47b194c749067d29a7e03444adedce7",
+      "packetSha256": "4ad9451d8b0e12bc519084100b036e9fc89a47bdb44054b653e7f1e15e32db16",
+      "status": "response",
+      "finishReason": "stop",
+      "adapter": "whole_message_json_fence",
+      "elapsedSecondsIncludingLoadAndUnload": 225.793,
+      "tokens": {
+        "completion_tokens": 423,
+        "prompt_tokens": 2364,
+        "total_tokens": 2787,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "nativeTimings": {
+        "cache_n": 0,
+        "prompt_n": 2364,
+        "prompt_ms": 89800.001,
+        "prompt_per_token_ms": 37.98646404399323,
+        "prompt_per_second": 26.32516674470861,
+        "predicted_n": 423,
+        "predicted_ms": 117554.15000000001,
+        "predicted_per_token_ms": 278.564336492891,
+        "predicted_per_second": 3.5898349824315003
+      },
+      "wordCountExcludingUrls": 138,
+      "evidenceBoundInputClaims": 1,
+      "writerListedClaims": 1,
+      "wholeProseReviewFlags": 7,
+      "independentSemanticVerification": false,
+      "publicationApproval": null,
+      "resourceSampleCount": 31,
+      "baselineGpuMiB": [
+        18792.67578125,
+        18904.8203125
+      ],
+      "peakGpuMiB": [
+        27677.328125,
+        18911.61328125
+      ],
+      "peakAdditionalGpuGiB": [
+        8.67641830444336,
+        0.006633758544921875
+      ],
+      "peakProcessRssGiB": 17.21036148071289,
+      "peakGpuPowerWatts": [
+        98.9,
+        3.43
+      ],
+      "guardReasons": [],
+      "serverStopped": true
+    }
+  ],
+  "sharedReviewVerification": {
+    "pilotWorkflowId": "AikiRKUpJ52fqZNf",
+    "active": false,
+    "manualOnly": true,
+    "publicationApproval": null,
+    "automaticPublishingAllowed": false,
+    "artifacts": {
+      "20261008-identity-reference.draft.html": "303508b6c182608413a91cdc8e205a5f08ec2d6bcae9ad38f4049607a83e8c75",
+      "20261008-identity-reference.review.json": "fdf7aa293876a408b427ad8b56cef214d414e251fd3dea2ba7194204a5234587",
+      "20261008-infrastructure-reference.draft.html": "cc2385d751e176b80a942a0ded4314ba72b35cb64372b267ccb03f20faeecbf7",
+      "20261008-infrastructure-reference.review.json": "332aaf071f5cda15c0f39f95eeb65b90f2c1842c8c0e9c8b01e5ea011d58aebd"
+    },
+    "credentialsRemoved": true
+  },
+  "limits": [
+    "Two historical topics; not a new model comparison or current-news qualification.",
+    "Exact bindings and schema checks do not establish semantic correctness of full prose.",
+    "RSS excludes GPU allocations; sampled peaks can miss short spikes. Host available RAM was guarded but not persisted per sample.",
+    "Household priority was polled, not a measured concurrency or latency guarantee.",
+    "Content judgments are Codex judgments; actual human editing effort remains unmeasured."
+  ]
+}

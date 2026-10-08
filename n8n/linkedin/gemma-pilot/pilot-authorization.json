@@ -1,0 +1,14 @@
+{
+  "recordedAt": "2026-10-08T14:41:37.586379+00:00",
+  "authorizedBy": "user",
+  "source": "Explicit conversation instruction authorizing PR #22 bounded manual pilot",
+  "authorizationType": "bounded_manual_pilot",
+  "maximumDrafts": 3,
+  "evidenceSelection": "Agent selects only eligible evidence-supported retained topics under existing rules",
+  "blindReviewCompleted": false,
+  "automaticPublishingAllowed": false,
+  "productionModelSwitchAuthorized": false,
+  "recurringExecutionAuthorized": false,
+  "productionInterruptionAuthorized": false,
+  "cleanupRequired": true
+}

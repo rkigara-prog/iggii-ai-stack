@@ -11,6 +11,7 @@ function record(p){return {requestId:p.requestId,packetSha256:digest(p),status:'
 let checks=0;
 function check(f){f();checks++;}
 check(()=>assert.equal(request(fixture()).model,'gemma4-31b'));
+check(()=>{const p=fixture();Object.assign(p.approval,{status:'authorized_pilot_drafting',by:'user',authorizationType:'bounded_manual_pilot',evidenceSelectionBy:'Codex',blindReviewCompleted:false,publicationApproved:false});validate(p);p.approval.publicationApproved=true;assert.throws(()=>validate(p));});
 check(()=>{const p=fixture();p.claims[0].form='paraphrase';p.claims[0].attribution={publisher:'NIST',sourceId:'s1'};p.claims[0].text='NIST states (paraphrased): This synthetic document describes an optional planning step.';validate(sign(p));});
 check(()=>{const p=fixture();delete p.claims[0].exception;p.claims[0].text=q;const s=structuredClone(p.sources[0]);s.id='s2';s.canonicalUrl=s.finalUrl=s.requestedUrl='https://www.cisa.gov/synthetic-pilot-fixture';s.publisher='CISA';p.sources.push(s);p.sourceAssessments.push({...structuredClone(p.sourceAssessments[0]),sourceId:'s2',originId:'synthetic-two'});p.claims[0].citations.push({sourceId:'s2',passageId:'p1',quote:q});validate(sign(p));});
 for(const mutate of [p=>p.sources[0].retrievalStatus='unavailable',p=>p.claims[0].text+=' 9000 days.',p=>p.sourceAssessments[0].originMethod='unknown',p=>p.sourceAssessments[0].role='promotion',p=>p.classification='private_transcript',p=>p.claims[0].judgment.scope='unresolved'])check(()=>{const p=fixture();mutate(p);assert.throws(()=>validate(sign(p)));});
@@ -29,10 +30,10 @@ async function workflowCheck(){
  const prepared=await new AsyncFunction(prepare).call({helpers:{getBinaryDataBuffer:async()=>Buffer.from(JSON.stringify(p))}});
  assert.deepEqual(JSON.parse(Buffer.from(prepared[0].json.encoded,'base64')),p);
  const review=workflow.nodes.find(n=>n.name==='Review Complete Draft and Evidence').parameters.jsCode;
- const output=await new AsyncFunction('$','$json',review)(()=>({first:()=>({json:{packet:p}})}),{stdout:JSON.stringify(r),exitCode:0});
+ const output=await new AsyncFunction('$','$input',review)(()=>({all:()=>[{json:{packet:p}}]}),{all:()=>[{json:{stdout:JSON.stringify(r),exitCode:0}}]});
  assert.deepEqual(JSON.parse(Buffer.from(output[0].json.reviewBase64,'base64')).sources,p.sources);
  r.review.sources[0].canonicalUrl='https://tampered.example';
- await assert.rejects(()=>new AsyncFunction('$','$json',review)(()=>({first:()=>({json:{packet:fixture()}})}),{stdout:JSON.stringify(r)}),/handoff mismatch/);
+ await assert.rejects(()=>new AsyncFunction('$','$input',review)(()=>({all:()=>[{json:{packet:fixture()}}]}),{all:()=>[{json:{stdout:JSON.stringify(r)}}]}),/handoff mismatch/);
  checks++;console.log(JSON.stringify({passed:true,checks,modelCalls:0,fixtures:'synthetic plumbing only',proseReview:'omitted unsafe assertion routed to human review',workflow:'inactive manual flow; mocked SSH response; no live execution'}));
 }
 if(require.main===module)workflowCheck().catch(e=>{console.error(e.message);process.exitCode=1;});

@@ -45,8 +45,10 @@ function validate(packet){
   must(check.passed,'Evidence gate: '+check.reasons.join(','));
  }
  const {approval,...content}=packet;
- keys(approval,['status','by','at','bundleSha256']);
- must(approval?.status==='approved_for_drafting'&&['Robert','Leigh'].includes(approval.by)&&Number.isFinite(Date.parse(approval.at)),'Human approval for drafting required');
+ keys(approval,['status','by','at','bundleSha256','authorizationType','evidenceSelectionBy','blindReviewCompleted','publicationApproved']);
+ const human=approval.status==='approved_for_drafting'&&['Robert','Leigh'].includes(approval.by);
+ const pilot=approval.status==='authorized_pilot_drafting'&&approval.by==='user'&&approval.authorizationType==='bounded_manual_pilot'&&approval.evidenceSelectionBy==='Codex'&&approval.blindReviewCompleted===false&&approval.publicationApproved===false;
+ must((human||pilot)&&Number.isFinite(Date.parse(approval.at)),'Explicit drafting approval or bounded pilot authorization required');
  must(approval.bundleSha256===digest(content),'Approval does not match this complete evidence/brief packet');
  must(Buffer.byteLength(JSON.stringify(packet))<=config.maxPacketBytes,'Packet too large; defer without shortening evidence');
  return packet;

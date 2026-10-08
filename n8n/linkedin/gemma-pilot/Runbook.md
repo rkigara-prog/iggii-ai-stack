@@ -1,16 +1,16 @@
 # Gemma drafting pilot — implementation and activation runbook
 
-**Ready for review:** an inactive manual n8n workflow, an isolated Gemma worker,
-public-evidence handoff, human review output, resource guards and rollback. No
-workflow was imported, no SSH credential installed, no GPU rights extended, no
-Gemma process started and no production route changed. The branch is preparation
-only. Robert and Leigh's PR #21 blind drafts and score sheets are unchanged.
+**Status after the authorized pilot:** one manual cycle completed on 8 October
+2026, producing two review-only drafts. See [Pilot-Report.md](Pilot-Report.md) for
+measured results, unresolved prose issues and cleanup. Workflow `AikiRKUpJ52fqZNf`
+is imported but inactive. Temporary admission is disabled and its key removed.
+Production home-chat, OMC, scheduling and publishing are unchanged.
 
-**Remaining decision:** after blind review, approve or decline a bounded manual
-writing pilot using the measured partial-offload configuration. Approving the pilot
-does not approve posts, autonomous topic qualification, a production model switch
-or a recurring schedule. Actual SSH transport and live Gemma inference remain
-activation checks; this preparation validates the contract and mocked integration.
+The user authorized this bounded pilot before completion of Robert and Leigh's
+blind review. That authorization is not blind-review completion, publication
+approval, a production model switch or permission for recurring execution. Further
+use requires a new bounded authorization; the steps below are a runbook, not a
+standing authorization. Blind drafts and score sheets remain unchanged.
 
 ## Model and route
 
@@ -41,7 +41,7 @@ and MIT license reference. This is not an inference dependency download.
 
 ```mermaid
 flowchart LR
-  C[Existing evidence-bound candidates] --> P[Public packet + human drafting approval]
+  C[Existing evidence-bound candidates] --> P[Public packet + explicit drafting authorization]
   P --> N[Manual development n8n workflow]
   N --> S[Restricted SSH worker]
   S --> G[Existing evidence policy + packet approval hash]
@@ -59,12 +59,21 @@ requested/final/canonical URLs, publishers, publication dates (or explicit null)
 retrieval times, support judgments and source-origin judgments. It creates a
 **pending** approval record, never approves its own packet.
 
-Robert or Leigh must inspect that complete packet as public content, resolve webinar
-overlap/current applicability, and set `approval.status` to `approved_for_drafting`,
+For a separately reviewed packet, Robert or Leigh inspect it as public content,
+resolve webinar overlap/current applicability, and set `approval.status` to `approved_for_drafting`,
 `by` to `Robert` or `Leigh`, and `at` to an ISO timestamp. The digest binds the entire
 brief/evidence packet to that approval; changed content requires a fresh review and
 digest. This is an access-controlled human record, not a cryptographic identity
 signature or automated privacy classification. No raw transcript is an allowed input.
+
+The 8 October exception was explicit **user pilot authorization**, not fabricated
+human packet approval: `authorized_pilot_drafting`, `by: user`,
+`authorizationType: bounded_manual_pilot`, `evidenceSelectionBy: Codex`,
+`blindReviewCompleted: false`, `publicationApproved: false`. The worker additionally
+pins one to three request IDs and complete packet digests in its private
+`authorizedPackets` allowlist. This changes authorization accounting, not evidence
+qualification. A future operator must not reuse these hashes as a new authorization.
+
 
 Before loading Gemma, the worker runs the **existing `evidence/policy.cjs` unchanged**.
 It requires exact passage bindings, all semantic dimensions, eligible sources and
@@ -104,9 +113,9 @@ mechanical checks pass. `publicationApproval` stays null and
 
 PR #21 measured **8.728 GiB** peak incremental GPU0, **22.705 GiB** peak process RSS,
 and **224.065 seconds median writing latency** for Gemma. Load-to-ready observations
-were about 9–30 seconds. Four drafts would be roughly 15 minutes of median call time,
-plus load/unload, queue waits and hashing; that is a planning estimate, not a measured
-four-request pilot SLA. Full evidence or household activity may take longer or defer
+were about 9–30 seconds. Up to three drafts would be roughly 11.2 minutes of median call time,
+plus load/unload, queue waits and hashing; that is a planning estimate, not an SLA.
+The completed two-draft pilot took 8 minutes 13 seconds end to end. Full evidence or household activity may take longer or defer
 work. Hashing the 18 GB artifact before each load is extra I/O and time, deliberately
 not hidden in the old latency number.
 
@@ -153,7 +162,7 @@ instruction; that may consume budget but is not proven to explain all 45 failure
 Larger budgets or changed reasoning instructions remain untested. This writing pilot
 does not silently alter production assessment settings or claim to solve that problem.
 
-## Activation and rollback — only after the review decision
+## Activation and rollback — requires a fresh bounded authorization
 
 1. Approve a bounded manual pilot and verify fresh household/OMC availability and
    free resources. Keep the existing **8 October 20:51:03 UTC** device rollback and
@@ -173,22 +182,30 @@ does not silently alter production assessment settings or claim to solve that pr
    On Ubuntu restrict that public key using:
 
    ```text
-   restrict,from="192.168.113.18",command="/usr/bin/python3 /home/rigarashi/projects/iggii-ai-stack/n8n/linkedin/gemma-pilot/worker.py --ssh" PUBLIC_KEY
+   restrict,from="192.168.113.18",expiry-time="YYYYMMDDHHMMSSZ",command="/usr/bin/python3 /home/rigarashi/projects/iggii-ai-stack/n8n/linkedin/gemma-pilot/worker.py --ssh" PUBLIC_KEY
    ```
 
    Verify the actual NAS source address before installation if networking changed.
    The forced worker accepts only `SSH_ORIGINAL_COMMAND=linkedin-gemma-pilot` and
    reads the public packet from stdin; no shell command or file path comes from it.
-4. Create only the future pilot review folder, preserving established ownership
+4. Use only the established pilot review folder, preserving established ownership
    `1000:1800`, directory 2770 and review/request files 0660. Install
    `write-review.cjs` in `/home/node/.n8n/gemma-pilot/` (technical app storage).
    Import `workflow.json` as a **new inactive development workflow**. Do not replace
    any existing workflow or connect it to the Monday chain.
-5. Prepare the public request outside Git using `prepare-request.cjs`, then complete
-   human drafting approval. Put that single request at the path below. Set the private
-   activation file to enabled only after authorization, with approver, the pinned
-   artifact digest and an ISO expiry within two hours and no later than GPU lease expiry.
-   Run one manual workflow invocation. Unknown/busy/expired/resource failures defer;
+5. Prepare the public request outside Git using `prepare-request.cjs`, then record
+   human packet approval or the explicitly authorized bounded-pilot alternative
+   above. Put the single request, or `{cycleId, packets: [...]}` with one to three
+   packets, at the fixed request path below. Pin each request ID/digest in private
+   `authorizedPackets`. Set activation enabled only after authorization, with approver,
+   artifact digest and ISO expiry within two hours and no later than GPU lease expiry.
+   Before enabling access, schedule `cleanup-pilot.py` with near-expiry retries in the
+   user's crontab; this removes only the pilot admission and credentials. Retain the
+   separate root GPU rollback. Use fresh key-line/state records for any new pilot.
+   Run one manual workflow invocation. For CLI execution alongside the production
+   n8n task-runner broker, set `N8N_RUNNERS_BROKER_PORT=5681` **only on that CLI
+   process**; the default port 5679 conflicts with the running broker. Do not restart
+   n8n or disable its task runners. The completed pilot used this isolated port. Unknown/busy/expired/resource failures defer;
    no retries are configured. Same request ID returns its saved checkpoint rather
    than generating again. A blocked attempt needs a new explicitly chosen request ID.
 6. Open `<requestId>.draft.html` for the readable draft and frozen evidence; use `.review.json` for claims, source passages, attribution and all
@@ -207,28 +224,34 @@ is used. Interrupted checkpoints are retained and not automatically retried.
 python3 /home/rigarashi/projects/iggii-ai-stack/n8n/linkedin/gemma-pilot/worker.py --disable
 ```
 
-Remove the dedicated SSH authorized-key entry and n8n pilot credential files, and
-leave/delete only the new inactive development workflow as appropriate. Retain all
-request, response, error and human review files. Let the authorized GPU ACL rollback
-run and verify it using its existing mechanism. No production config restoration is
+After the cycle, run `python3 n8n/linkedin/gemma-pilot/cleanup-pilot.py` from the
+repository to disable activation, remove the exact dedicated SSH key and n8n
+credential files, and verify the loopback listener closed. Its scheduled retries
+remove themselves only after successful cleanup; unrelated cron entries remain.
+Leave the new development workflow inactive. Retain all
+request, response, error and human review files. Restore the GPU ACL using the existing root-owned rollback and verify physical
+permissions. It can be run early interactively if noninteractive policy denies it;
+never request/store a sudo password. Retain the scheduled rollback and verification
+as a fallback. Key cleanup alone does not prove GPU ACL restoration. No production config restoration is
 needed because the pilot does not change production routing, models or schedules.
 
 ## Exact paths and validation limits
 
 | Item | Location |
 |---|---|
-| Prepared workflow | Repository `n8n/linkedin/gemma-pilot/workflow.json` — not imported |
-| Future request in n8n | `/data/output/ias-linkedin/Reviews/Gemma-Pilot/request.json` |
-| Future Windows review folder | `\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin\Reviews\Gemma-Pilot` — not created during preparation |
-| Future review files | `<requestId>.draft.html` and `<requestId>.review.json` in that folder |
+| Prepared workflow | Repository `n8n/linkedin/gemma-pilot/workflow.json`; imported inactive as `AikiRKUpJ52fqZNf` |
+| Fixed request in n8n | `/data/output/ias-linkedin/Reviews/Gemma-Pilot/request.json` |
+| Windows review folder | `\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin\Reviews\Gemma-Pilot` |
+| Original review files | `<requestId>.draft.html` and `<requestId>.review.json` in that folder |
 | Private checkpoint/activation root | `/home/rigarashi/.local/share/linkedin-gemma-pilot` — no credentials/evidence in Git |
 | Unchanged blind review and cleanup status | `\\Iggy-Nas\Shared\ContentPipeline\output\ias-linkedin\Reviews\Model-Comparison-20261007\START-HERE.html` and sibling `Access-Cleanup.txt` |
 
-Focused offline checks exercise supported authoritative and corroborated cases,
-unsafe evidence/approval/citation mutations, omitted prose assertions, incomplete
-outputs, human-edit preservation, mocked n8n handoff, default-disabled activation
-and resource guards. Prior PR #21 evidence, quotation and deployment checks are
-reused. No model endpoint was called, no benchmark rerun, no pipeline/calendar test,
-and no live SSH/model activation was attempted. These checks establish prepared
-plumbing and fail-closed behavior, not a new measurement of writing quality or
-household latency. Human blind-review results and the activation decision remain pending.
+Focused preparation checks exercised supported authoritative and corroborated
+cases, unsafe evidence/approval/citation mutations, omitted prose assertions,
+incomplete outputs, human-edit preservation, mocked n8n handoff, disabled activation
+and resource guards. The bounded-authorization update passed 19 contract/mock checks
+and six worker checks before the live pilot. The completed cycle establishes actual
+SSH/n8n/model transport and two saved outputs; it is not a new benchmark or evidence
+of reduced human editing. Read-only production and blind-file integrity checks are
+recorded in `pilot-validation.json`. Prior PR #21 evidence, quotation and deployment
+checks were reused. No unrelated pipeline/calendar or model tests were rerun.

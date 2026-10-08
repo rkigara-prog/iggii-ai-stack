@@ -37,7 +37,7 @@
         0
       ],
       "parameters": {
-        "jsCode": "\nconst raw=await this.helpers.getBinaryDataBuffer(0,'data');\nif(raw.length>65536)throw Error('Packet too large; do not truncate evidence');\nconst packet=JSON.parse(raw.toString('utf8'));\nif(!/^[a-zA-Z0-9_-]{1,64}$/.test(packet.requestId))throw Error('Invalid request ID');\nif(packet.approval?.status!=='approved_for_drafting')throw Error('Human drafting approval missing');\nreturn [{json:{packet,encoded:raw.toString('base64')}}];\n"
+        "jsCode": "\nconst raw=await this.helpers.getBinaryDataBuffer(0,'data');\nif(raw.length>3*65536)throw Error('Cycle too large; do not truncate evidence');\nconst input=JSON.parse(raw.toString('utf8'));\nconst packets=Array.isArray(input.packets)?input.packets:[input];\nif(packets.length<1||packets.length>3||new Set(packets.map(p=>p.requestId)).size!==packets.length)throw Error('Bounded cycle requires one to three unique requests');\nreturn packets.map(packet=>{\n if(!/^[a-zA-Z0-9_-]{1,64}$/.test(packet.requestId))throw Error('Invalid request ID');\n if(!['approved_for_drafting','authorized_pilot_drafting'].includes(packet.approval?.status))throw Error('Drafting authorization missing');\n const encoded=Buffer.from(JSON.stringify(packet)).toString('base64');\n if(Buffer.byteLength(JSON.stringify(packet))>65536)throw Error('Packet too large; defer without shortening');\n return {json:{packet,encoded}};\n});\n"
       }
     },
     {
@@ -50,7 +50,8 @@
         0
       ],
       "parameters": {
-        "command": "={{ \"printf %s '\" + $json.encoded + \"' | /usr/bin/timeout 1900 /usr/bin/ssh -T -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/home/node/.n8n/gemma-pilot-known-hosts -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -i /home/node/.n8n/gemma-pilot-ssh.key rigarashi@192.168.113.32 linkedin-gemma-pilot\" }}"
+        "command": "={{ \"printf %s '\" + $json.encoded + \"' | /usr/bin/timeout 1900 /usr/bin/ssh -T -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/home/node/.n8n/gemma-pilot-known-hosts -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -i /home/node/.n8n/gemma-pilot-ssh.key rigarashi@192.168.113.32 linkedin-gemma-pilot\" }}",
+        "executeOnce": false
       }
     },
     {
@@ -63,7 +64,7 @@
         0
       ],
       "parameters": {
-        "jsCode": "\nconst packet=$('Prepare Pinned SSH Transport').first().json.packet;\nif($json.exitCode!==undefined&&$json.exitCode!==0)throw Error('SSH worker failed');\nconst record=JSON.parse($json.stdout);\nif(record.status!=='response'||record.requestId!==packet.requestId||record.serverStopped!==true)throw Error('Worker blocked or mismatched; retain checkpoint');\nconst reviewed=record.review;\nif(!reviewed||reviewed.automaticPublishingAllowed!==false||reviewed.humanApprovalRequired!==true||reviewed.publicationApproval!==null)throw Error('Human review contract missing');\nfor(const [out,input] of [['approvedClaims','claims'],['sources','sources'],['sourceAssessments','sourceAssessments'],['claimsApproval','approval']]){\n if(JSON.stringify(reviewed[out])!==JSON.stringify(packet[input]))throw Error('Evidence handoff mismatch: '+input);\n}\nif(reviewed.fullProseReview?.method!=='deterministic_full_prose_coverage'||reviewed.fullProseReview?.automaticPublishingAllowed!==false)throw Error('Complete prose review missing');\nreturn [{json:{requestId:packet.requestId,reviewStatus:'human_review_required',automaticPublishingAllowed:false,reviewBase64:Buffer.from(JSON.stringify(reviewed)).toString('base64')}}];\n"
+        "jsCode": "\nreturn $input.all().map((item,index)=>{\nconst packet=$('Prepare Pinned SSH Transport').all()[index].json.packet;\nif(item.json.exitCode!==undefined&&item.json.exitCode!==0)throw Error('SSH worker failed');\nconst record=JSON.parse(item.json.stdout);\nif(record.status!=='response'||record.requestId!==packet.requestId||record.serverStopped!==true)throw Error('Worker blocked or mismatched; retain checkpoint');\nconst reviewed=record.review;\nif(!reviewed||reviewed.automaticPublishingAllowed!==false||reviewed.humanApprovalRequired!==true||reviewed.publicationApproval!==null)throw Error('Human review contract missing');\nfor(const [out,input] of [['approvedClaims','claims'],['sources','sources'],['sourceAssessments','sourceAssessments'],['claimsApproval','approval']]){\n if(JSON.stringify(reviewed[out])!==JSON.stringify(packet[input]))throw Error('Evidence handoff mismatch: '+input);\n}\nif(reviewed.fullProseReview?.method!=='deterministic_full_prose_coverage'||reviewed.fullProseReview?.automaticPublishingAllowed!==false)throw Error('Complete prose review missing');\nreturn {json:{requestId:packet.requestId,reviewStatus:'human_review_required',automaticPublishingAllowed:false,reviewBase64:Buffer.from(JSON.stringify(reviewed)).toString('base64')},pairedItem:{item:index}};\n});\n"
       }
     },
     {
@@ -76,7 +77,8 @@
         0
       ],
       "parameters": {
-        "command": "={{ \"node /home/node/.n8n/gemma-pilot/write-review.cjs \" + $json.reviewBase64 }}"
+        "command": "={{ \"node /home/node/.n8n/gemma-pilot/write-review.cjs \" + $json.reviewBase64 }}",
+        "executeOnce": false
       }
     }
   ],
@@ -139,7 +141,7 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "executionTimeout": 2000,
+    "executionTimeout": 6000,
     "saveDataSuccessExecution": "none",
     "saveDataErrorExecution": "all",
     "saveManualExecutions": false

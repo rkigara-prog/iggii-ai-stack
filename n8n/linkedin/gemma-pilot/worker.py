@@ -49,7 +49,10 @@ def activation(now=None):
         raise RuntimeError('Pilot is disabled; explicit bounded activation required')
     current = time.time() if now is None else now
     expiry = datetime.fromisoformat(value['expiresAt']).timestamp()
-    if (value.get('enabled') is not True or value.get('approvedBy') not in ['Robert', 'Leigh']
+    authorized = value.get('approvedBy') in ['Robert', 'Leigh'] or (
+        value.get('approvedBy') == 'user' and value.get('authorizationType') == 'bounded_manual_pilot'
+        and value.get('blindReviewCompleted') is False and value.get('automaticPublishingAllowed') is False)
+    if (value.get('enabled') is not True or not authorized
             or value.get('artifactSha256') != CONFIG['sha256'] or not current + 60 < expiry <= current + 7200):
         raise RuntimeError('Pilot disabled, expired, or missing bounded activation decision')
     return expiry - 60
@@ -107,6 +110,9 @@ def run(packet):
     deadline = min(activation(), time.time() + CONFIG['jobWallSeconds'])
     body = contract('request', packet)
     packet_hash = contract('digest', packet)
+    allowed = json.loads((STATE / 'activation.json').read_text()).get('authorizedPackets', {})
+    if not 1 <= len(allowed) <= 3 or allowed.get(packet['requestId']) != packet_hash:
+        raise RuntimeError('Request is outside the bounded pilot packet authorization')
     STATE.mkdir(mode=0o700, exist_ok=True)
     if STATE.is_symlink() or STATE.stat().st_mode & 0o077:
         raise RuntimeError('Unsafe private pilot directory')
@@ -130,6 +136,7 @@ def run(packet):
         stop = threading.Event()
         reasons = []
         log = None
+        samples = []
 
         def terminate():
             if proc and proc.poll() is None:
@@ -146,7 +153,9 @@ def run(packet):
                         raise RuntimeError('Pilot/access deadline')
                     if not os.access('/dev/dri/renderD128', os.R_OK | os.W_OK):
                         raise RuntimeError('Temporary device access unavailable')
-                    resource_guard(snapshot(proc.pid), baseline)
+                    observed = snapshot(proc.pid)
+                    samples.append(observed)
+                    resource_guard(observed, baseline)
                     if not idle():
                         raise RuntimeError('Yield to household/OMC/image work')
                 except Exception as error:
@@ -164,6 +173,7 @@ def run(packet):
             if not os.access('/dev/dri/renderD128', os.R_OK | os.W_OK):
                 raise RuntimeError('Temporary device access required; no self-grant')
             baseline = resource_guard(snapshot(None))
+            record['baselineGpuMiB'] = baseline
             weights = EVALUATION / 'models' / CONFIG['artifact']
             if weights.stat().st_size != CONFIG['bytes']:
                 raise RuntimeError('Wrong Gemma artifact size')
@@ -211,6 +221,7 @@ def run(packet):
             save(dest, record)
             record['reply'] = http('/v1/chat/completions', body, CONFIG['transportTimeoutSeconds'])
             record['status'] = 'response'
+            save(dest, record)  # Preserve raw API output even when deterministic review blocks it.
             # Always review the whole prose; the worker cannot publish or approve it.
             record['review'] = contract('result', {'packet': packet, 'record': record})
         except Exception as error:
@@ -228,7 +239,8 @@ def run(packet):
                 monitor.join(timeout=50)
             if log:
                 log.close()
-            record.update(elapsedSeconds=round(time.time()-started, 3), serverStopped=proc is None or proc.poll() is not None)
+            record.update(elapsedSeconds=round(time.time()-started, 3), serverStopped=proc is None or proc.poll() is not None,
+                          resourceSamples=samples, guardReasons=reasons)
             save(dest, record)
         return record
 

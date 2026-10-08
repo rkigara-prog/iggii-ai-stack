@@ -1,0 +1,51 @@
+{
+  "checkedAt": "2026-10-08T15:13:41.193999+00:00",
+  "scope": "Focused pilot acceptance; prior evidence/model/calendar tests reused, not repeated",
+  "beforeCycleChecksReused": {
+    "contractAndMockWorkflow": 19,
+    "workerGuards": 6,
+    "preparationRecord": "validation.json"
+  },
+  "liveCycle": {
+    "uninterruptedSuccessfulCycles": 1,
+    "completedModelCalls": 2,
+    "readableOriginalDrafts": 2,
+    "claimBindingsPreserved": 3,
+    "wholeProseAssertionsFlagged": 13,
+    "humanPublicationApprovals": 0
+  },
+  "pilotSpecificRepairs": {
+    "cliBrokerPort": 5681,
+    "productionBrokerUnchanged": true,
+    "explicitGeneratedReviewGid": 1800,
+    "generatedOriginalMode": "0640",
+    "originalContentHashesUnchangedAfterAccessRepair": true
+  },
+  "effectiveFilesystemAccess": {
+    "Robert": "read drafts and index; write Reviews/Gemma-Pilot",
+    "Leigh": "read drafts and index; write Reviews/Gemma-Pilot",
+    "smbSessionNotImpersonated": "Existing authenticated-share policy reused; effective NAS identity tested, no user password requested"
+  },
+  "localHtmlLinksPassed": 8,
+  "blindFilesHashUnchanged": 8,
+  "pythonAndJsonParsing": "passed",
+  "workflowMatchesBuilder": true,
+  "privateKeyTokenMarkerScan": "passed",
+  "unchangedEvidencePolicySha256": "62e46f44b4cda025eafefb4db306a28f6393576383f78e627cffc4c15198bae0",
+  "liveProductionWorkflowVersionIds": {
+    "IASLinkedinSan01": "0f5efe7d-b8ff-4547-8910-35ab7ecc1049",
+    "IASLinkedinEnr01": "8e468789-ef08-47a6-9d7f-e2da6d12abab",
+    "IASLinkedinPlan1": "34bcf7a8-c326-46d5-ae4f-19ae29f4d34c"
+  },
+  "productionNodesConnectionsSettingsAndActiveVersions": "unchanged against retained PR21 snapshot",
+  "pilotWorkflowInactive": true,
+  "recurringPilotDisabled": true,
+  "benchmarkReruns": 0,
+  "productionStops": 0,
+  "gpuAclCleanup": "See pilot-cleanup.json; separate from successful draft/access acceptance",
+  "repositoryRulesets": [],
+  "mainProtected": false,
+  "requiredRemoteChecks": [],
+  "deploymentWorkflow": "Unrelated push-main Docker deployment; preserve established [skip ci] commit and squash title",
+  "changedJavaScriptSyntax": "passed"
+}
