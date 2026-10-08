@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-10-08T13:53:30.327038+00:00",
+  "modelCalls": 0,
+  "modelLoads": 0,
+  "workflowImports": 0,
+  "productionConfigChanges": 0,
+  "benchmarkReruns": 0,
+  "gemmaArtifactMatchesPr21": true,
+  "unchangedEvidencePolicySha256": "62e46f44b4cda025eafefb4db306a28f6393576383f78e627cffc4c15198bae0",
+  "focusedContractAndMockedWorkflowChecks": 18,
+  "focusedWorkerGuardChecks": 6,
+  "installedN8nExpressionChecks": 2,
+  "generatedWorkflowMatchesBuilder": true,
+  "pythonCompilation": "passed",
+  "javascriptSyntax": "passed",
+  "jsonParsing": "passed",
+  "privateMarkerCredentialScan": "passed",
+  "blindFilesUnchanged": 8,
+  "liveSshTransportAndInference": "not attempted; activation decision pending",
+  "accessCleanup": "Existing root rollback and read-only confirmation cron retained; no lease extension",
+  "priorChecksReused": [
+    "model-selection/quotation-contract-results.json",
+    "model-selection/deployment-integrity.json",
+    "model-selection/final-verification.json",
+    "model-selection/runtime-results.json"
+  ],
+  "liveProductionVersionsObserved": {
+    "IASLinkedinSan01": "0f5efe7d-b8ff-4547-8910-35ab7ecc1049",
+    "IASLinkedinEnr01": "8e468789-ef08-47a6-9d7f-e2da6d12abab",
+    "IASLinkedinPlan1": "34bcf7a8-c326-46d5-ae4f-19ae29f4d34c"
+  }
+}

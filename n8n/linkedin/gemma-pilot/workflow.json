@@ -1,0 +1,149 @@
+{
+  "name": "DEVELOPMENT ONLY \u2014 Gemma LinkedIn drafting pilot",
+  "active": false,
+  "nodes": [
+    {
+      "id": "gemma-pilot-0",
+      "name": "Manual Pilot Only",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "gemma-pilot-1",
+      "name": "Read Approved Public Request",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "fileSelector": "/data/output/ias-linkedin/Reviews/Gemma-Pilot/request.json",
+        "options": {}
+      }
+    },
+    {
+      "id": "gemma-pilot-2",
+      "name": "Prepare Pinned SSH Transport",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "jsCode": "\nconst raw=await this.helpers.getBinaryDataBuffer(0,'data');\nif(raw.length>65536)throw Error('Packet too large; do not truncate evidence');\nconst packet=JSON.parse(raw.toString('utf8'));\nif(!/^[a-zA-Z0-9_-]{1,64}$/.test(packet.requestId))throw Error('Invalid request ID');\nif(packet.approval?.status!=='approved_for_drafting')throw Error('Human drafting approval missing');\nreturn [{json:{packet,encoded:raw.toString('base64')}}];\n"
+      }
+    },
+    {
+      "id": "gemma-pilot-3",
+      "name": "Run Isolated Gemma Worker",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "command": "={{ \"printf %s '\" + $json.encoded + \"' | /usr/bin/timeout 1900 /usr/bin/ssh -T -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/home/node/.n8n/gemma-pilot-known-hosts -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -i /home/node/.n8n/gemma-pilot-ssh.key rigarashi@192.168.113.32 linkedin-gemma-pilot\" }}"
+      }
+    },
+    {
+      "id": "gemma-pilot-4",
+      "name": "Review Complete Draft and Evidence",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        0
+      ],
+      "parameters": {
+        "jsCode": "\nconst packet=$('Prepare Pinned SSH Transport').first().json.packet;\nif($json.exitCode!==undefined&&$json.exitCode!==0)throw Error('SSH worker failed');\nconst record=JSON.parse($json.stdout);\nif(record.status!=='response'||record.requestId!==packet.requestId||record.serverStopped!==true)throw Error('Worker blocked or mismatched; retain checkpoint');\nconst reviewed=record.review;\nif(!reviewed||reviewed.automaticPublishingAllowed!==false||reviewed.humanApprovalRequired!==true||reviewed.publicationApproval!==null)throw Error('Human review contract missing');\nfor(const [out,input] of [['approvedClaims','claims'],['sources','sources'],['sourceAssessments','sourceAssessments'],['claimsApproval','approval']]){\n if(JSON.stringify(reviewed[out])!==JSON.stringify(packet[input]))throw Error('Evidence handoff mismatch: '+input);\n}\nif(reviewed.fullProseReview?.method!=='deterministic_full_prose_coverage'||reviewed.fullProseReview?.automaticPublishingAllowed!==false)throw Error('Complete prose review missing');\nreturn [{json:{requestId:packet.requestId,reviewStatus:'human_review_required',automaticPublishingAllowed:false,reviewBase64:Buffer.from(JSON.stringify(reviewed)).toString('base64')}}];\n"
+      }
+    },
+    {
+      "id": "gemma-pilot-5",
+      "name": "Save Pilot Review Only",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        0
+      ],
+      "parameters": {
+        "command": "={{ \"node /home/node/.n8n/gemma-pilot/write-review.cjs \" + $json.reviewBase64 }}"
+      }
+    }
+  ],
+  "connections": {
+    "Manual Pilot Only": {
+      "main": [
+        [
+          {
+            "node": "Read Approved Public Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Approved Public Request": {
+      "main": [
+        [
+          {
+            "node": "Prepare Pinned SSH Transport",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Pinned SSH Transport": {
+      "main": [
+        [
+          {
+            "node": "Run Isolated Gemma Worker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Isolated Gemma Worker": {
+      "main": [
+        [
+          {
+            "node": "Review Complete Draft and Evidence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Review Complete Draft and Evidence": {
+      "main": [
+        [
+          {
+            "node": "Save Pilot Review Only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "executionTimeout": 2000,
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "all",
+    "saveManualExecutions": false
+  },
+  "pinData": {},
+  "tags": []
+}
