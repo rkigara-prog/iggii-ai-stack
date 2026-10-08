@@ -1,20 +1,67 @@
 {
-  "checkedAt": "2026-10-08T14:59:50.822321+00:00",
+  "checkedAt": "2026-10-08T15:38:41.574388+00:00",
   "pilotActivationDisabled": true,
   "pilotAuthorizedKeyRemoved": true,
   "n8nPilotCredentialFilesRemoved": true,
   "pilotLocalPrivateKeyRemoved": true,
   "pilotLoopbackListenerClosed": true,
   "existingGpuAclRollbackChanged": false,
-  "gpuAclCleanupConfirmed": false,
-  "gpuAclNote": "Separate existing root-owned rollback still governs render ACLs; verify actual restoration separately.",
+  "gpuAclCleanupConfirmed": true,
+  "gpuAclNote": "Confirmed early restoration following user execution of the existing root-owned rollback: both devices match original ownership, mode and ACL state; effective user read/write access is absent.",
   "gpuAclRestoreAttempt": {
     "noninteractiveSystemctl": "denied: interactive authentication required",
     "noninteractiveSudo": "denied: password required",
-    "interactiveCommandRequested": true
+    "interactiveCommandRequested": true,
+    "userReportedInteractiveCompletion": true
   },
   "existingGpuAclRollbackAt": "2026-10-08T20:51:03Z",
   "existingConfirmationAt": "2026-10-08T20:52:00Z",
   "scheduledRollbackAndObserverPreserved": true,
-  "pilotCleanupRetryCronRemovedAfterSuccessfulCredentialCleanup": true
+  "pilotCleanupRetryCronRemovedAfterSuccessfulCredentialCleanup": true,
+  "cleanupStatus": "confirmed_early_interactive_restore",
+  "gpuPermissionObservation": {
+    "checkedAt": "2026-10-08T15:38:41.574388+00:00",
+    "scheduledExpiryUtc": "2026-10-08T20:51:03.634187+00:00",
+    "status": "pending_scheduled_expiry",
+    "cleanupConfirmed": false,
+    "originalDevicePermissionsRestored": true,
+    "rollbackServiceExecutionObserved": false,
+    "rollbackServiceSuccessObserved": false,
+    "serviceObservation": {
+      "Result": "success",
+      "ExecMainStartTimestamp": "",
+      "ExecMainExitTimestamp": "",
+      "ExecMainStatus": "0",
+      "ActiveState": "inactive"
+    },
+    "devices": [
+      {
+        "path": "/dev/dri/renderD128",
+        "matchesOriginalPermissions": true,
+        "ownerUid": 0,
+        "group": "render",
+        "mode": "0o660",
+        "deviceIdentityUnchanged": true,
+        "namedUserAclPresent": false,
+        "effectiveUserReadWrite": false,
+        "extendedAclPresent": false
+      },
+      {
+        "path": "/dev/dri/renderD129",
+        "matchesOriginalPermissions": true,
+        "ownerUid": 0,
+        "group": "render",
+        "mode": "0o660",
+        "deviceIdentityUnchanged": true,
+        "namedUserAclPresent": false,
+        "effectiveUserReadWrite": false,
+        "extendedAclPresent": false
+      }
+    ],
+    "permissionMutations": 0,
+    "modelCalls": 0,
+    "mechanism": "Existing root-owned systemd rollback; this observer only reads permissions",
+    "limitation": "A collected transient service may no longer expose execution status; device ACLs and effective access are checked directly."
+  },
+  "scheduledExpiryObservationNote": "The unchanged scheduled-expiry observer still reports pending_scheduled_expiry before 20:51 UTC; its physical permission check already reports originalDevicePermissionsRestored=true. This record confirms early cleanup, not execution of the future timer."
 }

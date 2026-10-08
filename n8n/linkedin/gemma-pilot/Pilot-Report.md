@@ -92,11 +92,13 @@ two hours. Automatic key/activation cleanup was scheduled before access was enab
 The worker unloaded after each request; cleanup removed the key and n8n credential
 files, disabled activation and confirmed the loopback listener closed at 14:59 UTC.
 The separate existing root-owned GPU ACL rollback and its scheduled verification
-were retained. GPU ACL restoration is still awaiting the interactive execution of
-that existing rollback (noninteractive Ubuntu policy denied it). The scheduled
-20:51:03 UTC rollback and 20:52 confirmation remain intact. Current physical
-permission/cleanup status is recorded in `pilot-cleanup.json`; key removal alone
-is not recorded as complete GPU cleanup.
+were retained. After the user ran that rollback interactively, physical checks at
+**15:38 UTC confirmed cleanup**: both render devices retain their original identity,
+root:render ownership and mode 0660, with no extended ACL or effective user
+read/write access. Pilot credentials are absent, activation is disabled and the
+listener remains closed. The scheduled 20:51:03 UTC rollback and 20:52 verification
+remain intact as fallbacks. `pilot-cleanup.json` distinguishes this confirmed early
+restoration from the unchanged observer's pending future scheduled-expiry status.
 
 The deployed development workflow `AikiRKUpJ52fqZNf` remains inactive, manual-only
 and disconnected from production. Read-only comparison confirmed the three
