@@ -28,14 +28,22 @@ function main() {
   const [action, runId, fileName] = process.argv.slice(2);
   if (action === 'begin') {
     const runId = crypto.randomUUID();
+    require('./stage-result.cjs').withLock(root,tx=>{
     write({state: 'pending', runId, policyVersion, startedAt: new Date().toISOString()});
-    require('./stage-result.cjs').record({begin:true,runId,executionId:process.argv[3],stage:'privacy',state:'running',reasonCode:'started'},root);
+    tx.record({begin:true,runId,executionId:process.argv[3],stage:'privacy',state:'running',reasonCode:'started'});
+    });
     console.log(JSON.stringify({runId}));
   } else if (action === 'empty') {
-    const status=JSON.parse(fs.readFileSync(statusFile,'utf8'));
-    if(status.state!=='pending'||status.runId!==runId)throw Error('Privacy attempt mismatch');
-    write({...status,state:'no_research',completedAt:new Date().toISOString()});
-    console.log(JSON.stringify(require('./stage-result.cjs').record({runId,stage:'privacy',state:'completed_no_research',reasonCode:'all_excluded'},root)));
+    const stages=require('./stage-result.cjs');
+    const completed=stages.withLock(root,tx=>{
+      const status=JSON.parse(fs.readFileSync(statusFile,'utf8'));
+      if(!['pending','no_research'].includes(status.state)||status.runId!==runId)throw Error('Privacy attempt mismatch');
+      const outcome={runId,stage:'privacy',state:'completed_no_research',reasonCode:'all_excluded'};
+      stages.result(outcome,tx.read()); // Reject stale/terminal conflicts before changing privacy state.
+      if(status.state==='pending')write({...status,state:'no_research',completedAt:new Date().toISOString()});
+      return tx.record(outcome);
+    });
+    console.log(JSON.stringify(completed));
   } else if (action === 'approve') {
     const status = JSON.parse(fs.readFileSync(statusFile, 'utf8'));
     if (status.state !== 'pending' || status.runId !== runId || !/^theme-list-model-eval-qwen35-\d{4}-\d{2}-\d{2}\.txt$/.test(fileName)) throw Error('Privacy attempt mismatch');

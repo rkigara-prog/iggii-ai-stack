@@ -60,4 +60,16 @@ test('stale observation cannot replace a fresh stage with the same execution ID'
  status.withLock(dir,()=>assert.throws(()=>status.inspectStored(dir)));
 });
 test('missing automatic execution identity fails closed without raw retention',()=>{const {failureInput}=require('../failure-input.cjs');assert.throws(()=>failureInput({execution:{error:{message:'PRIVATE'}}}));});
+test('privacy empty CLI recovers from filesystem outbox failure and rejects superseded runs',()=>{
+ const dir=fs.mkdtempSync(path.join(process.env.IAS_TEST_ROOT||os.tmpdir(),'linkedin-empty-cli-'));
+ const invoke=(...args)=>require('node:child_process').spawnSync(process.execPath,[path.join(D,'privacy-artifact.cjs'),...args],{encoding:'utf8',env:{...process.env,IAS_PRIVACY_ROOT:dir}});
+ const begin=invoke('begin','101');assert.equal(begin.status,0,begin.stderr);const id=JSON.parse(begin.stdout).runId;
+ fs.writeFileSync(path.join(dir,'alerts'),'synthetic collision');assert.equal(invoke('empty',id).status,1);
+ assert.equal(JSON.parse(fs.readFileSync(path.join(dir,'privacy-status.json'))).state,'no_research');assert.equal(JSON.parse(fs.readFileSync(path.join(dir,'run-status.json'))).state,'running');
+ fs.unlinkSync(path.join(dir,'alerts'));const retry=invoke('empty',id);assert.equal(retry.status,0,retry.stderr);assert.equal(JSON.parse(retry.stdout).state,'completed_no_research');
+ assert.equal(invoke('empty',id).status,0);assert.equal(fs.readdirSync(path.join(dir,'alerts')).length,1);
+ const next=invoke('begin','102');assert.equal(next.status,0,next.stderr);
+ const before=['privacy-status.json','run-status.json'].map(f=>fs.readFileSync(path.join(dir,f),'utf8'));
+ assert.equal(invoke('empty',id).status,1);assert.deepEqual(['privacy-status.json','run-status.json'].map(f=>fs.readFileSync(path.join(dir,f),'utf8')),before);
+});
 console.log(passed+' reliability tests passed; no models called or messages sent.');

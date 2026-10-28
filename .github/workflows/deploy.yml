@@ -8,12 +8,28 @@ on:
       - docker-compose.yml
       - litellm/**
       - .github/workflows/deploy.yml
+      - .github/scripts/litellm-runtime-changes.cjs
 
 permissions:
   contents: read
 
 jobs:
+  runtime_changes:
+    runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.changes.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - id: changes
+        run: node .github/scripts/litellm-runtime-changes.cjs
   deploy:
+    needs: runtime_changes
+    if: needs.runtime_changes.outputs.deploy == 'true'
     runs-on: [self-hosted, unraid]
     steps:
       - name: Check out source
