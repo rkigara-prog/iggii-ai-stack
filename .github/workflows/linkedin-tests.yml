@@ -25,6 +25,8 @@ jobs:
       - run: node .github/scripts/test-litellm-runtime-changes.cjs
       - run: node n8n/linkedin/build-failure-workflow.cjs
       - run: node n8n/linkedin/tests/reliability.cjs
+      - run: node n8n/linkedin/tests/explicit-failure.cjs
+      - run: node n8n/linkedin/tests/strict-routing.cjs
       - run: node n8n/linkedin/test-extraction-contract.cjs
       - run: node n8n/linkedin/test-consolidation-privacy-contract.cjs
       - run: node n8n/linkedin/tests/select-transcripts.cjs
