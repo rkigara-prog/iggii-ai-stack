@@ -13,12 +13,18 @@ function read(name,pattern){
 }
 function atomic(p,bytes){const tmp=p+'.'+crypto.randomUUID();fs.writeFileSync(tmp,bytes,{mode:0o640,flag:'wx'});readable(tmp);fs.renameSync(tmp,p);}
 function snapshot(input,bootstrap=false){
+ if(!bootstrap)return require('./stage-result.cjs').withLock(root,tx=>snapshotLocked(input,false,tx));
+ return snapshotLocked(input,true);
+}
+function snapshotLocked(input,bootstrap,tx){
  check(input&&typeof input==='object','Missing completion proof');
  if(!bootstrap) {
   const {candidate}=require('./pipeline-artifact.cjs');
   check(JSON.stringify(candidate(JSON.parse(fs.readFileSync(path.join(root,'candidate-status.json')))))===JSON.stringify(input.proof),'Candidate proof changed');
-  const status=JSON.parse(fs.readFileSync(path.join(root,'run-status.json')));
-  if(status.state==='running')require('./stage-result.cjs').record({runId:input.proof.privacy.runId,stage:'archive',state:'running',reasonCode:'stage_started'},root);
+  const status=tx.read();
+  check(status?.runId===input.proof.privacy.runId,'Superseded archive run');
+  check(status.state==='running'||['content_ready','completed_all_deferred'].includes(status.state),'Run already terminal');
+  if(status.state==='running')tx.record({runId:input.proof.privacy.runId,stage:'archive',state:'running',reasonCode:'stage_started'});
  }
  const candidateName=bootstrap?input.candidateFile:input.proof.candidate.fileName;
  const c=read(candidateName,patterns.candidate),data=JSON.parse(c.bytes);
@@ -31,6 +37,9 @@ function snapshot(input,bootstrap=false){
  check(plan.policySummary?.automaticPublishingAllowed===false,'Publishing guard missing');
  check(Number.isFinite(Date.parse(plan.generatedAt))&&Date.parse(plan.generatedAt)>=Date.parse(data.generatedAt),'Plan predates candidate');
  const files=[t,b,c,md,p],entries=files.map(f=>({fileName:f.name,sha256:hash(f.bytes),bytes:f.bytes.length}));
+ const selected=Array.isArray(plan.selectedTopics)?plan.selectedTopics.length:0,deferred=Array.isArray(plan.deferredTopics)?plan.deferredTopics.length:0;
+ const outcome={runId:input.proof?.privacy?.runId,stage:'archive',state:selected?'content_ready':'completed_all_deferred',reasonCode:selected?'accepted_topics':'all_deferred',counts:{selected,deferred}};
+ if(!bootstrap)require('./stage-result.cjs').result(outcome,tx.read());
  const cycleHash=hash(Buffer.from(JSON.stringify(entries)));
  const cycle=plan.generatedAt.slice(0,10)+'-'+cycleHash;
  // Refuse a symlink archive root; never follow links to overwrite unrelated files.
@@ -54,8 +63,7 @@ function snapshot(input,bootstrap=false){
  const relative=path.relative(root,dest).split(path.sep).join('/');
  atomic(path.join(root,'current-status.json'),JSON.stringify({version:1,completedAt:plan.generatedAt,archive:relative,cycleHash,files:entries},null,2)+'\n');
  atomic(path.join(root,'CURRENT.md'),`# Latest completed LinkedIn cycle\n\nCompleted: ${plan.generatedAt}. Plan status: ${plan.status}.\n\nRead the preserved files below. They stay available during the next run.\n\n`+files.map(f=>`- [${f.name}](${relative}/${f.name})`).join('\n')+'\n\nThe matching working outputs are in this folder. They may change during a run; use these preserved links for review.\n\nRecord edits and approvals in Reviews. Read START-HERE.md for instructions. LinkedIn posting is disabled.\n');
- const selected=Array.isArray(plan.selectedTopics)?plan.selectedTopics.length:0,deferred=Array.isArray(plan.deferredTopics)?plan.deferredTopics.length:0;
- if(!bootstrap)require('./stage-result.cjs').record({runId:input.proof.privacy.runId,stage:'archive',state:selected?'content_ready':'completed_all_deferred',reasonCode:selected?'accepted_topics':'all_deferred',counts:{selected,deferred}},root);
+ if(!bootstrap)tx.record(outcome);
  return {archived:true,cycleHash,fileCount:files.length,sourceFilesPreserved:true,contentOutcome:selected?'content_ready':'completed_all_deferred',selected,deferred};
 }
 function main(){const [action,encoded]=process.argv.slice(2);check(['complete','snapshot-existing'].includes(action),'Unknown action');check(encoded&&/^[A-Za-z0-9+/]+={0,2}$/.test(encoded),'Invalid input');console.log(JSON.stringify(snapshot(JSON.parse(Buffer.from(encoded,'base64')),action==='snapshot-existing')));}

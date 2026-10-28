@@ -3,7 +3,7 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto'),dns=require
 const dep='/usr/local/lib/node_modules/n8n/node_modules/.pnpm/node_modules/';
 const cheerio=require(dep+'cheerio'),ip=require(dep+'ipaddr.js');
 const {readable}=require('../content-access.cjs');
-const {selectPassages,originalLinks}=require('./relevance.cjs');
+const {selectPassages,originalLinks,linkOriginal,bindOrigins}=require('./relevance.cjs');
 const sha=x=>crypto.createHash('sha256').update(x).digest('hex');
 function canonical(value,base){const u=new URL(value,base);u.hash='';for(const k of [...u.searchParams.keys()])if(/^utm_|^(gclid|fbclid)$/i.test(k))u.searchParams.delete(k);return u.href;}
 async function address(url){const u=new URL(url);if(!['https:','http:'].includes(u.protocol)||u.username||u.password||u.port&&!['80','443'].includes(u.port))throw Error('invalid_public_url');const addresses=await dns.lookup(u.hostname,{all:true});if(!addresses.length||addresses.some(a=>ip.process(a.address).range()!=='unicast'))throw Error('nonpublic_address');return addresses.find(a=>a.family===4)||addresses[0];}
@@ -59,17 +59,16 @@ async function main(){
   const passages=selectPassages(record,topics.map(t=>t.topic));
   // Follow only evidence links already present in retrieved public pages. The same
   // public-address/redirect/content limits apply. Never invent or execute a URL.
-  if(!raw.originalOf&&record.retrievalStatus==='retrieved')for(const topic of topics)for(const link of originalLinks(record.links||[],topic.topic)){
-   let next=queue.find(s=>s.url===link.url);
-   if(!next&&queue.length<24){next={id:'o'+sha(link.url).slice(0,16),url:link.url,originalOf:raw.id};queue.push(next);}
+  if(!raw.discoveredOriginal&&record.retrievalStatus==='retrieved')for(const topic of topics)for(const link of originalLinks(record.links||[],topic.topic)){
+   const next=linkOriginal(queue,raw,link.url,'o'+sha(link.url).slice(0,16));
    if(next&&!topic.sourceIds.includes(next.id))topic.sourceIds.push(next.id);
   }
   sources.push({...record,id:raw.id,originalOf:raw.originalOf,text:undefined,passages,passagesOmitted:record.passages.length-passages.length});
  }
- const packet={...input,sources,retrievalVersion:'1.0'};
+ const packet={...input,sources:bindOrigins(sources,queue),retrievalVersion:'1.1'};
  const checkpoint=path.join(cache,'packet-'+sha(JSON.stringify(packet))+'.json');fs.writeFileSync(checkpoint,JSON.stringify(packet),{mode:0o640});readable(checkpoint);
  console.log(JSON.stringify(packet));
 }
 if(require.main===module)main().catch(e=>{console.error('Evidence retrieval failed: '+e.message);process.exitCode=1;});
-module.exports={canonical,address,extract,get};
+module.exports={canonical,address,extract,get,main};
 

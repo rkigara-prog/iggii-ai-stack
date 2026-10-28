@@ -25,4 +25,39 @@ test('deployment filter covers stack changes without n8n-only deployment',()=>{c
 test('error classification never emits raw messages',()=>{const {failureInput}=require('../failure-input.cjs');for(const [message,expected] of [['timeout PRIVATE','model_timeout'],['malformed PRIVATE','model_response_invalid'],['privacy ambiguity PRIVATE','privacy_blocked'],['fetch PRIVATE','evidence_fetch_failed'],['binding PRIVATE','evidence_binding_failed']]){const out=failureInput({execution:{id:'101',error:{message}}});assert.equal(out.reasonCode,expected);assert(!JSON.stringify(out).includes('PRIVATE'));}assert.throws(()=>failureInput({execution:{id:'untrusted'}}));});
 test('zero extraction and consolidation terminate before external calls',()=>{const s=JSON.parse(fs.readFileSync(path.join(D,'sanitization.json')));const code=s.nodes.find(n=>n.name==='Aggregate Anonymous Candidate Themes').parameters.jsCode;const out=Function('$','$input',code)(()=>({all:()=>[{json:{text:'Synthetic source'}}]}),{all:()=>[{json:{choices:[{finish_reason:'stop',message:{content:'{"themes":[]}'}}]}}]});assert.deepEqual(out,[{json:{noResearch:true}}]);const e=JSON.parse(fs.readFileSync(path.join(D,'enrichment.json')));const parse=e.nodes.find(n=>n.name==='Parse Consolidated Themes').parameters.jsCode;const empty=Function('$json','$',parse)({choices:[{finish_reason:'stop',message:{content:'{"themes":[]}'}}]},()=>{throw Error('No downstream source access expected');});assert.deepEqual(empty,[{json:{noResearch:true}}]);});
 test('string limits include UTF-16 boundary and reject whitespace',()=>{const w=JSON.parse(fs.readFileSync(path.join(D,'sanitization.json')));const text=w.nodes.find(n=>n.name==='Aggregate Anonymous Candidate Themes').parameters.jsCode;const extract=Function(text.split('const decoded =')[0]+'return extraction;')();const reply=t=>({choices:[{finish_reason:'stop',message:{content:JSON.stringify({themes:[t]})}}]});assert.equal(extract(reply('x'.repeat(220)))[0].length,220);assert.throws(()=>extract(reply('x'.repeat(221))));assert.equal(extract(reply('😀'.repeat(110)))[0].length,220);assert.throws(()=>extract(reply('😀'.repeat(111))));assert.throws(()=>extract(reply('   ')));});
+test('no selected transcripts terminates before file reading or models',()=>{const w=JSON.parse(fs.readFileSync(path.join(D,'sanitization.json')));const n=w.nodes.find(n=>n.name==='Build Recent Transcript File List');assert.deepEqual(Function('$json',n.parameters.jsCode)({stdout:'\n'}),[{json:{noResearch:true}}]);assert.equal(w.connections['Build Recent Transcript File List Has Research'].main[1][0].node,'Finish Without Research');});
+test('origin edges survive initial shortlist, retrieval permutations and multiple reporters',()=>{
+ const {linkOriginal,bindOrigins}=require('../evidence/relevance.cjs');
+ const report={...sources[0],id:'s2',url:'https://independent.example/report',canonicalUrl:'https://independent.example/report'};
+ const original={...sources[0],url:sources[0].canonicalUrl};
+ const a2={...assessment,sourceId:'s2',role:'independent_reporting',originId:'mistaken-distinct',originMethod:'original_analysis'};
+ const c={...claim,exception:null,citations:[...claim.citations,{...claim.citations[0],sourceId:'s2'}]};
+ for(const initial of [[original,report],[report,original],[report]]){
+  const queue=structuredClone(initial);const fetched=structuredClone(initial);
+  const target=linkOriginal(queue,report,original.url,'s1');
+  if(!fetched.some(s=>s.id===target.id))fetched.push(original);
+  linkOriginal(queue,{id:'s3'},original.url,'s1');
+  const bound=bindOrigins(fetched,queue);
+  assert.deepEqual(bound.find(s=>s.id==='s1').originalOfIds,['s2','s3']);
+  assert(!claimGate(c,bound,[assessment,a2]).passed);
+ }
+});
+test('outbox filesystem failure keeps status retryable and retry emits one complete event',()=>{
+ const dir=fs.mkdtempSync(path.join(process.env.IAS_TEST_ROOT||os.tmpdir(),'linkedin-outbox-'));
+ status.record(started,dir);fs.writeFileSync(path.join(dir,'alerts'),'blocking synthetic file');
+ const input={runId,stage:'privacy',state:'completed_no_research',reasonCode:'all_excluded'};
+ assert.throws(()=>status.record(input,dir));assert.equal(JSON.parse(fs.readFileSync(path.join(dir,'run-status.json'))).state,'running');
+ fs.unlinkSync(path.join(dir,'alerts'));status.record(input,dir);status.record(input,dir);
+ assert.equal(fs.readdirSync(path.join(dir,'alerts')).length,1);
+ assert.equal(JSON.parse(fs.readFileSync(path.join(dir,'run-status.json'))).state,'completed_no_research');
+});
+test('stale observation cannot replace a fresh stage with the same execution ID',()=>{
+ const dir=fs.mkdtempSync(path.join(process.env.IAS_TEST_ROOT||os.tmpdir(),'linkedin-race-'));
+ const old=status.record(started,dir);old.updatedAt='2000-01-01T00:00:00Z';fs.writeFileSync(path.join(dir,'run-status.json'),JSON.stringify(old));
+ const stale=status.inspect(old);status.record({runId,stage:'research',state:'running',reasonCode:'stage_started'},dir);
+ assert.throws(()=>status.record({...stale,expectedStatus:old},dir),/Status changed/);
+ assert.equal(status.inspectStored(dir).stage,'research');assert.equal(status.inspectStored(dir).state,'running');
+ status.withLock(dir,()=>assert.throws(()=>status.inspectStored(dir)));
+});
+test('missing automatic execution identity fails closed without raw retention',()=>{const {failureInput}=require('../failure-input.cjs');assert.throws(()=>failureInput({execution:{error:{message:'PRIVATE'}}}));});
 console.log(passed+' reliability tests passed; no models called or messages sent.');

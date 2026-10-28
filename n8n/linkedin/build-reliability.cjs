@@ -20,6 +20,9 @@ function update(w){
   else node(w,'Finish Without Research').parameters.command=empty;
   route(w,'Aggregate Anonymous Candidate Themes','Privacy Adjudication and Deduplication via gpt-oss','Finish Without Research');
   route(w,'Build Final Public-Safe Theme List','Prepare Theme File','Finish Without Research');
+  const files=node(w,'Build Recent Transcript File List');
+  files.parameters.jsCode=files.parameters.jsCode.replace('return [];','return [{json:{noResearch:true}}];');
+  route(w,'Build Recent Transcript File List','Read Recent Transcripts From Disk','Finish Without Research');
  }
  if(w.nodes.some(n=>n.name==='Consolidate Themes via qwen3.5')){
   const n=node(w,'Consolidate Themes via qwen3.5');let e=n.parameters.jsonBody;

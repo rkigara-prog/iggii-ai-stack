@@ -9,4 +9,11 @@ function selectPassages(source,topics,limit=14000){
  return chosen.sort((a,b)=>a.i-b.i).map(r=>r.p);
 }
 function originalLinks(links,topic){return links.filter(l=>/research|report|advisory|analysis|findings|according|announc/i.test(l.context||'')&&relevant(topic,l.context)).slice(0,2);}
-module.exports={terms,relevant,selectPassages,originalLinks};
+function linkOriginal(queue,report,url,id){
+ let original=queue.find(s=>s.url===url);
+ if(!original&&queue.length<24){original={id,url,discoveredOriginal:true};queue.push(original);}
+ if(original&&original.id!==report.id)original.originalOfIds=[...new Set([...(original.originalOfIds||[]),report.id])].sort();
+ return original;
+}
+function bindOrigins(sources,queue){return sources.map(s=>({...s,originalOfIds:queue.find(q=>q.id===s.id)?.originalOfIds||[]}));}
+module.exports={terms,relevant,selectPassages,originalLinks,linkOriginal,bindOrigins};

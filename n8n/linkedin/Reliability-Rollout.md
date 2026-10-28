@@ -14,7 +14,11 @@ Generated workflow exports are intentionally not part of this patch. CI runs the
 
 ## Tests and rollout gates
 
-Run the three contract commands in the pull-request CI workflow. Also validate the exported IF nodes and JSON-schema request against the deployed n8n/model versions in a controlled acceptance run before publishing. Local JavaScript compilation cannot establish backend schema support or n8n import compatibility.
+Run all contract, retrieval, selector, and archive commands in the pull-request CI workflow. Also validate the exported IF nodes and JSON-schema request against the deployed n8n/model versions in a controlled acceptance run before publishing. Local JavaScript compilation cannot establish backend schema support or n8n import compatibility.
+
+Outbox records are written before terminal status so failed writes remain retryable. Any future delivery adapter must compare the event ID with the current terminal status before sending; a prepared outbox file alone is not delivery authority.
+
+Error Trigger behavior requires installed-version acceptance: trigger a synthetic automatic failure with raw execution retention still disabled and verify execution-ID correlation. A manual UI execution does not test Error Trigger. Missing IDs must fail closed and never be guessed from the latest run. If the installed version omits the ID, rollout remains blocked pending a safe correlation design; do not enable raw payload retention. The local stalled-run check requires an explicitly approved invocation and is not an already-running monitor.
 
 1. Save private backups of all affected live workflows and helper scripts. Use the current live exports as patch input; never replace live production workflows wholesale with the inactive source templates. Run `update()` from build-reliability.cjs on those exports and inspect the complete diff. Preserve credentials, roots, schedules, IDs, and activation. Changes to expression serialization must be checked with n8n's native evaluator.
 2. Stage the evidence helpers, status helper, and updated artifact helpers together in an isolated acceptance output root. Import the generated inactive failure-handler workflow. Bind its actual assigned ID as the error workflow for each pipeline stage during approved rollout; it is not automatically assigned by this source patch. The error handler rejects unmatched execution IDs. Do not retain error-trigger payloads.

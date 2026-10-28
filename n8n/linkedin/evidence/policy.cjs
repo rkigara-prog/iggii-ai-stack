@@ -19,7 +19,7 @@ function sourceGate(a,sources){
  if(!exactCitation({...a?.basis,sourceId:a?.sourceId},sources))issues.push('origin_basis_not_on_page');
  if(/syndicat|press release|sponsored|advertisement/i.test(a?.basis?.quote||''))issues.push('dependent_or_promotional_origin');
  if(a?.role==='independent_reporting'&&/\b(according to|reported by|said|says|reported that|observed by|researchers at)\b/i.test(a?.basis?.quote||''))issues.push('reported_origin_not_independent');
- if(a?.role==='independent_reporting'&&sources.some(source=>source.originalOf===a.sourceId))issues.push('linked_original_requires_origin_review');
+ if(a?.role==='independent_reporting'&&sources.some(source=>source.originalOf===a.sourceId||source.originalOfIds?.includes(a.sourceId)))issues.push('linked_original_requires_origin_review');
  // A self-reported publisher/domain never establishes authority or independence.
  return {eligible:!issues.length,issues,judgment:a,source:s};
 }
