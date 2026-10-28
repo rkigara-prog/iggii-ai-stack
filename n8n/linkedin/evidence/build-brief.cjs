@@ -1,5 +1,8 @@
 const packet=$('Restore Retrieved Evidence').first().json;
-let response;try{response=JSON.parse($json.choices?.[0]?.message?.content);}catch{response={};}
+if($json.choices?.[0]?.finish_reason!=='stop')throw Error('Evidence response incomplete');
+let response;try{response=JSON.parse($json.choices[0].message.content);}catch{throw Error('Evidence response malformed');}
+if(!Array.isArray(response.sourceAssessments)||!Array.isArray(response.candidates)||response.candidates.length!==packet.shortlist.length||new Set(response.candidates.map(c=>c.id)).size!==packet.shortlist.length||packet.shortlist.some(t=>!response.candidates.some(c=>c.id===t.id)))throw Error('Evidence response coverage invalid');
+if(response.sourceAssessments.length!==packet.sources.length||new Set(response.sourceAssessments.map(s=>s.sourceId)).size!==packet.sources.length||packet.sources.some(s=>!response.sourceAssessments.some(a=>a.sourceId===s.id)))throw Error('Evidence source coverage invalid');
 const assessment=gate(packet,response);
 const themeAligned=[],watchlist=[];
 for(const row of assessment.rows){
@@ -23,3 +26,4 @@ const lines=['# Weekly content evidence brief','',`Generated ${generatedAt}. Sta
 for(const [label,rows] of [['Evidence-bound opportunities',themeAligned],['Deferred for evidence or human review',watchlist]]){lines.push('## '+label,'');for(const c of rows){lines.push('### '+c.topic,'',...c.editorialRisks.map(r=>'- '+r),'');for(const claim of c.claims){lines.push('Claim: '+claim.text,'',`Semantic judgment: ${claim.judgment?.reason||'Unresolved'}`,'');for(const ref of list(claim.citations)){const s=c.sources.find(s=>s.id===ref.sourceId);lines.push(`- ${s?.canonicalUrl||'Unknown source'} | ${ref.passageId} | ${ref.quote}`);}}for(const s of c.sources)lines.push(`- Source ${s.id}: ${s.requestedUrl}; retrieved ${s.retrievedAt}; published ${s.publicationDate||'unknown'}; ${s.retrievalStatus}; cache ${s.cacheFile||'unavailable'}`);lines.push('');}}
 const binaryItem=(fileName,contents,mimeType)=>({json:{fileName},binary:{data:{data:Buffer.from(contents).toString('base64'),mimeType,fileName}}});
 return [binaryItem(`content-brief-model-eval-${date}.md`,lines.join('\n')+'\n','text/markdown'),binaryItem(`content-candidates-model-eval-${date}.json`,JSON.stringify(result,null,2)+'\n','application/json')];
+

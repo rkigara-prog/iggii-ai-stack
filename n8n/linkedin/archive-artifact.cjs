@@ -17,6 +17,8 @@ function snapshot(input,bootstrap=false){
  if(!bootstrap) {
   const {candidate}=require('./pipeline-artifact.cjs');
   check(JSON.stringify(candidate(JSON.parse(fs.readFileSync(path.join(root,'candidate-status.json')))))===JSON.stringify(input.proof),'Candidate proof changed');
+  const status=JSON.parse(fs.readFileSync(path.join(root,'run-status.json')));
+  if(status.state==='running')require('./stage-result.cjs').record({runId:input.proof.privacy.runId,stage:'archive',state:'running',reasonCode:'stage_started'},root);
  }
  const candidateName=bootstrap?input.candidateFile:input.proof.candidate.fileName;
  const c=read(candidateName,patterns.candidate),data=JSON.parse(c.bytes);
@@ -52,8 +54,11 @@ function snapshot(input,bootstrap=false){
  const relative=path.relative(root,dest).split(path.sep).join('/');
  atomic(path.join(root,'current-status.json'),JSON.stringify({version:1,completedAt:plan.generatedAt,archive:relative,cycleHash,files:entries},null,2)+'\n');
  atomic(path.join(root,'CURRENT.md'),`# Latest completed LinkedIn cycle\n\nCompleted: ${plan.generatedAt}. Plan status: ${plan.status}.\n\nRead the preserved files below. They stay available during the next run.\n\n`+files.map(f=>`- [${f.name}](${relative}/${f.name})`).join('\n')+'\n\nThe matching working outputs are in this folder. They may change during a run; use these preserved links for review.\n\nRecord edits and approvals in Reviews. Read START-HERE.md for instructions. LinkedIn posting is disabled.\n');
- return {archived:true,cycleHash,fileCount:files.length,sourceFilesPreserved:true};
+ const selected=Array.isArray(plan.selectedTopics)?plan.selectedTopics.length:0,deferred=Array.isArray(plan.deferredTopics)?plan.deferredTopics.length:0;
+ if(!bootstrap)require('./stage-result.cjs').record({runId:input.proof.privacy.runId,stage:'archive',state:selected?'content_ready':'completed_all_deferred',reasonCode:selected?'accepted_topics':'all_deferred',counts:{selected,deferred}},root);
+ return {archived:true,cycleHash,fileCount:files.length,sourceFilesPreserved:true,contentOutcome:selected?'content_ready':'completed_all_deferred',selected,deferred};
 }
 function main(){const [action,encoded]=process.argv.slice(2);check(['complete','snapshot-existing'].includes(action),'Unknown action');check(encoded&&/^[A-Za-z0-9+/]+={0,2}$/.test(encoded),'Invalid input');console.log(JSON.stringify(snapshot(JSON.parse(Buffer.from(encoded,'base64')),action==='snapshot-existing')));}
 if(require.main===module){try{main();}catch(e){console.error('Archive blocked: '+e.message);process.exitCode=1;}}
 module.exports={snapshot};
+

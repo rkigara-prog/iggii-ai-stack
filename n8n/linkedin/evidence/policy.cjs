@@ -1,5 +1,6 @@
 // Pure, shared gate. Semantic assessments remain fallible model judgments.
 const list=x=>Array.isArray(x)?x:[];
+const {relevant}=require('./relevance.cjs');
 const clean=x=>String(x??'').normalize('NFC').replace(/[\u200b\ufeff]/g,'').replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/\s+/g,' ').trim();
 function host(u){return String(u||'').match(/^https?:\/\/([^/?#:]+)/i)?.[1]?.toLowerCase().replace(/^www\./,'')||'';}
 function exactCitation(c,sources){const s=sources.find(x=>x.id===c?.sourceId);const p=s?.passages?.find(x=>x.id===c.passageId);return !!(s?.retrievalStatus==='retrieved'&&p&&clean(c.quote).length>=12&&clean(p.text).includes(clean(c.quote)));}
@@ -17,11 +18,15 @@ function sourceGate(a,sources){
  if(!['first_party_record','direct_observation','original_analysis','interview'].includes(a?.originMethod)||!clean(a?.originId)||/^(unknown|unresolved|uncertain|not established)$/i.test(clean(a?.originId))||!clean(a?.reason))issues.push('source_independence_unresolved');
  if(!exactCitation({...a?.basis,sourceId:a?.sourceId},sources))issues.push('origin_basis_not_on_page');
  if(/syndicat|press release|sponsored|advertisement/i.test(a?.basis?.quote||''))issues.push('dependent_or_promotional_origin');
+ if(a?.role==='independent_reporting'&&/\b(according to|reported by|said|says|reported that|observed by|researchers at)\b/i.test(a?.basis?.quote||''))issues.push('reported_origin_not_independent');
+ if(a?.role==='independent_reporting'&&sources.some(source=>source.originalOf===a.sourceId))issues.push('linked_original_requires_origin_review');
  // A self-reported publisher/domain never establishes authority or independence.
  return {eligible:!issues.length,issues,judgment:a,source:s};
 }
 function claimGate(claim,sources,assessments){
  const reasons=[];const citations=list(claim?.citations);const valid=citations.filter(c=>exactCitation(c,sources));
+ if(!['exact_quote','paraphrase'].includes(claim?.form))reasons.push('claim_form_invalid');
+ if(claim?.form==='exact_quote'&&!valid.some(c=>clean(claim.text)===clean(c.quote)||clean(claim.text)===`${authority(sources.find(s=>s.id===c.sourceId)||{})} states: ${clean(c.quote)}`))reasons.push('exact_quote_text_mismatch');
  if(!clean(claim?.text)||valid.length!==citations.length||!valid.length)reasons.push('missing_or_invalid_passage_binding');
  if(!claim?.judgment||claim.judgment.support!=='supported'||!clean(claim.judgment.reason))reasons.push('semantic_support_unresolved');
  for(const d of dimensions)if(claim?.judgment?.[d]!=='preserved')reasons.push(d+'_unresolved');
@@ -81,7 +86,9 @@ function gate(packet,response){
   }
   return c;
  });
-  const checks=claims.map(c=>claimGate(c,sources.filter(s=>topic.sourceIds.includes(s.id)),assessments));const reasons=checks.flatMap(c=>c.reasons);
+ const checks=claims.map(c=>claimGate(c,sources.filter(s=>topic.sourceIds.includes(s.id)),assessments));const reasons=checks.flatMap(c=>c.reasons);
+ if(!proposed?.topicJudgment||proposed.topicJudgment.support!=='supported'||!clean(proposed.topicJudgment.reason))reasons.push('topic_relevance_unresolved');
+ for(const c of claims){const quotes=list(c.citations).map(r=>r.quote).join(' ');if(!relevant(topic.topic,quotes)||!relevant(topic.topic,c.text))reasons.push('topic_source_mismatch');}
   if(!claims.length)reasons.push('no_bound_material_claims');
   if(claims.length>3)reasons.push('claim_limit_exceeded');
   if(proposed?.decision!=='accept')reasons.push('model_deferred');
@@ -100,3 +107,4 @@ function reviewProse(text,approvedClaims){
  return {method:'deterministic_full_prose_coverage',independentSemanticVerification:false,reviewRequired:assertions.some(a=>a.status==='human_review_required'),assertions,automaticPublishingAllowed:false};
 }
 module.exports={exactCitation,sourceGate,claimGate,gate,reviewProse,authority,dimensions};
+

@@ -1,0 +1,7 @@
+// Generate an inactive error-handler export; bind its assigned ID after import.
+const fs=require('fs'),path=require('path');
+const D=__dirname,w=JSON.parse(fs.readFileSync(path.join(D,'enrichment.json')));
+const root=w.nodes.find(n=>n.name==='Require Approved Privacy Artifact').parameters.command.match(/IAS_PRIVACY_ROOT=([^ ]+)/)[1];
+const code=fs.readFileSync(path.join(D,'failure-input.cjs'),'utf8').split('module.exports=')[0]+'\nreturn [{json:failureInput($json)}];';
+const result={name:'LinkedIn pipeline failure metadata',active:false,nodes:[{id:'failure-trigger',name:'Workflow Failure',type:'n8n-nodes-base.errorTrigger',typeVersion:1,position:[0,0],parameters:{}},{id:'safe-failure',name:'Keep Safe Failure Fields',type:'n8n-nodes-base.code',typeVersion:2,position:[240,0],parameters:{jsCode:code}},{id:'record-failure',name:'Record Local Failure Alert',type:'n8n-nodes-base.executeCommand',typeVersion:1,position:[480,0],parameters:{command:'={{ "IAS_PRIVACY_ROOT='+root+' node '+root+'/stage-result.cjs fail " + JSON.stringify($json).base64Encode() }}'}}],connections:{'Workflow Failure':{main:[[{node:'Keep Safe Failure Fields',type:'main',index:0}]]},'Keep Safe Failure Fields':{main:[[{node:'Record Local Failure Alert',type:'main',index:0}]]}},settings:{executionOrder:'v1',saveDataSuccessExecution:'none',saveDataErrorExecution:'none',saveManualExecutions:false}};
+fs.writeFileSync(path.join(D,'failure-handler.json'),JSON.stringify(result,null,2)+'\n');

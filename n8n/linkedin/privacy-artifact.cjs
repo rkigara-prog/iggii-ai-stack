@@ -29,7 +29,13 @@ function main() {
   if (action === 'begin') {
     const runId = crypto.randomUUID();
     write({state: 'pending', runId, policyVersion, startedAt: new Date().toISOString()});
+    require('./stage-result.cjs').record({begin:true,runId,executionId:process.argv[3],stage:'privacy',state:'running',reasonCode:'started'},root);
     console.log(JSON.stringify({runId}));
+  } else if (action === 'empty') {
+    const status=JSON.parse(fs.readFileSync(statusFile,'utf8'));
+    if(status.state!=='pending'||status.runId!==runId)throw Error('Privacy attempt mismatch');
+    write({...status,state:'no_research',completedAt:new Date().toISOString()});
+    console.log(JSON.stringify(require('./stage-result.cjs').record({runId,stage:'privacy',state:'completed_no_research',reasonCode:'all_excluded'},root)));
   } else if (action === 'approve') {
     const status = JSON.parse(fs.readFileSync(statusFile, 'utf8'));
     if (status.state !== 'pending' || status.runId !== runId || !/^theme-list-model-eval-qwen35-\d{4}-\d{2}-\d{2}\.txt$/.test(fileName)) throw Error('Privacy attempt mismatch');
@@ -40,9 +46,11 @@ function main() {
     if (!themes.length || themes.length > 20 || themes.some(line => !line.startsWith('- ') || !surfaceSafe(line.slice(2)))) throw Error('Privacy output invalid');
     readable(artifactPath);
     write({...status, state: 'approved', fileName, themeCount: themes.length, sha256: digest(bytes), approvedAt: new Date().toISOString()});
+    require('./stage-result.cjs').record({runId,stage:'research',state:'running',reasonCode:'stage_started'},root);
     console.log(JSON.stringify(validate(runId)));
   } else if (action === 'verify') console.log(JSON.stringify(validate(runId)));
   else throw Error('Unknown privacy artifact action');
 }
 if (require.main === module) { try { main(); } catch { console.error('Privacy handoff blocked'); process.exitCode = 1; } }
 module.exports = {validate};
+

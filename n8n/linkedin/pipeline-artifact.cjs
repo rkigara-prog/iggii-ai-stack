@@ -30,21 +30,26 @@ function main(){
  requireThat(input&&typeof input==='object'&&!Array.isArray(input));
  if(action==='theme'){
   requireThat(Object.keys(input).length===0||(Object.keys(input).length===1&&input.privacy));
-  console.log(JSON.stringify(samePrivacy(input.privacy)));
+  const proof=samePrivacy(input.privacy);
+  require('./stage-result.cjs').record({runId:proof.runId,executionId:process.argv[4],stage:'research',state:'running',reasonCode:'stage_started'},root);
+  console.log(JSON.stringify(proof));
  }else if(action==='record'){
   requireThat(input.privacy&&input.candidateFile&&input.briefFile);
   const privacy=samePrivacy(input.privacy);
   const c=file(input.candidateFile,/^content-candidates-model-eval-\d{4}-\d{2}-\d{2}\.json$/),b=file(input.briefFile,/^content-brief-model-eval-\d{4}-\d{2}-\d{2}\.md$/);
   const proof=candidate({privacy,candidate:{fileName:input.candidateFile,sha256:hash(c.bytes)},brief:{fileName:input.briefFile,sha256:hash(b.bytes)}});
   readable(c.p);readable(b.p);
+  require('./stage-result.cjs').record({runId:privacy.runId,stage:'planning',state:'running',reasonCode:'stage_started'},root);
   const tmp=marker+'.'+crypto.randomUUID();fs.writeFileSync(tmp,JSON.stringify(proof),{mode:0o640,flag:'wx'});readable(tmp);fs.renameSync(tmp,marker);
   console.log(JSON.stringify(proof));
  }else if(action==='verify-candidate'){
   const proof=candidate(JSON.parse(fs.readFileSync(marker)));
   if(Object.keys(input).length)requireThat(JSON.stringify(input)===JSON.stringify(proof));
+  require('./stage-result.cjs').record({runId:proof.privacy.runId,executionId:process.argv[4],stage:'planning',state:'running',reasonCode:'stage_started'},root);
   console.log(JSON.stringify(proof));
  }else throw Error('Pipeline handoff blocked');
 }
 if(require.main===module){try{main();}catch{console.error('Pipeline handoff blocked');process.exitCode=1;}}
 
 module.exports={candidate};
+
