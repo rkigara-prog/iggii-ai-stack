@@ -5,11 +5,12 @@ assert(!fs.existsSync(root)&&!fs.existsSync(arc),'Use a new synthetic-check dire
 fs.mkdirSync(root,{recursive:true});fs.mkdirSync(arc,{recursive:true});
 process.env.IAS_PRIVACY_ROOT=root;process.env.IAS_ARCHIVE_ROOT=arc;
 const helpers=process.argv[3]||path.resolve(__dirname,'..');
-for(const f of ['content-access.cjs','archive-artifact.cjs','pipeline-artifact.cjs','privacy-artifact.cjs','privacy-policy.cjs'])fs.copyFileSync(helpers+'/'+f,root+'/'+f);
+for(const f of ['content-access.cjs','archive-artifact.cjs','pipeline-artifact.cjs','privacy-artifact.cjs','privacy-policy.cjs','stage-result.cjs'])fs.copyFileSync(helpers+'/'+f,root+'/'+f);
 const {policyVersion}=require(root+'/privacy-policy.cjs');const {snapshot}=require(root+'/archive-artifact.cjs');
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 const date='2026-10-07',theme=`theme-list-model-eval-qwen35-${date}.txt`,cand=`content-candidates-model-eval-${date}.json`,brief=`content-brief-model-eval-${date}.md`,plan=`linkedin-editorial-plan-model-eval-${date}.json`,md=plan.replace('.json','.md');
 const approval={state:'approved',policyVersion,runId:crypto.randomUUID(),fileName:theme,themeCount:1,sha256:sha('- Public technology research\n'),approvedAt:new Date().toISOString()};
+require(root+'/stage-result.cjs').record({begin:true,runId:approval.runId,executionId:'101',stage:'privacy',state:'running',reasonCode:'started'},root);
 fs.writeFileSync(root+'/'+theme,'- Public technology research\n');fs.writeFileSync(root+'/privacy-status.json',JSON.stringify(approval));
 fs.writeFileSync(root+'/'+cand,JSON.stringify({status:'ready',sourceThemeFile:theme,generatedAt:new Date().toISOString(),themeAligned:[{topic:'Public technology'}],emerging:[]}));fs.writeFileSync(root+'/'+brief,'# Synthetic public research\n');
 const proof={privacy:{runId:approval.runId,fileName:theme,sha256:approval.sha256,themeCount:1,policyVersion},candidate:{fileName:cand,sha256:sha(fs.readFileSync(root+'/'+cand))},brief:{fileName:brief,sha256:sha(fs.readFileSync(root+'/'+brief))}};
@@ -17,7 +18,15 @@ fs.writeFileSync(root+'/candidate-status.json',JSON.stringify(proof));
 const planObject={status:'partial',sourceThemeFile:theme,sourceCandidateFile:cand,generatedAt:new Date().toISOString(),policySummary:{automaticPublishingAllowed:false}};
 fs.writeFileSync(root+'/'+plan,JSON.stringify(planObject));fs.writeFileSync(root+'/'+md,'# Synthetic editorial plan\n');fs.writeFileSync(root+'/unrelated.txt','preserve');
 const input={proof,planFile:plan},before={};for(const f of [theme,cand,brief,plan,md,'unrelated.txt'])before[f]=sha(fs.readFileSync(root+'/'+f));
+const priorStatus=fs.readFileSync(root+'/run-status.json');
+require(root+'/stage-result.cjs').record({runId:approval.runId,stage:'planning',state:'failed',reasonCode:'stage_failed'},root);
+fs.writeFileSync(root+'/CURRENT.md','Previous valid cycle');fs.writeFileSync(root+'/current-status.json','{"previous":true}');
+assert.throws(()=>snapshot(input),/Run already terminal/);
+assert.equal(fs.readFileSync(root+'/CURRENT.md','utf8'),'Previous valid cycle');assert.equal(fs.readFileSync(root+'/current-status.json','utf8'),'{"previous":true}');assert.equal(fs.readdirSync(arc).length,0);
+fs.writeFileSync(root+'/run-status.json',priorStatus);
 const result=snapshot(input);assert.equal(result.fileCount,5);assert.deepEqual(snapshot(input),result);
+assert.equal(result.contentOutcome,'completed_all_deferred');
+assert.equal(JSON.parse(fs.readFileSync(root+'/run-status.json')).state,'completed_all_deferred');
 const index=JSON.parse(fs.readFileSync(root+'/current-status.json')),dest=path.resolve(root,index.archive);
 for(const [f,h] of Object.entries(before))assert.equal(sha(fs.readFileSync(root+'/'+f)),h);
 for(const f of [theme,cand,brief,plan,md])assert.equal(sha(fs.readFileSync(dest+'/'+f)),before[f]);
@@ -30,4 +39,5 @@ assert.equal(fs.readdirSync(arc).length,1);
 // The same synthetic set is used by the inactive n8n writer/archive acceptance.
 fs.writeFileSync(dir+'/proof.private.json',JSON.stringify({proof,planFile:plan}));
 fs.writeFileSync(dir+'/plan.private.json',JSON.stringify(planObject));
-console.log(JSON.stringify({syntheticArchive:true,bytePreservation:true,idempotency:true,collisionBlocked:true,incompleteBlocked:true,pathTraversalBlocked:true,changedProofBlocked:true}));
+console.log(JSON.stringify({syntheticArchive:true,failedRunPreservesPointers:true,bytePreservation:true,idempotency:true,collisionBlocked:true,incompleteBlocked:true,pathTraversalBlocked:true,changedProofBlocked:true}));
+

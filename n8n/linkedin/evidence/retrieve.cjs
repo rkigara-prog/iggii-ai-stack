@@ -3,6 +3,7 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto'),dns=require
 const dep='/usr/local/lib/node_modules/n8n/node_modules/.pnpm/node_modules/';
 const cheerio=require(dep+'cheerio'),ip=require(dep+'ipaddr.js');
 const {readable}=require('../content-access.cjs');
+const {selectPassages,originalLinks,linkOriginal,bindOrigins}=require('./relevance.cjs');
 const sha=x=>crypto.createHash('sha256').update(x).digest('hex');
 function canonical(value,base){const u=new URL(value,base);u.hash='';for(const k of [...u.searchParams.keys()])if(/^utm_|^(gclid|fbclid)$/i.test(k))u.searchParams.delete(k);return u.href;}
 async function address(url){const u=new URL(url);if(!['https:','http:'].includes(u.protocol)||u.username||u.password||u.port&&!['80','443'].includes(u.port))throw Error('invalid_public_url');const addresses=await dns.lookup(u.hostname,{all:true});if(!addresses.length||addresses.some(a=>ip.process(a.address).range()!=='unicast'))throw Error('nonpublic_address');return addresses.find(a=>a.family===4)||addresses[0];}
@@ -27,16 +28,18 @@ function extract(raw,finalUrl){
  const blocks=[];body.find('h1,h2,h3,p,li,td,pre,div,section').each((_i,e)=>{if($(e).find('h1,h2,h3,p,li,td,pre,div,section').length)return;const text=$(e).text().replace(/\s+/g,' ').trim();if(text.length>=30&&blocks.at(-1)!==text)blocks.push(text);});
  const text=blocks.join('\n');if(text.length<300||/just a moment|verify you are human|access denied/i.test(title))throw Error('unusable_page_text');
  const passages=blocks.flatMap(b=>{const a=[];for(let i=0;i<b.length;i+=1600)a.push(b.slice(i,i+1600));return a;}).map((text,i)=>({id:'p'+String(i+1).padStart(4,'0'),text}));
- return {canonicalUrl:canon,publisher,publicationDate,title,text,passages,extractionVersion:'1.1'};
+ const links=[];body.find('a[href]').each((_i,e)=>{try{const url=canonical($(e).attr('href'),finalUrl);if(/^https?:/.test(url)&&new URL(url).hostname!==new URL(finalUrl).hostname)links.push({url,context:$(e).parent().text().replace(/\s+/g,' ').trim().slice(0,1200)});}catch{}});
+ return {canonicalUrl:canon,publisher,publicationDate,title,text,passages,links:links.slice(0,100),extractionVersion:'1.2'};
 }
 async function main(){
  const root=process.env.IAS_PRIVACY_ROOT;if(!root)throw Error('root_required');const input=JSON.parse(Buffer.from(process.argv[2],'base64'));
  const cache=path.join(root,'Evidence');if(!fs.existsSync(cache))fs.mkdirSync(cache,{mode:0o750});readable(cache,true);
  const sources=[];
- for(const raw of input.sources.slice(0,18)){
+ const queue=input.sources.slice(0,18).map(s=>({...s}));
+ for(const raw of queue){
   const requestedUrl=raw.url,key=sha(requestedUrl),index=path.join(cache,key+'.latest.json');let record;
   if(fs.existsSync(index)){const old=JSON.parse(fs.readFileSync(index));if(Date.now()-Date.parse(old.retrievedAt)<24*3600000&&old.retrievalStatus==='retrieved')record=old;}
-  if(record&&record.extractionVersion!=='1.1'){
+  if(record&&record.extractionVersion!=='1.2'){
    try{const old=record;const raw=fs.readFileSync(path.join(root,old.cacheFile.replace(/\.json$/,'.html')));const parsed=extract(raw,old.finalUrl||old.requestedUrl);record={...old,...parsed,extractedAt:new Date().toISOString(),textSha256:sha(parsed.text)};
     const version=key+'-'+record.rawSha256+'-v11-'+record.extractedAt.replace(/[^0-9]/g,'');record.cacheFile='Evidence/'+version+'.json';
     for(const [ext,bytes] of [['html',raw],['json',Buffer.from(JSON.stringify(record,null,2))]]){const file=path.join(cache,version+'.'+ext);fs.writeFileSync(file,bytes,{mode:0o640,flag:'wx'});readable(file);}
@@ -52,12 +55,20 @@ async function main(){
    fs.writeFileSync(index,JSON.stringify(record),{mode:0o640});readable(index);
   }
   // Keep immutable full text in cache; bound the model packet without disguising omission.
-  let size=0;const passages=record.passages.filter(p=>{size+=p.text.length;return size<=14000;});
-  sources.push({...record,id:raw.id,text:undefined,passages,passagesOmitted:record.passages.length-passages.length});
+  const topics=input.shortlist.filter(t=>t.sourceIds.includes(raw.id));
+  const passages=selectPassages(record,topics.map(t=>t.topic));
+  // Follow only evidence links already present in retrieved public pages. The same
+  // public-address/redirect/content limits apply. Never invent or execute a URL.
+  if(!raw.discoveredOriginal&&record.retrievalStatus==='retrieved')for(const topic of topics)for(const link of originalLinks(record.links||[],topic.topic)){
+   const next=linkOriginal(queue,raw,link.url,'o'+sha(link.url).slice(0,16));
+   if(next&&!topic.sourceIds.includes(next.id))topic.sourceIds.push(next.id);
+  }
+  sources.push({...record,id:raw.id,originalOf:raw.originalOf,text:undefined,passages,passagesOmitted:record.passages.length-passages.length});
  }
- const packet={...input,sources,retrievalVersion:'1.0'};
+ const packet={...input,sources:bindOrigins(sources,queue),retrievalVersion:'1.1'};
  const checkpoint=path.join(cache,'packet-'+sha(JSON.stringify(packet))+'.json');fs.writeFileSync(checkpoint,JSON.stringify(packet),{mode:0o640});readable(checkpoint);
  console.log(JSON.stringify(packet));
 }
 if(require.main===module)main().catch(e=>{console.error('Evidence retrieval failed: '+e.message);process.exitCode=1;});
-module.exports={canonical,address,extract,get};
+module.exports={canonical,address,extract,get,main};
+

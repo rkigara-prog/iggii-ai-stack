@@ -1,0 +1,75 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const D=path.join(__dirname,'..');const {gate,claimGate}=require('../evidence/policy.cjs');const {relevant,selectPassages}=require('../evidence/relevance.cjs');const status=require('../stage-result.cjs');const {update}=require('../build-reliability.cjs');
+let passed=0;function test(name,fn){try{fn();passed++;console.log('PASS '+name);}catch(e){console.error('FAIL '+name);throw e;}}
+const quote='Input validation rejects malformed application inputs.';
+const sources=[{id:'s1',canonicalUrl:'https://www.nist.gov/example',retrievalStatus:'retrieved',passages:[{id:'p7',text:quote}]}];
+const judgment={support:'supported',reason:'Synthetic support',...Object.fromEntries(['scope','attribution','dates','quantities','products','sectors','uncertainty'].map(k=>[k,'preserved']))};
+const assessment={sourceId:'s1',role:'primary',originId:'original-a',originMethod:'first_party_record',basis:{passageId:'p7',quote},reason:'Synthetic first-party statement'};
+const claim={text:quote,form:'exact_quote',attribution:{publisher:'NIST',sourceId:'s1'},factType:'document_statement',exception:'attributed_authoritative_statement',citations:[{sourceId:'s1',passageId:'p7',quote}],judgment};
+function fixture(c=claim,topic='Input validation'){return gate({sources,shortlist:[{id:'t1',topic,sourceIds:['s1']}]},{sourceAssessments:[assessment],candidates:[{id:'t1',decision:'accept',editorialScore:70,topicJudgment:{support:'supported',reason:'Synthetic matching topic'},claims:[c]}]}).rows[0];}
+test('narrow official exact statement passes',()=>assert(fixture().accepted));
+test('wrong topic fails even with supported model judgment',()=>assert(fixture(claim,'Oracle EBS exploitation').reasons.includes('topic_source_mismatch')));
+test('changed quote and omitted negation fail',()=>{for(const text of ['Input validation accepts malformed application inputs.','Input validation rejects inputs.'])assert(fixture({...claim,text}).reasons.includes('exact_quote_text_mismatch'));});
+test('bounded attributed paraphrase passes but unsupported scope fails',()=>{const c={...claim,form:'paraphrase',text:'Input validation rejects malformed inputs.'};assert(fixture(c).accepted);assert(!fixture({...c,text:'Input validation guarantees every application is secure.'}).accepted);assert(!fixture({...c,judgment:{...judgment,scope:'unresolved'}}).accepted);});
+test('unbound quantity and changed passage ID fail',()=>{assert(!fixture({...claim,form:'paraphrase',text:'Input validation rejects 900 malformed inputs.'}).accepted);assert(!fixture({...claim,citations:[{...claim.citations[0],passageId:'p8'}]}).accepted);});
+test('same origin on two hosts is not corroboration',()=>{const s2={...sources[0],id:'s2',canonicalUrl:'https://independent.example/report'};const c={...claim,exception:null,citations:[...claim.citations,{...claim.citations[0],sourceId:'s2'}]};const a2={...assessment,sourceId:'s2',role:'independent_reporting',originMethod:'original_analysis'};assert(!claimGate(c,[...sources,s2],[assessment,a2]).passed);assert(claimGate(c,[...sources,s2],[assessment,{...a2,originId:'original-b'}]).passed);});
+test('repeated reporting does not establish independent observation',()=>{const text='According to the original researchers, input validation rejects malformed inputs.';const s2={id:'s2',canonicalUrl:'https://independent.example/report',retrievalStatus:'retrieved',passages:[{id:'p1',text}]};const c={...claim,exception:null,citations:[...claim.citations,{sourceId:'s2',passageId:'p1',quote:text}]};assert(!claimGate(c,[...sources,s2],[assessment,{...assessment,sourceId:'s2',role:'independent_reporting',originId:'different',originMethod:'direct_observation',basis:{passageId:'p1',quote:text}}]).passed);});
+test('passage filtering preserves IDs and source order does not change binding',()=>{const src={passages:[{id:'p1',text:'Other unrelated passage.'},{id:'p9',text:quote}]};assert.equal(selectPassages(src,['Input validation'],quote.length)[0].id,'p9');assert.equal(fixture().accepted,true);assert.equal(relevant('Oracle EBS exploitation','Oracle announces new AI networking'),false);});
+const runId='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';const started={begin:true,runId,executionId:'101',stage:'privacy',state:'running',reasonCode:'started'};
+test('terminal no-content and all-deferred statuses are distinct and idempotent',()=>{const p=status.result(started,null);const empty=status.result({runId,stage:'privacy',state:'completed_no_research',reasonCode:'all_excluded'},p);assert.equal(empty.state,'completed_no_research');const input={runId,stage:'archive',state:'completed_all_deferred',reasonCode:'all_deferred',counts:{selected:0,deferred:7}};const final=status.result(input,p);assert.deepEqual(status.result(input,final),final);assert.equal(status.alertPayload(final).counts.deferred,7);assert.throws(()=>status.result({...input,counts:{selected:1}},final));});
+test('superseded run and execution fail closed; output strips private fields',()=>{const p=status.result(started,null);assert.throws(()=>status.result({runId:'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',stage:'research',state:'failed',reasonCode:'stage_failed'},p));assert.throws(()=>status.result({runId,expectedExecutionId:'102',stage:'research',state:'failed',reasonCode:'stage_failed'},p));const r=status.result({runId,stage:'privacy',state:'failed',reasonCode:'privacy_blocked',error:'PRIVATE',transcript:'PRIVATE'},p);assert(!JSON.stringify(r).includes('PRIVATE'));assert.equal(status.inspect({...p,updatedAt:'2000-01-01T00:00:00Z'}).state,'stalled');});
+test('local outbox deduplicates alerts and has no destination',()=>{const dir=fs.mkdtempSync(path.join(process.env.IAS_TEST_ROOT||os.tmpdir(),'linkedin-status-'));status.record(started,dir);const input={runId,stage:'privacy',state:'failed',reasonCode:'model_timeout'};status.record(input,dir);status.record(input,dir);assert.equal(fs.readdirSync(path.join(dir,'alerts')).length,1);const row=JSON.parse(fs.readFileSync(path.join(dir,'alerts',fs.readdirSync(path.join(dir,'alerts'))[0])));assert.equal(row.delivery,'local_only');assert(!row.destination);});
+test('workflow code and model expressions compile; safe empty branches terminate',()=>{for(const file of ['sanitization','enrichment','editorial-planner']){const w=JSON.parse(fs.readFileSync(path.join(D,file+'.json')));for(const n of w.nodes){if(n.type.endsWith('.code'))new (Object.getPrototypeOf(async function(){}).constructor)(n.parameters.jsCode);if(n.parameters.jsonBody?.startsWith('={{'))new Function('$json',n.parameters.jsonBody.slice(3,-2));}if(file==='sanitization'){for(const from of ['Aggregate Anonymous Candidate Themes','Build Final Public-Safe Theme List'])assert.equal(w.connections[from+' Has Research'].main[1][0].node,'Finish Without Research');assert(!w.connections['Finish Without Research']);}if(file==='enrichment'){assert(!w.connections['Finish Research With No Topics']);const n=w.nodes.find(n=>n.name==='Consolidate Themes via qwen3.5');const r=JSON.parse(Function('$json','return ('+n.parameters.jsonBody.slice(3,-2)+')')({rawThemes:[]}));assert.equal(r.response_format.json_schema.schema.properties.themes.minItems,0);assert(!r.messages[0].content.includes('five to eight'));for(const [key,max] of [['theme',220],['searchQuery',390],['rationale',1000]])assert.equal(r.response_format.json_schema.schema.properties.themes.items.properties[key].maxLength,max);}}});
+test('generation of source exports is idempotent',()=>{for(const file of ['sanitization','enrichment','editorial-planner']){const w=JSON.parse(fs.readFileSync(path.join(D,file+'.json')));assert.deepEqual(update(structuredClone(w)),w);}});
+test('deployment filter covers stack changes without n8n-only deployment',()=>{const y=fs.readFileSync(path.join(D,'../../.github/workflows/deploy.yml'),'utf8');assert(y.includes('      - docker-compose.yml'));assert(y.includes('      - litellm/**'));assert(y.includes('      - .github/workflows/deploy.yml'));assert(!y.includes('      - n8n/'));assert(!y.includes('      - ops/'));});
+test('error classification never emits raw messages',()=>{const {failureInput}=require('../failure-input.cjs');for(const [message,expected] of [['timeout PRIVATE','model_timeout'],['malformed PRIVATE','model_response_invalid'],['privacy ambiguity PRIVATE','privacy_blocked'],['fetch PRIVATE','evidence_fetch_failed'],['binding PRIVATE','evidence_binding_failed']]){const out=failureInput({execution:{id:'101',error:{message}}});assert.equal(out.reasonCode,expected);assert(!JSON.stringify(out).includes('PRIVATE'));}assert.throws(()=>failureInput({execution:{id:'untrusted'}}));});
+test('zero extraction and consolidation terminate before external calls',()=>{const s=JSON.parse(fs.readFileSync(path.join(D,'sanitization.json')));const code=s.nodes.find(n=>n.name==='Aggregate Anonymous Candidate Themes').parameters.jsCode;const out=Function('$','$input',code)(()=>({all:()=>[{json:{text:'Synthetic source'}}]}),{all:()=>[{json:{choices:[{finish_reason:'stop',message:{content:'{"themes":[]}'}}]}}]});assert.deepEqual(out,[{json:{noResearch:true}}]);const e=JSON.parse(fs.readFileSync(path.join(D,'enrichment.json')));const parse=e.nodes.find(n=>n.name==='Parse Consolidated Themes').parameters.jsCode;const empty=Function('$json','$',parse)({choices:[{finish_reason:'stop',message:{content:'{"themes":[]}'}}]},()=>{throw Error('No downstream source access expected');});assert.deepEqual(empty,[{json:{noResearch:true}}]);});
+test('string limits include UTF-16 boundary and reject whitespace',()=>{const w=JSON.parse(fs.readFileSync(path.join(D,'sanitization.json')));const text=w.nodes.find(n=>n.name==='Aggregate Anonymous Candidate Themes').parameters.jsCode;const extract=Function(text.split('const decoded =')[0]+'return extraction;')();const reply=t=>({choices:[{finish_reason:'stop',message:{content:JSON.stringify({themes:[t]})}}]});assert.equal(extract(reply('x'.repeat(220)))[0].length,220);assert.throws(()=>extract(reply('x'.repeat(221))));assert.equal(extract(reply('😀'.repeat(110)))[0].length,220);assert.throws(()=>extract(reply('😀'.repeat(111))));assert.throws(()=>extract(reply('   ')));});
+test('no selected transcripts terminates before file reading or models',()=>{const w=JSON.parse(fs.readFileSync(path.join(D,'sanitization.json')));const n=w.nodes.find(n=>n.name==='Build Recent Transcript File List');assert.deepEqual(Function('$json',n.parameters.jsCode)({stdout:'\n'}),[{json:{noResearch:true}}]);assert.equal(w.connections['Build Recent Transcript File List Has Research'].main[1][0].node,'Finish Without Research');});
+test('origin edges survive initial shortlist, retrieval permutations and multiple reporters',()=>{
+ const {linkOriginal,bindOrigins}=require('../evidence/relevance.cjs');
+ const report={...sources[0],id:'s2',url:'https://independent.example/report',canonicalUrl:'https://independent.example/report'};
+ const original={...sources[0],url:sources[0].canonicalUrl};
+ const a2={...assessment,sourceId:'s2',role:'independent_reporting',originId:'mistaken-distinct',originMethod:'original_analysis'};
+ const c={...claim,exception:null,citations:[...claim.citations,{...claim.citations[0],sourceId:'s2'}]};
+ for(const initial of [[original,report],[report,original],[report]]){
+  const queue=structuredClone(initial);const fetched=structuredClone(initial);
+  const target=linkOriginal(queue,report,original.url,'s1');
+  if(!fetched.some(s=>s.id===target.id))fetched.push(original);
+  linkOriginal(queue,{id:'s3'},original.url,'s1');
+  const bound=bindOrigins(fetched,queue);
+  assert.deepEqual(bound.find(s=>s.id==='s1').originalOfIds,['s2','s3']);
+  assert(!claimGate(c,bound,[assessment,a2]).passed);
+ }
+});
+test('outbox filesystem failure keeps status retryable and retry emits one complete event',()=>{
+ const dir=fs.mkdtempSync(path.join(process.env.IAS_TEST_ROOT||os.tmpdir(),'linkedin-outbox-'));
+ status.record(started,dir);fs.writeFileSync(path.join(dir,'alerts'),'blocking synthetic file');
+ const input={runId,stage:'privacy',state:'completed_no_research',reasonCode:'all_excluded'};
+ assert.throws(()=>status.record(input,dir));assert.equal(JSON.parse(fs.readFileSync(path.join(dir,'run-status.json'))).state,'running');
+ fs.unlinkSync(path.join(dir,'alerts'));status.record(input,dir);status.record(input,dir);
+ assert.equal(fs.readdirSync(path.join(dir,'alerts')).length,1);
+ assert.equal(JSON.parse(fs.readFileSync(path.join(dir,'run-status.json'))).state,'completed_no_research');
+});
+test('stale observation cannot replace a fresh stage with the same execution ID',()=>{
+ const dir=fs.mkdtempSync(path.join(process.env.IAS_TEST_ROOT||os.tmpdir(),'linkedin-race-'));
+ const old=status.record(started,dir);old.updatedAt='2000-01-01T00:00:00Z';fs.writeFileSync(path.join(dir,'run-status.json'),JSON.stringify(old));
+ const stale=status.inspect(old);status.record({runId,stage:'research',state:'running',reasonCode:'stage_started'},dir);
+ assert.throws(()=>status.record({...stale,expectedStatus:old},dir),/Status changed/);
+ assert.equal(status.inspectStored(dir).stage,'research');assert.equal(status.inspectStored(dir).state,'running');
+ status.withLock(dir,()=>assert.throws(()=>status.inspectStored(dir)));
+});
+test('missing automatic execution identity fails closed without raw retention',()=>{const {failureInput}=require('../failure-input.cjs');assert.throws(()=>failureInput({execution:{error:{message:'PRIVATE'}}}));});
+test('privacy empty CLI recovers from filesystem outbox failure and rejects superseded runs',()=>{
+ const dir=fs.mkdtempSync(path.join(process.env.IAS_TEST_ROOT||os.tmpdir(),'linkedin-empty-cli-'));
+ const invoke=(...args)=>require('node:child_process').spawnSync(process.execPath,[path.join(D,'privacy-artifact.cjs'),...args],{encoding:'utf8',env:{...process.env,IAS_PRIVACY_ROOT:dir}});
+ const begin=invoke('begin','101');assert.equal(begin.status,0,begin.stderr);const id=JSON.parse(begin.stdout).runId;
+ fs.writeFileSync(path.join(dir,'alerts'),'synthetic collision');assert.equal(invoke('empty',id).status,1);
+ assert.equal(JSON.parse(fs.readFileSync(path.join(dir,'privacy-status.json'))).state,'no_research');assert.equal(JSON.parse(fs.readFileSync(path.join(dir,'run-status.json'))).state,'running');
+ fs.unlinkSync(path.join(dir,'alerts'));const retry=invoke('empty',id);assert.equal(retry.status,0,retry.stderr);assert.equal(JSON.parse(retry.stdout).state,'completed_no_research');
+ assert.equal(invoke('empty',id).status,0);assert.equal(fs.readdirSync(path.join(dir,'alerts')).length,1);
+ const next=invoke('begin','102');assert.equal(next.status,0,next.stderr);
+ const before=['privacy-status.json','run-status.json'].map(f=>fs.readFileSync(path.join(dir,f),'utf8'));
+ assert.equal(invoke('empty',id).status,1);assert.deepEqual(['privacy-status.json','run-status.json'].map(f=>fs.readFileSync(path.join(dir,f),'utf8')),before);
+});
+console.log(passed+' reliability tests passed; no models called or messages sent.');

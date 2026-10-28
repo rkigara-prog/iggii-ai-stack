@@ -1,0 +1,32 @@
+name: LinkedIn contracts
+on:
+  pull_request:
+    paths:
+      - n8n/linkedin/**
+      - .github/workflows/**
+      - .github/scripts/**
+  push:
+    branches: [main]
+    paths:
+      - n8n/linkedin/**
+      - .github/workflows/linkedin-tests.yml
+      - .github/scripts/**
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node n8n/linkedin/build-reliability.cjs
+      - run: node .github/scripts/test-litellm-runtime-changes.cjs
+      - run: node n8n/linkedin/build-failure-workflow.cjs
+      - run: node n8n/linkedin/tests/reliability.cjs
+      - run: node n8n/linkedin/test-extraction-contract.cjs
+      - run: node n8n/linkedin/test-consolidation-privacy-contract.cjs
+      - run: node n8n/linkedin/tests/select-transcripts.cjs
+      - run: node n8n/linkedin/tests/retrieval-origins.cjs
+      - run: node n8n/linkedin/tests/archive-artifact.cjs "$RUNNER_TEMP/linkedin-archive-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"

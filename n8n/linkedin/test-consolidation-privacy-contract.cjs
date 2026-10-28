@@ -1,0 +1,12 @@
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const workflow=JSON.parse(fs.readFileSync(path.join(__dirname,'enrichment.json'),'utf8'));
+const requestNode=workflow.nodes.find(n=>n.name==='Consolidate Themes via qwen3.5');
+const expression=requestNode.parameters.jsonBody;
+const request=JSON.parse(Function('$json','return ('+expression.slice(3,-2)+')')({rawThemes:['Generic educational source']}));
+assert(request.messages[0].content.includes('Omit incident-related themes'));
+const validatorNode=workflow.nodes.find(n=>n.name==='Reject Unsafe Research Queries');
+const safe=Function(validatorNode.parameters.jsCode.split('const queries =')[0]+'\nreturn surfaceSafe;')();
+assert.equal(safe('Incident response alignment'),false);
+assert.equal(safe('Input validation and output encoding'),true);
+assert.equal(safe('A generic theme with https://example.com'),false);
+console.log('PASS: consolidation prompt excludes incident topics; unchanged privacy predicate rejects incident wording and URLs.');
