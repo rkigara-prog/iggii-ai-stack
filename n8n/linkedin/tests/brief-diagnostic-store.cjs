@@ -1,0 +1,16 @@
+const fs=require('fs'),os=require('os'),path=require('path'),assert=require('assert'),stages=require('../stage-result.cjs');
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'brief-diagnostic-'));
+const id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',nodeCode='node_f047c33eb6b74231';
+stages.record({begin:true,runId:id,executionId:'101',stage:'privacy',state:'running',reasonCode:'started'},root);
+stages.record({runId:id,stage:'research',state:'running',reasonCode:'stage_started'},root);stages.handoff(id,'102','research',root);
+const diagnostic={category:'source_coverage_invalid',finishReason:'stop',counts:{expectedSources:2,returnedSources:1,sourceMissing:1}};
+const invalid={...diagnostic,counts:{...diagnostic.counts,raw:'PRIVATE'}};
+assert.throws(()=>stages.fail({executionId:'102',nodeCode,reasonCode:'stage_failed',diagnostic:invalid},root));
+assert.equal(JSON.parse(fs.readFileSync(path.join(root,'run-status.json'))).state,'running');assert(!fs.existsSync(path.join(root,'alerts')));
+const input={executionId:'102',nodeCode,reasonCode:'stage_failed',diagnostic};const row=stages.fail(input,root);
+assert.deepEqual(row.diagnostic,diagnostic);assert.deepEqual(stages.fail(input,root),row);assert.deepEqual(stages.fail({executionId:'101',reasonCode:'stage_failed'},root),row);
+const alerts=fs.readdirSync(path.join(root,'alerts'));assert.equal(alerts.length,1);assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root,'alerts',alerts[0]))).diagnostic,diagnostic);assert(!fs.existsSync(path.join(root,'.run-status.lock')));
+assert.throws(()=>stages.fail({executionId:'999',reasonCode:'stage_failed',diagnostic},root));
+stages.record({begin:true,runId:'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',executionId:'201',stage:'privacy',state:'running',reasonCode:'started'},root);
+assert.throws(()=>stages.fail(input,root));assert(!JSON.stringify(JSON.parse(fs.readFileSync(path.join(root,'run-status.json')))).includes('diagnostic'));
+console.log('PASS durable diagnostic validation, child ownership/ancestor acknowledgment, one alert, stale rejection, new-run clearing and lock release. Synthetic only.');

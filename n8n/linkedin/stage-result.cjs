@@ -4,9 +4,12 @@ const stages=new Set(['privacy','research','planning','archive']);
 const states=new Set(['running','failed','stalled','completed_no_research','completed_all_deferred','content_ready']);
 const codes=new Set(['started','stage_started','model_timeout','model_response_invalid','privacy_blocked','evidence_fetch_failed','evidence_binding_failed','stage_failed','archive_failed','all_excluded','all_deferred','accepted_topics','deadline_exceeded']);
 const terminal=s=>s!=='running';
+const safeBriefDiagnostic=value=>require('./brief-contract.cjs').safeBriefDiagnostic(value);
 function result(input,previous,now=new Date().toISOString()){
  if(!input||!/^[a-f0-9-]{36}$/.test(input.runId)||!stages.has(input.stage)||!states.has(input.state)||!codes.has(input.reasonCode))throw Error('Invalid stage metadata');
  if(input.nodeCode!==undefined&&(!Object.hasOwn(require('./failure-node-codes.json'),input.nodeCode)||input.state!=='failed'))throw Error('Invalid diagnostic code');
+ const diagnostic=input.diagnostic===undefined?undefined:safeBriefDiagnostic(input.diagnostic);
+ if(diagnostic&&(input.state!=='failed'||input.nodeCode!=='node_f047c33eb6b74231'))throw Error('Invalid brief diagnostic owner');
  if(previous&&input.runId!==previous.runId&&!input.begin)throw Error('Superseded run');
  if(input.expectedExecutionId&&input.expectedExecutionId!==previous?.executionId)throw Error('Superseded execution');
  if(input.expectedStatus&&JSON.stringify(input.expectedStatus)!==JSON.stringify(previous))throw Error('Status changed');
@@ -22,10 +25,10 @@ function result(input,previous,now=new Date().toISOString()){
  if(input.handoffFrom!==undefined){
   if(!previous||previous.state!=='running'||input.handoffFrom!==previous.executionId||input.stage!==previous.stage||input.state!=='running'||input.reasonCode!=='stage_started'||!['research','planning'].includes(input.stage)||ancestors.includes(input.executionId)||ancestors.length>=2)throw Error('Invalid lineage');
  }
- return {version:1,...(input.nodeCode?{nodeCode:input.nodeCode}:{}),runId:input.runId,executionId:input.executionId||previous?.executionId,ancestorExecutionIds:input.handoffFrom?[...ancestors,input.handoffFrom]:ancestors,stage:input.stage,state:input.state,reasonCode:input.reasonCode,startedAt:input.begin?now:previous.startedAt,updatedAt:now,counts,automaticPublishingAllowed:false};
+ return {version:1,...(diagnostic?{diagnostic}:{}),...(input.nodeCode?{nodeCode:input.nodeCode}:{}),runId:input.runId,executionId:input.executionId||previous?.executionId,ancestorExecutionIds:input.handoffFrom?[...ancestors,input.handoffFrom]:ancestors,stage:input.stage,state:input.state,reasonCode:input.reasonCode,startedAt:input.begin?now:previous.startedAt,updatedAt:now,counts,automaticPublishingAllowed:false};
 }
 function inspect(previous,now=Date.now(),maxAgeMs=90*60*1000){if(previous?.state==='running'&&now-Date.parse(previous.updatedAt)>maxAgeMs)return {...previous,state:'stalled',reasonCode:'deadline_exceeded'};return previous;}
-function alertPayload(row){if(!row||!terminal(row.state)||row.state==='content_ready')return null;return {eventId:crypto.createHash('sha256').update(row.runId+'|'+row.state+'|'+row.stage).digest('hex'),runId:row.runId,...(row.nodeCode?{nodeCode:row.nodeCode}:{}),stage:row.stage,state:row.state,reasonCode:row.reasonCode,counts:row.counts,delivery:'local_only',automaticPublishingAllowed:false};}
+function alertPayload(row){if(!row||!terminal(row.state)||row.state==='content_ready')return null;return {eventId:crypto.createHash('sha256').update(row.runId+'|'+row.state+'|'+row.stage).digest('hex'),runId:row.runId,...(row.diagnostic?{diagnostic:safeBriefDiagnostic(row.diagnostic)}:{}),...(row.nodeCode?{nodeCode:row.nodeCode}:{}),stage:row.stage,state:row.state,reasonCode:row.reasonCode,counts:row.counts,delivery:'local_only',automaticPublishingAllowed:false};}
 function withLock(root,operation){
  if(!root)throw Error('Root required');const file=path.join(root,'run-status.json'),lock=path.join(root,'.run-status.lock');
  const fd=fs.openSync(lock,'wx',0o600);try{
@@ -59,7 +62,7 @@ function fail(input,root=process.env.IAS_PRIVACY_ROOT){return withLock(root,tx=>
   return tx.record({...old,expectedStatus:old});
  }
  if(old.state==='failed')return tx.record({...old,expectedStatus:old});
- return tx.record({nodeCode:input.nodeCode,runId:old.runId,expectedExecutionId:input.executionId,expectedStatus:old,stage:old.stage,state:'failed',reasonCode:old.stage==='archive'?'archive_failed':input.reasonCode});
+ return tx.record({diagnostic:input.diagnostic,nodeCode:input.nodeCode,runId:old.runId,expectedExecutionId:input.executionId,expectedStatus:old,stage:old.stage,state:'failed',reasonCode:old.stage==='archive'?'archive_failed':input.reasonCode});
 });}
 function inspectStored(root=process.env.IAS_PRIVACY_ROOT,now=Date.now()){return withLock(root,tx=>{const old=tx.read(),row=inspect(old,now);return row!==old?tx.record({...row,expectedStatus:old}):row;});}
 if(require.main===module){try{
