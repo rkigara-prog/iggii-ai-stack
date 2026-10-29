@@ -27,6 +27,8 @@ jobs:
       - run: node n8n/linkedin/tests/reliability.cjs
       - run: node n8n/linkedin/tests/explicit-failure.cjs
       - run: node n8n/linkedin/tests/strict-routing.cjs
+      - run: node n8n/linkedin/tests/failure-lineage.cjs
+      - run: node n8n/linkedin/tests/failure-diagnostics.cjs
       - run: node n8n/linkedin/test-extraction-contract.cjs
       - run: node n8n/linkedin/test-consolidation-privacy-contract.cjs
       - run: node n8n/linkedin/tests/select-transcripts.cjs

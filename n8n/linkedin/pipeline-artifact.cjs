@@ -31,7 +31,7 @@ function main(){
  if(action==='theme'){
   requireThat(Object.keys(input).length===0||(Object.keys(input).length===1&&input.privacy));
   const proof=samePrivacy(input.privacy);
-  require('./stage-result.cjs').record({runId:proof.runId,executionId:process.argv[4],stage:'research',state:'running',reasonCode:'stage_started'},root);
+  require('./stage-result.cjs').handoff(proof.runId,process.argv[4],'research',root);
   console.log(JSON.stringify(proof));
  }else if(action==='record'){
   requireThat(input.privacy&&input.candidateFile&&input.briefFile);
@@ -45,7 +45,7 @@ function main(){
  }else if(action==='verify-candidate'){
   const proof=candidate(JSON.parse(fs.readFileSync(marker)));
   if(Object.keys(input).length)requireThat(JSON.stringify(input)===JSON.stringify(proof));
-  require('./stage-result.cjs').record({runId:proof.privacy.runId,executionId:process.argv[4],stage:'planning',state:'running',reasonCode:'stage_started'},root);
+  require('./stage-result.cjs').handoff(proof.privacy.runId,process.argv[4],'planning',root);
   console.log(JSON.stringify(proof));
  }else throw Error('Pipeline handoff blocked');
 }
