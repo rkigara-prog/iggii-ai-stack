@@ -1,6 +1,7 @@
 // Local draft builder. Requires native manual/automatic acceptance before rollout.
 const {constrainPrivacySchema}=require('./privacy-decision-schema.cjs');
 function updateFailure(w){
+ if(w.nodes.some(n=>n.name.startsWith('Record Failure Code: ')))throw Error('Build from undecorated source; diagnostic sinks must remain fail-closed');
  require('./strict-research-routing.cjs').strictRoutes(w);
  const privacy=w.nodes.find(n=>n.name==='Privacy Adjudication and Deduplication via gpt-oss');
  if(privacy&&!privacy.parameters.jsonBody.includes('constrainPrivacySchema')){
@@ -46,3 +47,4 @@ function updateFailure(w){
  return w;
 }
 module.exports={updateFailure};
+
