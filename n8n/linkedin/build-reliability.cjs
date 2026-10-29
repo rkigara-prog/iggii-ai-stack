@@ -50,7 +50,7 @@ function update(w){
   if(planner.parameters.jsonBody.includes('"type": "json_object"'))planner.parameters.jsonBody=planner.parameters.jsonBody.replace('{\n  "type": "json_object"\n}',JSON.stringify({type:'json_schema',json_schema:{name:'editorial_plan',strict:true,schema:require('./evidence/response-schema.cjs').plannerSchema}},null,2));
   n.parameters.jsCode=n.parameters.jsCode.replace('const planned = parseJson($json.choices?.[0]?.message?.content);',"if ($json.choices?.[0]?.finish_reason !== 'stop') throw Error('Planner response incomplete');\nlet planned; try { planned = JSON.parse($json.choices[0].message.content); } catch { throw Error('Planner response malformed'); }\nif (!Array.isArray(planned.selectedTopics) || planned.selectedTopics.length > 5) throw Error('Planner response schema invalid');");
  }
- for(const name of ['Require Approved Privacy Artifact','Require Current Candidate Artifact']){const n=w.nodes.find(n=>n.name===name);if(n&&!n.parameters.command.includes('$execution.id'))n.parameters.command=n.parameters.command.replace(/ }}$/,' + " " + $execution.id }}');}
+ for(const name of ['Require Approved Privacy Artifact','Require Current Candidate Artifact','Check Handoff Before Writing Plan']){const n=w.nodes.find(n=>n.name===name);if(n&&!n.parameters.command.includes('$execution.id'))n.parameters.command=n.parameters.command.replace(/ }}$/,' + " " + $execution.id }}');}
  return w;
 }
 if(require.main===module)for(const file of ['sanitization.json','enrichment.json','editorial-planner.json']){const p=path.join(D,file);fs.writeFileSync(p,JSON.stringify(update(JSON.parse(read(file))),null,2)+'\n');}
